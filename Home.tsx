@@ -1,78 +1,71 @@
-import { Coffee, Moon, Book } from "lucide-react";
+import { Book, Coffee, Moon } from "lucide-react";
+
+const BARISTA_BG =
+  "https://019c8974-d4c3-798e-8258-950186b05cb3.mochausercontent.com/barista-hero.png";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#f6f1ea] text-[#3b342d] font-serif">
+    <main className="min-h-screen bg-[#f3ede4] text-[#2f2923] font-serif leading-relaxed">
+      <div className="max-w-3xl mx-auto px-6 py-10">
 
-      {/* HERO */}
-      <section className="px-6 pt-20 pb-10 text-center max-w-xl mx-auto">
-        <h1 className="text-2xl tracking-wide mb-2">
-          Sepucuk Surat
-        </h1>
-        <p className="text-sm opacity-70">
+        {/* ===== HEADER ===== */}
+        <p className="text-sm mb-2 opacity-70">Sepucuk Surat</p>
+        <h1 className="text-2xl mb-6">
           Catatan kecil dari seseorang yang masih belajar hadir.
-        </p>
-      </section>
+        </h1>
 
-      {/* IMAGE */}
-      <section className="max-w-xl mx-auto px-6">
+        {/* ===== HERO IMAGE ===== */}
         <img
-          src="https://019c8974-d4c3-798e-8258-950186b05cb3.mochausercontent.com/barista-hero.png"
-          className="rounded-xl w-full mb-6 shadow-md"
+          src={BARISTA_BG}
+          className="rounded-2xl w-full mb-10 shadow-xl border border-[#e7ded1]"
         />
 
-        <h2 className="text-lg mb-2">
-          Wildan Ferdiansyah
-        </h2>
-
-        <p className="text-sm opacity-80 leading-relaxed mb-10">
-          Bukan penulis profesional. Bukan motivator. Hanya seseorang yang
-          mencoba memahami hidupnya melalui kata-kata.
-        </p>
-
-        <p className="italic text-sm text-center mb-16 opacity-80">
+        {/* ===== AUTHOR ===== */}
+        <p className="opacity-70 mb-1">Wildan Ferdiansyah</p>
+        <p className="mb-6">
+          Bukan penulis profesional. Bukan motivator. Hanya seseorang yang mencoba
+          memahami hidupnya melalui kata-kata.
+          <br />
           “Kita semua pernah lelah. Tapi kita masih di sini.”
         </p>
-      </section>
 
-      {/* SECTION LIST */}
-      <section className="px-6 pb-24 max-w-xl mx-auto space-y-10 text-sm leading-relaxed">
-
-        <div className="flex gap-3 items-start">
-          <Book className="w-5 h-5 mt-1 opacity-60"/>
+        {/* ===== SECTION 1 ===== */}
+        <div className="flex gap-4 items-start bg-[#faf6f0] p-4 rounded-xl border border-[#e9e1d6] mb-6">
+          <Book className="mt-1 opacity-70" />
           <div>
-            <p className="text-base mb-1">Tentang Hujan</p>
-            <p className="opacity-80">
+            <p className="opacity-70 mb-1">Tentang Hujan</p>
+            <p>
               Hujan selalu datang tanpa izin. Seperti rindu yang tiba-tiba muncul
               saat kita sedang sibuk melupakan.
             </p>
           </div>
         </div>
 
-        <div className="flex gap-3 items-start">
-          <Coffee className="w-5 h-5 mt-1 opacity-60"/>
+        {/* ===== SECTION 2 ===== */}
+        <div className="flex gap-4 items-start bg-[#faf6f0] p-4 rounded-xl border border-[#e9e1d6] mb-6">
+          <Coffee className="mt-1 opacity-70" />
           <div>
-            <p className="text-base mb-1">Tentang Kopi yang Dingin</p>
-            <p className="opacity-80">
-              Kopi yang dingin bukan berarti gagal. Mungkin kita hanya terlalu
-              lama menikmati percakapan yang hangat.
+            <p className="opacity-70 mb-1">Tentang Kopi yang Dingin</p>
+            <p>
+              Kopi yang dingin bukan berarti gagal. Mungkin kita hanya terlalu lama
+              menikmati percakapan yang hangat.
             </p>
           </div>
         </div>
 
-        <div className="flex gap-3 items-start">
-          <Moon className="w-5 h-5 mt-1 opacity-60"/>
+        {/* ===== SECTION 3 ===== */}
+        <div className="flex gap-4 items-start bg-[#faf6f0] p-4 rounded-xl border border-[#e9e1d6] mb-6">
+          <Moon className="mt-1 opacity-70" />
           <div>
-            <p className="text-base mb-1">Ruang Sunyi</p>
-            <p className="opacity-80">
+            <p className="opacity-70 mb-1">Ruang Sunyi</p>
+            <p>
               Kadang kita tidak butuh jawaban. Cukup tempat untuk duduk dan
               bernapas pelan.
             </p>
           </div>
         </div>
 
-      </section>
-
+      </div>
     </main>
   );
 }
