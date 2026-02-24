@@ -1,2 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { Book, Coffee, Moon, Heart, ExternalLink, Menu, X } from "lucide-react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./Home";
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
