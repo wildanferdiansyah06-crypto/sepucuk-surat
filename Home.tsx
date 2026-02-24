@@ -1,15 +1,6 @@
 import {
-  CoffeeCupDecor,
-  SteamDecor,
-  CoffeeBeansDecor,
-  V60DripperIllust,
-  EspressoMachineIllust,
-  TwoCupsIllust,
-  OpenBookPenIllust,
-  DynamicTestimonials,
-  ReaderCommentsForm,
-  RakBukuSunyiSection
-} from "./components"; // sesuaikan path kalau beda
+import { useEffect, useRef, useState } from "react";
+import { Book, Coffee, Moon, Heart, ExternalLink, Menu, X } from "lucide-react"; // sesuaikan path kalau beda
 
 const BARISTA_BG =
   "https://019c8974-d4c3-798e-8258-950186b05cb3.mochausercontent.com/barista-hero.png";
