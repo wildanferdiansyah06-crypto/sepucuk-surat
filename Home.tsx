@@ -64,14 +64,19 @@ export default function HomePage() {
 
 {/* ================= TENTANG PENULIS ================= */}
 <section className="max-w-4xl mx-auto px-6 pb-24">
-  <div className="bg-[#f2ede4] rounded-3xl shadow-sm p-8 md:p-12 flex flex-col md:flex-row gap-10 items-center">
+  <div className="relative overflow-hidden rounded-3xl bg-[#f2ede4] shadow-sm">
 
+    {/* FOTO JADI BACKGROUND KIRI */}
     <img
       src="/wildan.png"
-      className="w-40 h-40 object-cover rounded-2xl shadow-md"
+      className="absolute inset-y-0 left-0 h-full w-[45%] object-cover"
     />
 
-    <div>
+    {/* GRADIENT FADE KE KANAN */}
+    <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-[#f2ede4]/90 to-[#f2ede4]" />
+
+    {/* CONTENT */}
+    <div className="relative z-10 p-8 md:p-12 md:pl-[45%]">
       <p className="font-serif text-xl">Tentang Penulis</p>
 
       <div className="w-12 h-[1px] bg-[#d9d2c5] my-4"></div>
@@ -88,9 +93,10 @@ export default function HomePage() {
         sebelum kamu membuka buku yang sebenarnya.
       </p>
     </div>
+
   </div>
 </section>
-
+      
 {/* ================= CUPLIKAN ================= */}
 <section className="max-w-4xl mx-auto px-6 pb-24 space-y-12">
   <p className="text-center font-serif tracking-[0.2em] text-sm">CUPLIKAN</p>
