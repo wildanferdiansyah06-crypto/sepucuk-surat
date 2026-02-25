@@ -1,182 +1,110 @@
-import { Book, Coffee, Moon } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 const HERO_BG =
-  "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop";
+  "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1600&auto=format&fit=crop";
+
+const books = [
+  {
+    title: "Seni Menyeduh Kehidupan",
+    link: "https://drive.google.com/file/d/17Zd1FKFK4X_vmKhITFU5lXihOmMEkezI/view",
+  },
+  {
+    title: "Di Balik Bar",
+    link: "https://drive.google.com/file/d/1N1zwGLqkbVQOzFV_fpRXJxQdawbgZGAl/view",
+  },
+  {
+    title: "Di Atas Cangkir yang Sama",
+    link: "https://drive.google.com/file/d/1cqRI8rfb7_0MIUXLekZJtV0xTFKXr-CD/view",
+  },
+  {
+    title: "Kami Menulis Pelan",
+    link: "https://drive.google.com/file/d/1Mc6pOQ5z2xSn8Wmhf65kdgTrv5T5EzPm/view",
+  },
+];
 
 export default function HomePage() {
   return (
-    <main className="bg-[#f6f1e7] min-h-screen font-sans text-[#2b2b2b]">
+    <main className="bg-[#f6f1e7] text-[#2b2b2b] font-sans">
 
-      {/* HERO */}
-      <section className="max-w-4xl mx-auto px-6 pt-10">
-        <p className="font-serif text-lg">Sepucuk Surat</p>
-
-        <h1 className="font-serif text-3xl mt-2 leading-snug">
-          Catatan kecil dari seseorang yang masih belajar hadir.
-        </h1>
-
+      {/* HERO CINEMATIC */}
+      <section className="relative h-[70vh] flex items-end">
         <img
           src={HERO_BG}
-          className="w-full rounded-xl mt-6 shadow-sm"
+          className="absolute inset-0 w-full h-full object-cover"
         />
 
-        <p className="font-serif mt-6 text-lg">Wildan Ferdiansyah</p>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-[#f6f1e7]" />
 
-        <p className="mt-2 leading-relaxed">
-          Bukan penulis profesional. Bukan motivator. Hanya seseorang yang mencoba memahami hidupnya melalui kata-kata.
+        <div className="relative max-w-5xl mx-auto px-6 pb-16 text-white">
+          <p className="font-serif text-lg opacity-80">
+            Sepucuk Surat
+          </p>
+
+          <h1 className="font-serif text-4xl md:text-5xl leading-tight mt-3">
+            Catatan sunyi dari seorang barista yang menulis pelan.
+          </h1>
+        </div>
+      </section>
+
+      {/* PENULIS */}
+      <section className="max-w-3xl mx-auto px-6 py-20 text-center">
+        <p className="font-serif text-lg">
+          Wildan Ferdiansyah
         </p>
 
-        <p className="italic mt-2">
-          "Kita semua pernah lelah. Tapi kita masih di sini."
+        <p className="mt-4 leading-relaxed text-[#3b3733]">
+          Bukan tempat membaca panjang. Website ini hanya ruang singgah,
+          tempat beberapa kalimat ditaruh pelan sebelum kamu melanjutkan
+          perjalanan membaca di tempat lain.
         </p>
       </section>
 
-      {/* TENTANG HUJAN */}
-      <section className="max-w-4xl mx-auto px-6 mt-16">
-        <Book className="mb-3" />
-        <h2 className="font-serif text-2xl">Tentang Hujan</h2>
-
-        <p className="mt-3 leading-relaxed">
-          Hujan selalu datang tanpa izin. Seperti rindu yang tiba-tiba muncul saat kita sedang sibuk melupakan.
+      {/* CUPLIKAN */}
+      <section className="max-w-3xl mx-auto px-6 space-y-10 text-center">
+        <p className="font-serif text-xl italic">
+          “Tidak semua kata ingin dibaca keras.”
         </p>
 
-        <p className="mt-3 leading-relaxed">
-          Kita belajar bahwa tidak semua hal harus dijelaskan. Ada rasa yang cukup dipahami tanpa banyak kata.
-        </p>
-      </section>
-
-      {/* TENTANG KOPI */}
-      <section className="max-w-4xl mx-auto px-6 mt-16">
-        <Coffee className="mb-3" />
-        <h2 className="font-serif text-2xl">Tentang Kopi yang Dingin</h2>
-
-        <p className="mt-3 leading-relaxed">
-          Kopi yang dingin bukan berarti gagal. Mungkin kita hanya terlalu lama menikmati percakapan yang hangat.
+        <p className="font-serif text-xl italic">
+          “Kopi bisa dingin, tapi cerita tetap hangat.”
         </p>
 
-        <p className="mt-3 leading-relaxed">
-          Di antara jeda-jeda kecil, kita menemukan bahwa waktu tidak pernah benar-benar hilang — ia hanya berubah bentuk menjadi cerita.
+        <p className="font-serif text-xl italic">
+          “Ada halaman yang hanya bisa dipahami ketika kamu berhenti terburu-buru.”
         </p>
       </section>
 
-      {/* RUANG SUNYI */}
-      <section className="max-w-4xl mx-auto px-6 mt-16">
-        <Moon className="mb-3" />
-        <h2 className="font-serif text-2xl">Ruang Sunyi</h2>
-
-        <p className="mt-3 leading-relaxed">
-          Kadang kita tidak butuh jawaban. Cukup tempat untuk duduk dan bernapas pelan.
-        </p>
-
-        <p className="mt-3 leading-relaxed">
-          Sunyi bukan musuh, ia hanya ruang kosong tempat pikiran kita beristirahat.
-        </p>
-
-        <p className="mt-3 leading-relaxed">
-          Mungkin hidup tidak harus selalu keras. Mungkin cukup berjalan pelan.
-        </p>
-      </section>
-
-      {/* CATATAN BELUM SELESAI */}
-      <section className="max-w-4xl mx-auto px-6 py-24 text-center">
-        <h2 className="font-serif text-3xl">Catatan yang Belum Selesai</h2>
-
-        <p className="mt-6 leading-relaxed">
-          Website ini bukan akhir dari perjalanan. Ia hanya halaman pertama dari buku yang masih ditulis pelan.
-        </p>
-
-        <p className="mt-3 leading-relaxed">
-          Setiap scroll adalah lembar baru. Setiap kata adalah langkah kecil menuju versi diri yang lebih tenang.
-        </p>
-      </section>
-
-      {/* SEPOTONG SURAT */}
-      <section className="max-w-4xl mx-auto px-6">
-        <h2 className="font-serif text-3xl">Sepotong Surat</h2>
-
-        <p className="mt-4 leading-relaxed">
-          Kadang kita menulis bukan untuk dibaca orang lain, tapi agar hati kita sendiri tidak terlalu penuh.
-        </p>
-
-        <p className="mt-3 leading-relaxed">
-          Ada hal-hal yang tidak bisa diucapkan keras, hanya bisa ditaruh pelan di antara paragraf.
-        </p>
-
-        <p className="mt-3 leading-relaxed">
-          Jika suatu hari kamu membaca ini, mungkin kita tidak saling kenal.
-        </p>
-
-        <p className="mt-3 leading-relaxed">
-          Dan mungkin itu sudah cukup.
-        </p>
-
-        <p className="mt-12 text-center font-serif text-sm opacity-70">
-          Sepucuk Surat — ditulis pelan oleh Wildan Ferdiansyah
-        </p>
-      </section>
-
-      {/* RAK CATATAN */}
-      <section className="max-w-4xl mx-auto px-6 py-24 space-y-14">
-        <h2 className="font-serif text-3xl">
-          Rak Catatan yang Tersisa
+      {/* RAK BUKU */}
+      <section className="max-w-5xl mx-auto px-6 py-24">
+        <h2 className="font-serif text-3xl text-center mb-12">
+          Rak Buku Sunyi
         </h2>
 
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div key={i} className="space-y-3">
-            <h3 className="font-serif text-xl">
-              Halaman {i + 1}
-            </h3>
+        <div className="grid md:grid-cols-2 gap-6">
+          {books.map((book, i) => (
+            <a
+              key={i}
+              href={book.link}
+              target="_blank"
+              className="group rounded-2xl border border-[#e0d8cc] p-8 bg-white/40 hover:bg-white/70 transition-all duration-500"
+            >
+              <h3 className="font-serif text-2xl">
+                {book.title}
+              </h3>
 
-            <p className="leading-relaxed">
-              Tidak semua tulisan lahir dari keberanian. Beberapa muncul karena kita terlalu lama diam.
-            </p>
-
-            <p className="leading-relaxed">
-              Ada kalimat yang ditulis sambil menunggu kopi dingin, ada juga yang lahir di antara suara hujan malam.
-            </p>
-          </div>
-        ))}
-      </section>
-
-      {/* SECTION 6 */}
-      <section className="max-w-4xl mx-auto px-6 mt-20">
-        <h2 className="font-serif text-3xl">Jejak yang Tidak Terlihat</h2>
-
-        <p className="mt-4 leading-relaxed">
-          Ada langkah-langkah kecil yang tidak pernah tercatat. Bukan karena tidak penting, tapi karena ia terjadi diam-diam di dalam diri.
-        </p>
-
-        <p className="mt-4 leading-relaxed">
-          Kita tumbuh bukan hanya dari keputusan besar, tetapi dari keberanian kecil yang sering bahkan kita sendiri lupa pernah memilikinya.
-        </p>
-
-        <p className="mt-4 leading-relaxed">
-          Mungkin perubahan terbesar bukan saat dunia melihat kita berbeda, tetapi saat kita akhirnya bisa berdamai dengan versi lama diri sendiri.
-        </p>
-      </section>
-
-      {/* SECTION 7 */}
-      <section className="max-w-4xl mx-auto px-6 mt-20">
-        <h2 className="font-serif text-3xl">Halaman yang Masih Kosong</h2>
-
-        <p className="mt-4 leading-relaxed">
-          Tidak semua halaman harus langsung diisi. Ada bagian hidup yang memang membutuhkan jeda agar kata-kata menemukan bentuknya sendiri.
-        </p>
-
-        <p className="mt-4 leading-relaxed">
-          Kita mungkin belum tahu cerita apa yang akan datang setelah ini, tapi mungkin itu justru yang membuat perjalanan terasa hidup.
-        </p>
-
-        <p className="mt-4 leading-relaxed">
-          Selama masih ada ruang kosong, berarti kita masih punya kesempatan untuk menulis sesuatu yang baru.
-        </p>
+              <p className="mt-4 flex items-center gap-2 text-sm opacity-70 group-hover:opacity-100">
+                Baca Versi Lengkap
+                <ExternalLink size={16} />
+              </p>
+            </a>
+          ))}
+        </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="max-w-4xl mx-auto px-6 mt-28 pb-20 text-center text-sm opacity-70 font-serif">
-        Sepucuk Surat — halaman yang terus berubah perlahan.
+      <footer className="text-center pb-20 opacity-60 font-serif">
+        Sepucuk Surat — bukan tempat tinggal, hanya ruang singgah.
       </footer>
-
     </main>
   );
 }
