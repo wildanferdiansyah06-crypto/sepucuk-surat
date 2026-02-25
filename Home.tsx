@@ -5,67 +5,58 @@ const BARISTA_BG =
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#f3ede4] text-[#2f2923] font-serif leading-relaxed">
-      <div className="max-w-3xl mx-auto px-6 py-10">
+    <main className="bg-[#f6f1e7] min-h-screen font-sans text-[#2b2b2b]">
+      
+      {/* HERO */}
+      <section className="max-w-4xl mx-auto px-6 pt-10">
+        <p className="font-serif text-lg">Sepucuk Surat</p>
 
-        {/* ===== HEADER ===== */}
-        <p className="text-sm mb-2 opacity-70">Sepucuk Surat</p>
-        <h1 className="text-2xl mb-6">
+        <h1 className="font-serif text-3xl mt-2 leading-snug">
           Catatan kecil dari seseorang yang masih belajar hadir.
         </h1>
 
-        {/* ===== HERO IMAGE ===== */}
         <img
           src={BARISTA_BG}
-          className="rounded-2xl w-full mb-10 shadow-xl border border-[#e7ded1]"
+          className="w-full rounded-xl mt-6"
         />
 
-        {/* ===== AUTHOR ===== */}
-        <p className="opacity-70 mb-1">Wildan Ferdiansyah</p>
-        <p className="mb-6">
-          Bukan penulis profesional. Bukan motivator. Hanya seseorang yang mencoba
-          memahami hidupnya melalui kata-kata.
-          <br />
-          “Kita semua pernah lelah. Tapi kita masih di sini.”
+        <p className="font-serif mt-6 text-lg">Wildan Ferdiansyah</p>
+
+        <p className="mt-2 text-base leading-relaxed">
+          Bukan penulis profesional. Bukan motivator. Hanya seseorang yang mencoba memahami hidupnya melalui kata-kata.
         </p>
 
-        {/* ===== SECTION 1 ===== */}
-        <div className="flex gap-4 items-start bg-[#faf6f0] p-4 rounded-xl border border-[#e9e1d6] mb-6">
-          <Book className="mt-1 opacity-70" />
-          <div>
-            <p className="opacity-70 mb-1">Tentang Hujan</p>
-            <p>
-              Hujan selalu datang tanpa izin. Seperti rindu yang tiba-tiba muncul
-              saat kita sedang sibuk melupakan.
-            </p>
-          </div>
-        </div>
+        <p className="italic mt-2">
+          "Kita semua pernah lelah. Tapi kita masih di sini."
+        </p>
+      </section>
 
-        {/* ===== SECTION 2 ===== */}
-        <div className="flex gap-4 items-start bg-[#faf6f0] p-4 rounded-xl border border-[#e9e1d6] mb-6">
-          <Coffee className="mt-1 opacity-70" />
-          <div>
-            <p className="opacity-70 mb-1">Tentang Kopi yang Dingin</p>
-            <p>
-              Kopi yang dingin bukan berarti gagal. Mungkin kita hanya terlalu lama
-              menikmati percakapan yang hangat.
-            </p>
-          </div>
-        </div>
+      {/* SECTION 1 */}
+      <section className="max-w-4xl mx-auto px-6 mt-14">
+        <Book className="mb-3" />
+        <h2 className="font-serif text-xl">Tentang Hujan</h2>
+        <p className="mt-2 leading-relaxed">
+          Hujan selalu datang tanpa izin. Seperti rindu yang tiba-tiba muncul saat kita sedang sibuk melupakan.
+        </p>
+      </section>
 
-        {/* ===== SECTION 3 ===== */}
-        <div className="flex gap-4 items-start bg-[#faf6f0] p-4 rounded-xl border border-[#e9e1d6] mb-6">
-          <Moon className="mt-1 opacity-70" />
-          <div>
-            <p className="opacity-70 mb-1">Ruang Sunyi</p>
-            <p>
-              Kadang kita tidak butuh jawaban. Cukup tempat untuk duduk dan
-              bernapas pelan.
-            </p>
-          </div>
-        </div>
+      {/* SECTION 2 */}
+      <section className="max-w-4xl mx-auto px-6 mt-14">
+        <Coffee className="mb-3" />
+        <h2 className="font-serif text-xl">Tentang Kopi yang Dingin</h2>
+        <p className="mt-2 leading-relaxed">
+          Kopi yang dingin bukan berarti gagal. Mungkin kita hanya terlalu lama menikmati percakapan yang hangat.
+        </p>
+      </section>
 
-      </div>
+      {/* SECTION 3 */}
+      <section className="max-w-4xl mx-auto px-6 mt-14 pb-24">
+        <Moon className="mb-3" />
+        <h2 className="font-serif text-xl">Ruang Sunyi</h2>
+        <p className="mt-2 leading-relaxed">
+          Kadang kita tidak butuh jawaban. Cukup tempat untuk duduk dan bernapas pelan.
+        </p>
+      </section>
     </main>
   );
 }
