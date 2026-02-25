@@ -130,7 +130,37 @@ export default function HomePage() {
           Tapi hari ini, kita cukup menikmati prosesnya.
         </p>
       </section>
+{/* SECTION BARU - Surat Pendek */}
+<section className="max-w-3xl mx-auto px-6 py-20 space-y-6">
+  <h2 className="font-serif text-3xl">Sepotong Surat</h2>
 
+  <p>
+    Kadang kita menulis bukan untuk dibaca orang lain,
+    tapi agar hati kita sendiri tidak terlalu penuh.
+  </p>
+
+  <p>
+    Ada hal-hal yang tidak bisa diucapkan keras,
+    hanya bisa ditaruh pelan di antara paragraf.
+  </p>
+
+  <p>
+    Jika suatu hari kamu membaca ini,
+    mungkin kita tidak saling kenal.
+    Tapi setidaknya kita pernah berada di halaman yang sama.
+  </p>
+
+  <p>
+    Dan mungkin itu sudah cukup.
+  </p>
+</section>
+
+{/* FOOTER SIMPLE */}
+<footer className="text-center py-16 opacity-70">
+  <p className="font-serif">
+    Sepucuk Surat — ditulis pelan oleh Wildan Ferdiansyah
+  </p>
+</footer>
     </main>
   );
 }
