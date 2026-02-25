@@ -64,37 +64,39 @@ export default function HomePage() {
 
 {/* ================= TENTANG PENULIS ================= */}
 <section className="max-w-4xl mx-auto px-6 pb-24">
-  <div className="relative overflow-hidden rounded-3xl bg-[#f2ede4] shadow-sm">
 
-    {/* FOTO JADI BACKGROUND KIRI */}
+  <div className="bg-[#f2ede4] rounded-3xl border border-[#e7e1d6]
+                  shadow-sm p-7 md:p-10 flex flex-col md:flex-row
+                  gap-10 items-center transition-all duration-500">
+
+    {/* FOTO */}
     <img
       src="/wildan.png"
-      className="absolute inset-y-0 left-0 h-full w-[45%] object-cover"
+      className="w-32 h-32 md:w-40 md:h-40 object-cover
+                 rounded-2xl shadow-sm"
     />
 
-    {/* GRADIENT FADE KE KANAN */}
-    <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-[#f2ede4]/90 to-[#f2ede4]" />
-
-    {/* CONTENT */}
-    <div className="relative z-10 p-8 md:p-12 md:pl-[45%]">
-      <p className="font-serif text-xl">Tentang Penulis</p>
-
-      <div className="w-12 h-[1px] bg-[#d9d2c5] my-4"></div>
-
-      <p className="text-sm leading-relaxed">
-        Seorang barista yang lebih sering mendengar daripada berbicara.
-        Menulis bukan untuk menjadi suara paling keras,
-        tapi untuk memahami hal-hal kecil yang sering terlewat di antara jeda kopi.
+    {/* TEXT */}
+    <div className="text-center md:text-left">
+      <p className="font-serif text-xl tracking-wide">
+        Tentang Penulis
       </p>
 
-      <p className="mt-4 text-sm leading-relaxed">
-        Website ini bukan rumah utama tulisan.
-        Ia hanya halaman pembuka — tempat beberapa fragmen cerita ditinggalkan
-        sebelum kamu membuka buku yang sebenarnya.
+      <p className="mt-4 text-sm leading-relaxed text-[#444]">
+        Seorang barista yang lebih sering mendengar daripada berbicara.
+        Menulis bukan untuk menjadi suara paling keras, tapi untuk
+        memahami hal-hal kecil yang sering terlewat di antara jeda kopi.
+      </p>
+
+      <p className="mt-4 text-sm leading-relaxed text-[#444]">
+        Website ini bukan rumah utama tulisan. Ia hanya halaman pembuka —
+        tempat beberapa fragmen cerita ditinggalkan sebelum kamu membuka
+        buku yang sebenarnya.
       </p>
     </div>
 
   </div>
+
 </section>
       
 {/* ================= CUPLIKAN ================= */}
@@ -113,35 +115,90 @@ export default function HomePage() {
 </section>
 
 {/* ================= RAK BUKU ================= */}
-<section className="max-w-4xl mx-auto px-6 pb-24">
-  <h2 className="font-serif text-center text-2xl mb-12">Rak Buku Sunyi</h2>
+<section className="max-w-5xl mx-auto px-6 pb-28">
+
+  <h2 className="font-serif text-center text-2xl tracking-wide mb-14">
+    Rak Buku Sunyi
+  </h2>
 
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-    {[
-      "Seni Menyeduh Kehidupan",
-      "Di Balik Bar",
-      "Di Atas Cangkir yang Sama",
-      "Kami Menulis Pelan"
-    ].map((title, i) => (
-      <a
-        key={i}
-        href="https://drive.google.com"
-        target="_blank"
-        className="bg-[#f2ede4] rounded-2xl p-8 transition hover:-translate-y-1 hover:shadow-md"
-      >
-        <p className="font-serif">{title}</p>
-        <p className="text-sm mt-2 flex items-center gap-2">
-          Lanjutkan Membaca <ExternalLink size={14} />
-        </p>
-      </a>
-    ))}
+
+    {/* ================= CARD 1 ================= */}
+    <a
+      href="https://drive.google.com/file/d/17Zd1FKFK4X_vmKhITFU5lXihOmMEkezI/preview"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group bg-[#f2ede4] rounded-3xl p-7 border border-[#e7e1d6]
+                 hover:shadow-lg hover:-translate-y-[3px]
+                 transition-all duration-500"
+    >
+      <p className="font-serif text-lg">Seni Menyeduh Kehidupan</p>
+
+      <div className="flex items-center gap-2 mt-3 text-sm text-[#666] group-hover:text-black transition">
+        Lanjutkan Membaca
+        <ExternalLink size={14} />
+      </div>
+    </a>
+
+    {/* ================= CARD 2 ================= */}
+    <a
+      href="https://drive.google.com/file/d/1N1zwGLqkbVQOzFV_fpRXJxQdawbgZGAl/preview"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group bg-[#f2ede4] rounded-3xl p-7 border border-[#e7e1d6]
+                 hover:shadow-lg hover:-translate-y-[3px]
+                 transition-all duration-500"
+    >
+      <p className="font-serif text-lg">Di Balik Bar</p>
+
+      <div className="flex items-center gap-2 mt-3 text-sm text-[#666] group-hover:text-black transition">
+        Lanjutkan Membaca
+        <ExternalLink size={14} />
+      </div>
+    </a>
+
+    {/* ================= CARD 3 ================= */}
+    <a
+      href="https://drive.google.com/file/d/1cqRI8rfb7_0MIUXLekZJtV0xTFKXr-CD/preview"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group bg-[#f2ede4] rounded-3xl p-7 border border-[#e7e1d6]
+                 hover:shadow-lg hover:-translate-y-[3px]
+                 transition-all duration-500"
+    >
+      <p className="font-serif text-lg">Di Atas Cangkir yang Sama</p>
+
+      <div className="flex items-center gap-2 mt-3 text-sm text-[#666] group-hover:text-black transition">
+        Lanjutkan Membaca
+        <ExternalLink size={14} />
+      </div>
+    </a>
+
+    {/* ================= CARD 4 ================= */}
+    <a
+      href="https://drive.google.com/file/d/1Mc6pOQ5z2xSn8Wmhf65kdgTrv5T5EzPm/preview"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group bg-[#f2ede4] rounded-3xl p-7 border border-[#e7e1d6]
+                 hover:shadow-lg hover:-translate-y-[3px]
+                 transition-all duration-500"
+    >
+      <p className="font-serif text-lg">Kami Menulis Pelan</p>
+
+      <div className="flex items-center gap-2 mt-3 text-sm text-[#666] group-hover:text-black transition">
+        Lanjutkan Membaca
+        <ExternalLink size={14} />
+      </div>
+    </a>
+
   </div>
 
-  <p className="text-center text-xs mt-16 text-[#777]">
+  <p className="text-center text-xs mt-16 text-[#777] tracking-wide">
     Sepucuk Surat — bukan tempat tinggal, hanya ruang singgah.
   </p>
-</section>
 
+</section>
+      
 {/* ================= RUANG SUNYI ================= */}
 <section className="max-w-4xl mx-auto px-6 pb-32 space-y-6">
   <p className="text-center font-serif tracking-[0.2em] text-sm">RUANG SUNYI</p>
