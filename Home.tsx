@@ -161,6 +161,39 @@ export default function HomePage() {
     Sepucuk Surat — ditulis pelan oleh Wildan Ferdiansyah
   </p>
 </footer>
+      {/* RAK CATATAN - tambahan konten panjang */}
+<section className="max-w-3xl mx-auto px-6 py-24 space-y-10">
+
+  <h2 className="font-serif text-3xl">
+    Rak Catatan yang Tersisa
+  </h2>
+
+  <p>
+    Tidak semua tulisan lahir dari keberanian.
+    Beberapa muncul karena kita terlalu lama diam.
+  </p>
+
+  <p>
+    Ada kalimat yang ditulis sambil menunggu kopi dingin,
+    ada juga yang lahir di antara suara hujan malam.
+  </p>
+
+  <p>
+    Kita mungkin tidak sedang mencari jawaban,
+    hanya ingin duduk lebih lama di halaman yang terasa tenang.
+  </p>
+
+  <p>
+    Jika suatu hari tulisan ini berubah,
+    mungkin itu karena kita juga berubah perlahan.
+  </p>
+
+  <p>
+    Tapi selama masih ada kata yang belum selesai,
+    halaman ini akan tetap terbuka.
+  </p>
+
+</section>
     </main>
   );
 }
