@@ -26,25 +26,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= INTRO ================= */}
-      <section className="max-w-3xl mx-auto px-6 py-16 text-center">
-        <p className="font-serif text-lg">Wildan Ferdiansyah</p>
+{/* ================= INTRO ================= */}
+<section className="max-w-3xl mx-auto px-6 py-16 text-center">
+  <p className="font-serif text-lg">Wildan Ferdiansyah</p>
 
-        <p className="mt-4 text-sm leading-relaxed">
-          Bukan tempat membaca panjang. Website ini hanya ruang singgah,
-          tempat beberapa kalimat ditaruh pelan sebelum kamu melanjutkan
-          perjalanan membaca di tempat lain.
-        </p>
+  <p className="mt-4 text-sm leading-relaxed">
+    Bukan tempat membaca panjang. Website ini hanya ruang singgah,
+    tempat beberapa kalimat ditaruh pelan sebelum kamu melanjutkan
+    perjalanan membaca di tempat lain.
+  </p>
 
-        <div className="font-serif italic mt-10 space-y-4 text-sm text-[#555]">
-          <p>“Tidak semua kata ingin dibaca keras.”</p>
-          <p>“Kopi bisa dingin, tapi cerita tetap hangat.”</p>
-          <p>
-            “Ada halaman yang hanya bisa dipahami ketika kamu berhenti
-            terburu-buru.”
-          </p>
-        </div>
-      </section>
+  <div className="font-serif italic mt-10 space-y-4 text-sm text-[#555]">
+    <p>“Tidak semua kata ingin dibaca keras.”</p>
+    <p>“Kopi bisa dingin, tapi cerita tetap hangat.”</p>
+    <p>“Ada halaman yang hanya bisa dipahami ketika kamu berhenti terburu-buru.”</p>
+    <p>“Beberapa cerita tidak selesai di sini — mereka hanya dimulai.”</p>
+    <p>“Ini bukan rak buku. Ini hanya meja kecil sebelum perjalanan panjang.”</p>
+  </div>
+</section>
 
       {/* ================= TENTANG PENULIS ================= */}
       <section className="max-w-4xl mx-auto px-6 pb-20">
