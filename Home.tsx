@@ -28,12 +28,12 @@ export default function HomePage() {
 
 {/* ================= INTRO ================= */}
 <section className="max-w-3xl mx-auto px-6 py-16 text-center">
-  <p className="font-serif text-lg">Wildan Ferdiansyah</p>
+  <p className="font-serif text-lg">TENTANG BUKU</p>
 
   <p className="mt-4 text-sm leading-relaxed">
-    Bukan tempat membaca panjang. Website ini hanya ruang singgah,
-    tempat beberapa kalimat ditaruh pelan sebelum kamu melanjutkan
-    perjalanan membaca di tempat lain.
+    Ini adalah catatan-catatan dari seseorang yang masih belajar hadir—untuk dirinya sendiri, untuk orang-orang yang ia cintai, untuk hari-hari yang kadang terlalu berat untuk dilalui sendirian.
+
+Ditulis dalam keheningan malam, di sudut kedai kopi yang hampir tutup, di antara lagu-lagu yang terlalu jujur untuk didengar sendirian
   </p>
 
   <div className="font-serif italic mt-10 space-y-4 text-sm text-[#555]">
@@ -51,7 +51,7 @@ export default function HomePage() {
 
           {/* FOTO LO */}
           <img
-            src="/wildan.jpg"
+            src="/wildan.png"
             className="w-40 h-40 object-cover rounded-2xl"
           />
 
