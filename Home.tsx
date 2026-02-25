@@ -52,7 +52,7 @@ export default function HomePage() {
 
           {/* FOTO LO */}
           <img
-            src="/foto-penulis.jpg"
+            src="/wildan.jpg"
             className="w-40 h-40 object-cover rounded-2xl"
           />
 
