@@ -1,113 +1,136 @@
 import { Book, Coffee, Moon } from "lucide-react";
 
-const HERO_IMG =
-  "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1200&auto=format&fit=crop";
+const BARISTA_BG =
+  "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop";
 
 export default function HomePage() {
   return (
     <main className="bg-[#f6f1e7] min-h-screen font-sans text-[#2b2b2b]">
-      {/* ===== WRAPPER ===== */}
-      <div className="max-w-4xl mx-auto px-6 py-14">
 
-        {/* ===== HERO ===== */}
-        <section className="space-y-6 animate-fade-in-up">
-          <p className="font-serif text-lg opacity-70">Sepucuk Surat</p>
+      {/* HERO */}
+      <section className="max-w-4xl mx-auto px-6 py-10 space-y-6">
+        <p className="font-serif text-lg">Sepucuk Surat</p>
 
-          <h1 className="font-serif text-4xl leading-snug">
-            Catatan kecil dari seseorang yang masih belajar hadir.
-          </h1>
+        <h1 className="font-serif text-4xl leading-snug">
+          Catatan kecil dari seseorang yang masih belajar hadir.
+        </h1>
 
-          <img
-            src={HERO_IMG}
-            className="w-full rounded-3xl shadow-xl mt-6"
-          />
+        <img
+          src={BARISTA_BG}
+          className="w-full rounded-2xl"
+        />
 
-          <p className="font-serif mt-6 text-lg">Wildan Ferdiansyah</p>
+        <p className="font-serif text-lg mt-4">Wildan Ferdiansyah</p>
 
-          <p className="mt-2 leading-relaxed">
-            Bukan penulis profesional. Bukan motivator. Hanya seseorang yang
-            mencoba memahami hidupnya melalui kata-kata.
-          </p>
+        <p className="leading-relaxed">
+          Bukan penulis profesional. Bukan motivator.
+          Hanya seseorang yang mencoba memahami hidupnya melalui kata-kata.
+        </p>
 
-          <p className="italic mt-2 opacity-80">
-            “Kita semua pernah lelah. Tapi kita masih di sini.”
-          </p>
-        </section>
+        <p className="italic">
+          "Kita semua pernah lelah. Tapi kita masih di sini."
+        </p>
+      </section>
 
-        {/* ===== SPACER ===== */}
-        <div className="h-20"></div>
+      {/* SECTION 1 */}
+      <section className="max-w-3xl mx-auto px-6 py-14 space-y-4">
+        <Book />
+        <h2 className="font-serif text-2xl">Tentang Hujan</h2>
 
-        {/* ===== SECTION HUJAN ===== */}
-        <section className="max-w-3xl space-y-4 animate-fade-in-up-delay-1">
-          <Book className="mb-3" />
+        <p>
+          Hujan selalu datang tanpa izin. Seperti rindu yang tiba-tiba muncul
+          saat kita sedang sibuk melupakan.
+        </p>
 
-          <h2 className="font-serif text-2xl">Tentang Hujan</h2>
+        <p>
+          Kadang bukan hujannya yang membuat dingin,
+          tapi kenangan yang ikut turun bersamanya.
+          Kita belajar bahwa tidak semua hal harus dijelaskan.
+          Ada rasa yang cukup dipahami tanpa banyak kata.
+        </p>
 
-          <p className="leading-relaxed">
-            Hujan selalu datang tanpa izin. Seperti rindu yang tiba-tiba muncul
-            saat kita sedang sibuk melupakan. Kadang bukan hujannya yang membuat
-            dingin, tapi kenangan yang ikut turun bersamanya.
-          </p>
+        <p>
+          Di bawah langit abu-abu, kita menemukan jeda.
+          Sebuah ruang kecil untuk mengingat bahwa hidup tidak selalu harus cepat.
+        </p>
+      </section>
 
-          <p className="leading-relaxed">
-            Kita belajar bahwa tidak semua hal harus dijelaskan. Ada rasa yang
-            cukup dipahami tanpa banyak kata. Ada jeda yang tidak perlu diisi
-            suara.
-          </p>
-        </section>
+      {/* SECTION 2 */}
+      <section className="max-w-3xl mx-auto px-6 py-14 space-y-4">
+        <Coffee />
+        <h2 className="font-serif text-2xl">Tentang Kopi yang Dingin</h2>
 
-        {/* ===== SPACER ===== */}
-        <div className="h-24"></div>
+        <p>
+          Kopi yang dingin bukan berarti gagal.
+          Mungkin kita hanya terlalu lama menikmati percakapan yang hangat.
+        </p>
 
-        {/* ===== SECTION KOPI ===== */}
-        <section className="max-w-3xl space-y-4 animate-fade-in-up-delay-2">
-          <Coffee className="mb-3" />
+        <p>
+          Di antara jeda-jeda kecil, kita menemukan bahwa waktu tidak pernah
+          benar-benar hilang — ia hanya berubah bentuk menjadi cerita.
+        </p>
 
-          <h2 className="font-serif text-2xl">
-            Tentang Kopi yang Dingin
-          </h2>
+        <p>
+          Seperti espresso yang perlahan kehilangan uapnya,
+          ada momen yang tidak bisa diulang, hanya bisa dikenang.
+        </p>
 
-          <p className="leading-relaxed">
-            Kopi yang dingin bukan berarti gagal. Mungkin kita hanya terlalu
-            lama menikmati percakapan yang hangat.
-          </p>
+        <p>
+          Kita belajar bahwa diam pun bisa menjadi bahasa.
+          Bahwa duduk berdua tanpa banyak bicara kadang lebih jujur
+          daripada seribu kalimat.
+        </p>
+      </section>
 
-          <p className="leading-relaxed">
-            Di antara jeda-jeda kecil, kita menemukan bahwa waktu tidak pernah
-            benar-benar hilang — ia hanya berubah bentuk menjadi cerita.
-          </p>
+      {/* SECTION 3 */}
+      <section className="max-w-3xl mx-auto px-6 py-14 space-y-4">
+        <Moon />
+        <h2 className="font-serif text-2xl">Ruang Sunyi</h2>
 
-          <p className="leading-relaxed">
-            Seperti espresso yang perlahan kehilangan uapnya, ada momen yang
-            tidak perlu dikejar. Cukup dirasakan.
-          </p>
-        </section>
+        <p>
+          Kadang kita tidak butuh jawaban.
+          Cukup tempat untuk duduk dan bernapas pelan.
+        </p>
 
-        {/* ===== SPACER ===== */}
-        <div className="h-24"></div>
+        <p>
+          Sunyi bukan musuh,
+          ia hanya ruang kosong tempat pikiran kita beristirahat.
+        </p>
 
-        {/* ===== SECTION SUNYI ===== */}
-        <section className="max-w-3xl space-y-4 animate-fade-in-up-delay-3">
-          <Moon className="mb-3" />
+        <p>
+          Mungkin hidup tidak harus selalu keras.
+          Mungkin cukup berjalan pelan,
+          sambil membawa secangkir kopi dan beberapa kalimat yang belum selesai.
+        </p>
 
-          <h2 className="font-serif text-2xl">Ruang Sunyi</h2>
+        <p>
+          Dan di antara langkah-langkah kecil itu,
+          kita perlahan menemukan diri sendiri.
+        </p>
+      </section>
 
-          <p className="leading-relaxed">
-            Kadang kita tidak butuh jawaban. Cukup tempat untuk duduk dan
-            bernapas pelan. Sunyi bukan musuh, ia hanya ruang kosong tempat
-            pikiran kita beristirahat.
-          </p>
+      {/* EXTRA SECTION BIAR PANJANG */}
+      <section className="max-w-3xl mx-auto px-6 py-20 space-y-6">
+        <h2 className="font-serif text-3xl text-center">
+          Catatan yang Belum Selesai
+        </h2>
 
-          <p className="leading-relaxed">
-            Mungkin hidup tidak harus selalu keras. Mungkin cukup berjalan
-            pelan, sambil membawa secangkir kopi dan beberapa kalimat yang belum
-            selesai.
-          </p>
-        </section>
+        <p>
+          Website ini bukan akhir dari perjalanan.
+          Ia hanya halaman pertama dari buku yang masih ditulis pelan.
+        </p>
 
-        {/* ===== EXTRA SPACE BIAR PANJANG ===== */}
-        <div className="h-32"></div>
-      </div>
+        <p>
+          Setiap scroll adalah lembar baru.
+          Setiap kata adalah langkah kecil menuju versi diri yang lebih tenang.
+        </p>
+
+        <p>
+          Mungkin suatu hari nanti halaman ini akan berubah.
+          Tapi hari ini, kita cukup menikmati prosesnya.
+        </p>
+      </section>
+
     </main>
   );
 }
