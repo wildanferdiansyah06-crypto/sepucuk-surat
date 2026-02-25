@@ -1,128 +1,138 @@
 import { ExternalLink } from "lucide-react";
 
-const HERO_BG = "/barista.jpg"; // kalau belum ada, bisa ganti ke foto lain di public
-const AUTHOR_PHOTO = "/wildan.jpg";
-
-const books = [
-  {
-    title: "Seni Menyeduh Kehidupan",
-    link: "https://drive.google.com/file/d/17Zd1FKFK4X_vmKhITFU5lXihOmMEkezI/view",
-  },
-  {
-    title: "Di Balik Bar",
-    link: "https://drive.google.com/file/d/1N1zwGLqkbVQOzFV_fpRXJxQdawbgZGAl/view",
-  },
-  {
-    title: "Di Atas Cangkir yang Sama",
-    link: "https://drive.google.com/file/d/1cqRI8rfb7_0MIUXLekZJtV0xTFKXr-CD/view",
-  },
-  {
-    title: "Kami Menulis Pelan",
-    link: "https://drive.google.com/file/d/1Mc6pOQ5z2xSn8Wmhf65kdgTrv5T5EzPm/view",
-  },
-];
+const HERO_BG =
+  "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1400&auto=format&fit=crop";
 
 export default function HomePage() {
   return (
-    <main className="bg-[#f6f1e7] text-[#2b2b2b] font-sans overflow-hidden">
+    <main className="bg-[#f6f1e7] text-[#2b2b2b] font-sans">
 
-      {/* HERO CINEMATIC */}
-      <section className="relative h-[72vh] flex items-end">
+      {/* ================= HERO ================= */}
+      <section className="relative h-[80vh] w-full overflow-hidden">
         <img
           src={HERO_BG}
           className="absolute inset-0 w-full h-full object-cover"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-[#f6f1e7]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-[#f6f1e7]" />
 
-        <div className="relative max-w-5xl mx-auto px-6 pb-16 text-white">
-          <p className="font-serif text-lg opacity-80">
-            Sepucuk Surat
-          </p>
-
-          <h1 className="font-serif text-4xl md:text-5xl leading-tight mt-3">
-            Catatan sunyi dari seorang barista yang menulis pelan.
-          </h1>
-        </div>
-      </section>
-
-      {/* SECTION PENULIS */}
-      <section className="max-w-5xl mx-auto px-6 py-24">
-        <div className="grid md:grid-cols-2 gap-14 items-center">
-
-          <div className="relative rounded-2xl overflow-hidden shadow-md">
-            <img
-              src={AUTHOR_PHOTO}
-              className="w-full h-[440px] object-cover"
-            />
-
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#f6f1e7]" />
-          </div>
-
+        <div className="relative z-10 h-full flex items-end px-6 pb-16 max-w-4xl mx-auto">
           <div>
-            <p className="font-serif text-2xl">
-              Wildan Ferdiansyah
+            <p className="font-serif text-sm text-white/80">Sepucuk Surat</p>
+            <h1 className="font-serif text-3xl leading-snug text-white mt-2">
+              Catatan sunyi dari seorang barista yang menulis pelan.
+            </h1>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= INTRO ================= */}
+      <section className="max-w-3xl mx-auto px-6 py-16 text-center">
+        <p className="font-serif text-lg">Wildan Ferdiansyah</p>
+
+        <p className="mt-4 text-sm leading-relaxed">
+          Bukan tempat membaca panjang. Website ini hanya ruang singgah,
+          tempat beberapa kalimat ditaruh pelan sebelum kamu melanjutkan
+          perjalanan membaca di tempat lain.
+        </p>
+
+        <div className="font-serif italic mt-10 space-y-4 text-sm text-[#555]">
+          <p>“Tidak semua kata ingin dibaca keras.”</p>
+          <p>“Kopi bisa dingin, tapi cerita tetap hangat.”</p>
+          <p>
+            “Ada halaman yang hanya bisa dipahami ketika kamu berhenti
+            terburu-buru.”
+          </p>
+        </div>
+      </section>
+
+      {/* ================= TENTANG PENULIS ================= */}
+      <section className="max-w-4xl mx-auto px-6 pb-20">
+        <div className="bg-[#f2ede4] rounded-3xl shadow-sm p-6 md:p-10 flex flex-col md:flex-row gap-8 items-center">
+
+          {/* FOTO LO */}
+          <img
+            src="/foto-penulis.jpg"
+            className="w-40 h-40 object-cover rounded-2xl"
+          />
+
+          {/* TEXT */}
+          <div>
+            <p className="font-serif text-xl">Tentang Penulis</p>
+
+            <p className="mt-3 text-sm leading-relaxed">
+              Seorang barista yang lebih sering mendengar daripada berbicara.
+              Menulis bukan untuk menjadi suara paling keras, tapi untuk
+              memahami hal-hal kecil yang sering terlewat di antara jeda kopi.
             </p>
 
-            <p className="mt-4 leading-loose text-[#3b3733]">
-              Website ini bukan tempat membaca panjang.
-              Ia hanya ruang singgah sebelum kamu membuka halaman
-              yang sebenarnya.
-            </p>
-
-            <p className="mt-4 italic font-serif opacity-70">
-              “Tulisan tidak selalu ingin dimengerti. Kadang hanya ingin ditemani.”
+            <p className="mt-3 text-sm leading-relaxed">
+              Website ini bukan rumah utama tulisan. Ia hanya halaman pembuka —
+              tempat beberapa fragmen cerita ditinggalkan sebelum kamu membuka
+              buku yang sebenarnya.
             </p>
           </div>
         </div>
       </section>
 
-      {/* CUPLIKAN TEASER */}
-      <section className="max-w-3xl mx-auto px-6 space-y-12 text-center">
-        <p className="font-serif text-xl italic">
-          “Tidak semua kata ingin dibaca keras.”
-        </p>
-
-        <p className="font-serif text-xl italic">
-          “Kopi bisa dingin, tapi cerita tetap hangat.”
-        </p>
-
-        <p className="font-serif text-xl italic">
-          “Ada halaman yang hanya bisa dipahami ketika kamu berhenti terburu-buru.”
-        </p>
-      </section>
-
-      {/* RAK BUKU CINEMATIC */}
-      <section className="max-w-5xl mx-auto px-6 py-24">
-        <h2 className="font-serif text-3xl text-center mb-12">
+      {/* ================= RAK BUKU ================= */}
+      <section className="max-w-4xl mx-auto px-6 pb-20">
+        <h2 className="font-serif text-center text-2xl mb-10">
           Rak Buku Sunyi
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {books.map((book, i) => (
-            <a
-              key={i}
-              href={book.link}
-              target="_blank"
-              className="group rounded-2xl bg-[#f3eee5] p-10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
-            >
-              <h3 className="font-serif text-2xl">
-                {book.title}
-              </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-              <p className="mt-6 flex items-center gap-2 text-sm opacity-70 group-hover:opacity-100">
-                Baca Versi Lengkap
-                <ExternalLink size={16} />
-              </p>
-            </a>
-          ))}
+          <a
+            href="https://drive.google.com"
+            target="_blank"
+            className="bg-[#f2ede4] rounded-2xl p-6 hover:shadow-md transition"
+          >
+            <p className="font-serif">Seni Menyeduh Kehidupan</p>
+            <p className="text-sm mt-2 flex items-center gap-2">
+              Lanjutkan Membaca <ExternalLink size={14} />
+            </p>
+          </a>
+
+          <a
+            href="https://drive.google.com"
+            target="_blank"
+            className="bg-[#f2ede4] rounded-2xl p-6 hover:shadow-md transition"
+          >
+            <p className="font-serif">Di Balik Bar</p>
+            <p className="text-sm mt-2 flex items-center gap-2">
+              Lanjutkan Membaca <ExternalLink size={14} />
+            </p>
+          </a>
+
+          <a
+            href="https://drive.google.com"
+            target="_blank"
+            className="bg-[#f2ede4] rounded-2xl p-6 hover:shadow-md transition"
+          >
+            <p className="font-serif">Di Atas Cangkir yang Sama</p>
+            <p className="text-sm mt-2 flex items-center gap-2">
+              Lanjutkan Membaca <ExternalLink size={14} />
+            </p>
+          </a>
+
+          <a
+            href="https://drive.google.com"
+            target="_blank"
+            className="bg-[#f2ede4] rounded-2xl p-6 hover:shadow-md transition"
+          >
+            <p className="font-serif">Kami Menulis Pelan</p>
+            <p className="text-sm mt-2 flex items-center gap-2">
+              Lanjutkan Membaca <ExternalLink size={14} />
+            </p>
+          </a>
+
         </div>
-      </section>
 
-      {/* FOOTER SUNYI */}
-      <footer className="text-center pb-24 opacity-60 font-serif">
-        Sepucuk Surat — bukan tempat tinggal, hanya ruang singgah.
-      </footer>
+        <p className="text-center text-xs mt-14 text-[#777]">
+          Sepucuk Surat — bukan tempat tinggal, hanya ruang singgah.
+        </p>
+      </section>
 
     </main>
   );
