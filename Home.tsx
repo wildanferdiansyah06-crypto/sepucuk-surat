@@ -1,9 +1,30 @@
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Share2, MessageCircle, Facebook, Instagram, Twitter } from "lucide-react";
 
 const HERO_BG =
   "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1400&auto=format&fit=crop";
 
 export default function HomePage() {
+  // Fungsi untuk share ke media sosial
+  const handleShare = (platform) => {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent("Sepucuk Surat — Catatan sunyi dari seorang barista");
+    
+    const shareUrls = {
+      whatsapp: `https://wa.me/?text=${text}%20${url}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+    };
+
+    if (platform === 'instagram') {
+      // Instagram tidak mendukung share URL langsung, copy ke clipboard
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link telah disalin! Silakan paste di Instagram Anda.');
+      return;
+    }
+
+    window.open(shareUrls[platform], '_blank', 'width=600,height=400');
+  };
+
   return (
     <main className="bg-[#f6f1e7] text-[#2b2b2b] font-sans">
 
@@ -14,7 +35,7 @@ export default function HomePage() {
           className="absolute inset-0 w-full h-full object-cover"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-[#f6f1e7]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-[#f6f1e7]" />
 
         <div className="relative z-10 h-full flex items-end px-6 pb-16 max-w-4xl mx-auto">
           <div>
@@ -26,193 +47,192 @@ export default function HomePage() {
         </div>
       </section>
 
-{/* ================= TENTANG BUKU ================= */}
-<section className="max-w-3xl mx-auto px-6 py-20 text-center">
-  <p className="font-serif tracking-[0.2em] text-sm">TENTANG BUKU</p>
+      {/* ================= INTRO ================= */}
+      <section className="max-w-3xl mx-auto px-6 py-16 text-center">
+        <p className="font-serif text-lg">TENTANG BUKU</p>
 
-  <p className="mt-6 text-sm leading-relaxed">
-    Ini adalah catatan-catatan dari seseorang yang masih belajar hadir—untuk dirinya sendiri,
-    untuk orang-orang yang ia cintai, untuk hari-hari yang kadang terlalu berat untuk dilalui sendirian.
-    Ditulis dalam keheningan malam, di sudut kedai kopi yang hampir tutup,
-    di antara lagu-lagu yang terlalu jujur untuk didengar sendirian.
-  </p>
+        <p className="mt-4 text-sm leading-relaxed">
+          Ini adalah catatan-catatan dari seseorang yang masih belajar hadir—untuk dirinya sendiri, untuk orang-orang yang ia cintai, untuk hari-hari yang kadang terlalu berat untuk dilalui sendirian.
 
-  <div className="font-serif italic mt-10 space-y-4 text-sm text-[#555]">
-    <p>“Tidak semua kata ingin dibaca keras.”</p>
-    <p>“Ada halaman yang hanya bisa dipahami ketika kamu berhenti terburu-buru.”</p>
-    <p>“Beberapa cerita tidak selesai di sini — mereka hanya dimulai.”</p>
-    <p>“Ini bukan rak buku. Ini hanya meja kecil sebelum perjalanan panjang.”</p>
-  </div>
-</section>
+          Ditulis dalam keheningan malam, di sudut kedai kopi yang hampir tutup, di antara lagu-lagu yang terlalu jujur untuk didengar sendirian
+        </p>
 
-{/* ================= BUKU INI UNTUK ================= */}
-<section className="max-w-4xl mx-auto px-6 pb-24 space-y-6">
-  <p className="text-center font-serif tracking-[0.2em] text-sm">BUKU INI UNTUK</p>
+        <div className="font-serif italic mt-10 space-y-4 text-sm text-[#555]">
+          <p>“Tidak semua kata ingin dibaca keras.”</p>
+          <p>“Kopi bisa dingin, tapi cerita tetap hangat.”</p>
+          <p>“Ada halaman yang hanya bisa dipahami ketika kamu berhenti terburu-buru.”</p>
+          <p>“Beberapa cerita tidak selesai di sini — mereka hanya dimulai.”</p>
+          <p>“Ini bukan rak buku. Ini hanya meja kecil sebelum perjalanan panjang.”</p>
+        </div>
+      </section>
 
-  {[
-    "Untuk kamu yang membaca dengan pelan, bukan karena lambat—tapi karena ingin merasakan.",
-    "Untuk kamu yang bekerja seharian dan baru bisa merenung saat dunia sudah tidur.",
-    "Untuk kamu yang duduk sendiri dengan kopi dan kesunyian, dan merasa itu cukup.",
-    "Untuk kamu yang sering merasa tak terlihat, tapi tetap hadir — setiap hari.",
-  ].map((text, i) => (
-    <div key={i} className="bg-[#f2ede4] rounded-2xl px-6 py-5 text-sm leading-relaxed shadow-sm">
-      {text}
-    </div>
-  ))}
-</section>
+      {/* ================= TENTANG PENULIS ================= */}
+      <section className="max-w-4xl mx-auto px-6 pb-20">
+        <div className="bg-[#f2ede4] rounded-3xl shadow-sm p-6 md:p-10 flex flex-col md:flex-row gap-8 items-center">
 
-{/* ================= TENTANG PENULIS ================= */}
-<section className="max-w-4xl mx-auto px-6 pb-24">
+          {/* FOTO LO */}
+          <img
+            src="/wildan.png"
+            className="w-40 h-40 object-cover rounded-2xl"
+          />
 
-  <div className="bg-[#f2ede4] rounded-3xl border border-[#e7e1d6]
-                  shadow-sm p-7 md:p-10 flex flex-col md:flex-row
-                  gap-10 items-center transition-all duration-500">
+          {/* TEXT */}
+          <div>
+            <p className="font-serif text-xl">Tentang Penulis</p>
 
-    {/* FOTO */}
-    <img
-      src="/wildan.png"
-      className="w-32 h-32 md:w-40 md:h-40 object-cover
-                 rounded-2xl shadow-sm"
-    />
+            <p className="mt-3 text-sm leading-relaxed">
+              Seorang barista yang lebih sering mendengar daripada berbicara.
+              Menulis bukan untuk menjadi suara paling keras, tapi untuk
+              memahami hal-hal kecil yang sering terlewat di antara jeda kopi.
+            </p>
 
-    {/* TEXT */}
-    <div className="text-center md:text-left">
-      <p className="font-serif text-xl tracking-wide">
-        Tentang Penulis
-      </p>
+            <p className="mt-3 text-sm leading-relaxed">
+              Website ini bukan rumah utama tulisan. Ia hanya halaman pembuka —
+              tempat beberapa fragmen cerita ditinggalkan sebelum kamu membuka
+              buku yang sebenarnya.
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <p className="mt-4 text-sm leading-relaxed text-[#444]">
-        Seorang barista yang lebih sering mendengar daripada berbicara.
-        Menulis bukan untuk menjadi suara paling keras, tapi untuk
-        memahami hal-hal kecil yang sering terlewat di antara jeda kopi.
-      </p>
+      {/* ================= RAK BUKU ================= */}
+      <section className="max-w-4xl mx-auto px-6 pb-20">
+        <h2 className="font-serif text-center text-2xl mb-10">
+          Rak Buku Sunyi
+        </h2>
 
-      <p className="mt-4 text-sm leading-relaxed text-[#444]">
-        Website ini bukan rumah utama tulisan. Ia hanya halaman pembuka —
-        tempat beberapa fragmen cerita ditinggalkan sebelum kamu membuka
-        buku yang sebenarnya.
-      </p>
-    </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-  </div>
+          <a
+            href="https://drive.google.com"
+            target="_blank"
+            className="bg-[#f2ede4] rounded-2xl p-6 hover:shadow-md transition"
+          >
+            <p className="font-serif">Seni Menyeduh Kehidupan</p>
+            <p className="text-sm mt-2 flex items-center gap-2">
+              Lanjutkan Membaca <ExternalLink size={14} />
+            </p>
+          </a>
 
-</section>
-      
-{/* ================= CUPLIKAN ================= */}
-<section className="max-w-4xl mx-auto px-6 pb-24 space-y-12">
-  <p className="text-center font-serif tracking-[0.2em] text-sm">CUPLIKAN</p>
+          <a
+            href="https://drive.google.com"
+            target="_blank"
+            className="bg-[#f2ede4] rounded-2xl p-6 hover:shadow-md transition"
+          >
+            <p className="font-serif">Di Balik Bar</p>
+            <p className="text-sm mt-2 flex items-center gap-2">
+              Lanjutkan Membaca <ExternalLink size={14} />
+            </p>
+          </a>
 
-  {[
-    "Ada hari-hari di mana aku hanya ingin menjadi secangkir kopi di tangan seseorang—hangat, hadir, dan cukup untuk menemani diam.",
-    "Kita tidak butuh selalu kuat. Kadang, kita hanya butuh tahu bahwa ada yang mengerti—bahwa lelah kita bukan aib.",
-    "Menulis adalah caraku untuk tetap di sini. Bukan untuk menjelaskan, tapi untuk mengingatkan diri sendiri bahwa aku masih merasakan."
-  ].map((q, i) => (
-    <div key={i} className="bg-[#f2ede4] rounded-2xl p-8 text-center font-serif italic shadow-sm">
-      "{q}"
-    </div>
-  ))}
-</section>
+          <a
+            href="https://drive.google.com"
+            target="_blank"
+            className="bg-[#f2ede4] rounded-2xl p-6 hover:shadow-md transition"
+          >
+            <p className="font-serif">Di Atas Cangkir yang Sama</p>
+            <p className="text-sm mt-2 flex items-center gap-2">
+              Lanjutkan Membaca <ExternalLink size={14} />
+            </p>
+          </a>
 
-{/* ================= RAK BUKU ================= */}
-<section className="max-w-5xl mx-auto px-6 pb-28">
+          <a
+            href="https://drive.google.com"
+            target="_blank"
+            className="bg-[#f2ede4] rounded-2xl p-6 hover:shadow-md transition"
+          >
+            <p className="font-serif">Kami Menulis Pelan</p>
+            <p className="text-sm mt-2 flex items-center gap-2">
+              Lanjutkan Membaca <ExternalLink size={14} />
+            </p>
+          </a>
 
-  <h2 className="font-serif text-center text-2xl tracking-wide mb-14">
-    Rak Buku Sunyi
-  </h2>
+        </div>
+      </section>
 
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* ================= SHARE SECTION ================= */}
+      <section className="max-w-4xl mx-auto px-6 pb-16">
+        <div className="bg-[#2b2b2b] rounded-3xl p-8 text-center text-[#f6f1e7]">
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <Share2 size={20} />
+            <p className="font-serif text-lg">Bagikan Cerita Ini</p>
+          </div>
+          
+          <div className="flex justify-center gap-4 flex-wrap">
+            {/* WhatsApp */}
+            <button
+              onClick={() => handleShare('whatsapp')}
+              className="flex items-center gap-2 bg-[#25D366] text-white px-5 py-3 rounded-full hover:scale-105 transition transform"
+            >
+              <MessageCircle size={18} />
+              <span className="text-sm font-medium">WhatsApp</span>
+            </button>
 
-    {/* ================= CARD 1 ================= */}
-    <a
-      href="https://drive.google.com/file/d/17Zd1FKFK4X_vmKhITFU5lXihOmMEkezI/preview"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group bg-[#f2ede4] rounded-3xl p-7 border border-[#e7e1d6]
-                 hover:shadow-lg hover:-translate-y-[3px]
-                 transition-all duration-500"
-    >
-      <p className="font-serif text-lg">Seni Menyeduh Kehidupan</p>
+            {/* Facebook */}
+            <button
+              onClick={() => handleShare('facebook')}
+              className="flex items-center gap-2 bg-[#1877F2] text-white px-5 py-3 rounded-full hover:scale-105 transition transform"
+            >
+              <Facebook size={18} />
+              <span className="text-sm font-medium">Facebook</span>
+            </button>
 
-      <div className="flex items-center gap-2 mt-3 text-sm text-[#666] group-hover:text-black transition">
-        Lanjutkan Membaca
-        <ExternalLink size={14} />
-      </div>
-    </a>
+            {/* Instagram */}
+            <button
+              onClick={() => handleShare('instagram')}
+              className="flex items-center gap-2 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] text-white px-5 py-3 rounded-full hover:scale-105 transition transform"
+            >
+              <Instagram size={18} />
+              <span className="text-sm font-medium">Instagram</span>
+            </button>
 
-    {/* ================= CARD 2 ================= */}
-    <a
-      href="https://drive.google.com/file/d/1N1zwGLqkbVQOzFV_fpRXJxQdawbgZGAl/preview"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group bg-[#f2ede4] rounded-3xl p-7 border border-[#e7e1d6]
-                 hover:shadow-lg hover:-translate-y-[3px]
-                 transition-all duration-500"
-    >
-      <p className="font-serif text-lg">Di Balik Bar</p>
+            {/* X (Twitter) */}
+            <button
+              onClick={() => handleShare('twitter')}
+              className="flex items-center gap-2 bg-[#000000] text-white px-5 py-3 rounded-full hover:scale-105 transition transform border border-gray-700"
+            >
+              <Twitter size={18} />
+              <span className="text-sm font-medium">X (Twitter)</span>
+            </button>
+          </div>
+        </div>
+      </section>
 
-      <div className="flex items-center gap-2 mt-3 text-sm text-[#666] group-hover:text-black transition">
-        Lanjutkan Membaca
-        <ExternalLink size={14} />
-      </div>
-    </a>
+      {/* ================= FOOTER / KONTAK ================= */}
+      <footer className="bg-[#2b2b2b] text-[#f6f1e7] py-12">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          
+          {/* Brand */}
+          <p className="font-serif text-2xl mb-2">Sepucuk Surat</p>
+          <p className="text-sm text-[#999] mb-8">bukan tempat tinggal, hanya ruang singgah.</p>
 
-    {/* ================= CARD 3 ================= */}
-    <a
-      href="https://drive.google.com/file/d/1cqRI8rfb7_0MIUXLekZJtV0xTFKXr-CD/preview"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group bg-[#f2ede4] rounded-3xl p-7 border border-[#e7e1d6]
-                 hover:shadow-lg hover:-translate-y-[3px]
-                 transition-all duration-500"
-    >
-      <p className="font-serif text-lg">Di Atas Cangkir yang Sama</p>
+          {/* Kontak WhatsApp */}
+          <div className="bg-[#f6f1e7]/10 rounded-2xl p-6 max-w-md mx-auto mb-8">
+            <p className="text-sm text-[#999] mb-2">Hubungi Penulis</p>
+            <a 
+              href="https://wa.me/6289636357091" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 text-[#25D366] hover:text-[#128C7E] transition"
+            >
+              <div className="bg-[#25D366] text-white p-2 rounded-full">
+                <MessageCircle size={24} />
+              </div>
+              <div className="text-left">
+                <p className="text-xs text-[#999]">WhatsApp</p>
+                <p className="font-medium">0896-3635-7091</p>
+              </div>
+            </a>
+          </div>
 
-      <div className="flex items-center gap-2 mt-3 text-sm text-[#666] group-hover:text-black transition">
-        Lanjutkan Membaca
-        <ExternalLink size={14} />
-      </div>
-    </a>
-
-    {/* ================= CARD 4 ================= */}
-    <a
-      href="https://drive.google.com/file/d/1Mc6pOQ5z2xSn8Wmhf65kdgTrv5T5EzPm/preview"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group bg-[#f2ede4] rounded-3xl p-7 border border-[#e7e1d6]
-                 hover:shadow-lg hover:-translate-y-[3px]
-                 transition-all duration-500"
-    >
-      <p className="font-serif text-lg">Kami Menulis Pelan</p>
-
-      <div className="flex items-center gap-2 mt-3 text-sm text-[#666] group-hover:text-black transition">
-        Lanjutkan Membaca
-        <ExternalLink size={14} />
-      </div>
-    </a>
-
-  </div>
-
-  <p className="text-center text-xs mt-16 text-[#777] tracking-wide">
-    Sepucuk Surat — bukan tempat tinggal, hanya ruang singgah.
-  </p>
-
-</section>
-      
-{/* ================= RUANG SUNYI ================= */}
-<section className="max-w-4xl mx-auto px-6 pb-32 space-y-6">
-  <p className="text-center font-serif tracking-[0.2em] text-sm">RUANG SUNYI</p>
-
-  {[
-    ["Tentang Hujan","Hujan selalu datang tanpa izin. Seperti rindu yang tiba-tiba muncul saat kita sedang sibuk melupakan."],
-    ["Tentang Menunggu","Ada keindahan dalam menunggu—bukan pada akhirnya, tapi pada kesabaran yang kita pelajari."],
-    ["Tentang Kopi yang Dingin","Kopi yang dingin bukan berarti gagal. Mungkin kita hanya terlalu lama menikmati percakapan yang hangat."]
-  ].map((item,i)=>(
-    <div key={i} className="bg-[#f2ede4] rounded-2xl p-6 shadow-sm">
-      <p className="font-serif">{item[0]}</p>
-      <p className="text-sm mt-2">{item[1]}</p>
-    </div>
-  ))}
-</section>
+          {/* Divider */}
+          <div className="border-t border-[#f6f1e7]/20 pt-8">
+            <p className="text-xs text-[#666]">
+              © {new Date().getFullYear()} Sepucuk Surat. Ditulis dengan kopi dan sunyi.
+            </p>
+          </div>
+        </div>
+      </footer>
 
     </main>
   );
