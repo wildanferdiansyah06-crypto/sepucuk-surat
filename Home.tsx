@@ -17,7 +17,13 @@ import {
   Feather,
   Download,
   ChevronDown,
-  Library
+  Library,
+  Sun,
+  Volume2,
+  Bookmark,
+  Share2,
+  Eye,
+  X
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
@@ -25,13 +31,16 @@ import { useState, useEffect, useRef } from "react";
 const HERO_BG =
   "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1400&auto=format&fit=crop";
 
-// Ilustrasi kopi untuk background cards
-const COFFE_ILLUSTRATIONS = {
-  v60: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?q=80&w=400&auto=format&fit=crop",
-  cup: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=400&auto=format&fit=crop",
-  night: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop",
-  heart: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=400&auto=format&fit=crop"
+// Ilustrasi untuk setiap buku - tema mocha aesthetic
+const BUKU_ILUSTRASI = {
+  seniMenyeduh: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=600&auto=format&fit=crop", // V60/coffee brewing
+  diBalikBar: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=600&auto=format&fit=crop", // Coffee bar/counter
+  diAtasCangkir: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=600&auto=format&fit=crop", // Coffee cup from above
+  menulisPelan: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=600&auto=format&fit=crop" // Writing/journal
 };
+
+// Background texture mocha
+const MOCHA_BG = "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2000&auto=format&fit=crop";
 
 // Data Buku
 const BUKU_LIST = [
@@ -39,37 +48,41 @@ const BUKU_LIST = [
     id: 1,
     judul: "Seni Menyeduh Kehidupan",
     link: "https://drive.google.com/file/d/17Zd1FKFK4X_vmKhITFU5lXihOmMEkezI/view?usp=drivesdk",
-    deskripsi: "Catatan tentang bagaimana kita menyikapi hidup dengan cara yang lebih gentle dan penuh makna.",
-    halaman: "45 halaman",
-    warna: "from-amber-700 to-amber-900",
-    icon: <Coffee size={24} />
+    deskripsi: "Catatan tentang bagaimana kita menyikapi hidup dengan cara yang lebih gentle dan penuh makna, seperti menyeduh kopi yang sempurna.",
+    halaman: "45",
+    readTime: "25 menit",
+    ilustrasi: BUKU_ILUSTRASI.seniMenyeduh,
+    tema: "Kehidupan & Kesadaran"
   },
   {
     id: 2,
     judul: "Di Balik Bar",
     link: "https://drive.google.com/file/d/1N1zwGLqkbVQOzFV_fpRXJxQdawbgZGAl/view?usp=drivesdk",
-    deskripsi: "Cerita-cerita dari balik meja bar, tempat di mana setiap cangkir memiliki kisahnya sendiri.",
-    halaman: "38 halaman",
-    warna: "from-stone-700 to-stone-900",
-    icon: <BookOpen size={24} />
+    deskripsi: "Cerita-cerita dari balik meja bar, tempat di mana setiap cangkir memiliki kisahnya sendiri dan setiap penumpang membawa dunia mereka.",
+    halaman: "38",
+    readTime: "20 menit",
+    ilustrasi: BUKU_ILUSTRASI.diBalikBar,
+    tema: "Cerita & Interaksi"
   },
   {
     id: 3,
     judul: "Di Atas Cangkir Yang Sama",
     link: "https://drive.google.com/file/d/1cqRI8rfb7_0MIUXLekZJtV0xTFKXr-CD/view?usp=drivesdk",
-    deskripsi: "Renungan tentang konsistensi, kehadiran, dan menemukan keindahan dalam pengulangan.",
-    halaman: "52 halaman",
-    warna: "from-orange-700 to-orange-900",
-    icon: <Moon size={24} />
+    deskripsi: "Renungan tentang konsistensi, kehadiran, dan menemukan keindahan dalam pengulangan yang tampak monoton.",
+    halaman: "52",
+    readTime: "30 menit",
+    ilustrasi: BUKU_ILUSTRASI.diAtasCangkir,
+    tema: "Konsistensi & Kehadiran"
   },
   {
     id: 4,
     judul: "Kami Menulis Pelan",
     link: "https://drive.google.com/file/d/1Mc6pOQ5z2xSn8Wmhf65kdgTrv5T5EzPm/view?usp=drivesdk",
-    deskripsi: "Kumpulan tulisan yang lahir dari kesabaran, untuk mereka yang percaya pada proses.",
-    halaman: "41 halaman",
-    warna: "from-emerald-700 to-emerald-900",
-    icon: <Feather size={24} />
+    deskripsi: "Kumpulan tulisan yang lahir dari kesabaran, untuk mereka yang percaya pada proses dan kekuatan kata-kata yang diucapkan dengan lirih.",
+    halaman: "41",
+    readTime: "22 menit",
+    ilustrasi: BUKU_ILUSTRASI.menulisPelan,
+    tema: "Proses & Kesabaran"
   }
 ];
 
@@ -81,6 +94,9 @@ export default function HomePage() {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [activeSection, setActiveSection] = useState("");
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [readingProgress, setReadingProgress] = useState({});
   
   // State untuk form catatan
   const [nama, setNama] = useState("");
@@ -119,6 +135,14 @@ export default function HomePage() {
       nama: "Reza"
     }
   ]);
+
+  // Load reading progress from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('readingProgress');
+    if (saved) {
+      setReadingProgress(JSON.parse(saved));
+    }
+  }, []);
 
   // Scroll spy untuk navigasi aktif
   useEffect(() => {
@@ -171,12 +195,32 @@ export default function HomePage() {
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const offsetTop = element.offsetTop - 80; // Offset untuk navbar
+      const offsetTop = element.offsetTop - 80;
       window.scrollTo({
         top: offsetTop,
         behavior: 'smooth'
       });
     }
+  };
+
+  // Handle book selection
+  const openBookModal = (book) => {
+    setSelectedBook(book);
+    setShowModal(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedBook(null);
+    document.body.style.overflow = 'unset';
+  };
+
+  // Track download
+  const handleDownload = (bookId) => {
+    const newProgress = { ...readingProgress, [bookId]: { downloaded: true, date: new Date().toISOString() } };
+    setReadingProgress(newProgress);
+    localStorage.setItem('readingProgress', JSON.stringify(newProgress));
   };
 
   // Handle mouse events untuk drag scroll
@@ -247,25 +291,25 @@ export default function HomePage() {
     {
       icon: <BookOpen size={24} />,
       text: "Untuk kamu yang membaca dengan pelan, bukan karena lambat—tapi karena ingin merasakan.",
-      bg: COFFE_ILLUSTRATIONS.v60,
+      bg: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?q=80&w=400&auto=format&fit=crop",
       title: "Membaca Perlahan"
     },
     {
       icon: <Coffee size={24} />,
       text: "Untuk kamu yang bekerja seharian dan baru bisa merenung saat dunia sudah tidur.",
-      bg: COFFE_ILLUSTRATIONS.cup,
+      bg: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=400&auto=format&fit=crop",
       title: "Malam yang Panjang"
     },
     {
       icon: <Moon size={24} />,
       text: "Untuk kamu yang duduk sendiri dengan kopi dan kesunyian, dan merasa itu cukup.",
-      bg: COFFE_ILLUSTRATIONS.night,
+      bg: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop",
       title: "Kesendirian yang Nyaman"
     },
     {
       icon: <Heart size={24} />,
       text: "Untuk kamu yang sering merasa tak terlihat, tapi tetap hadir—setiap hari.",
-      bg: COFFE_ILLUSTRATIONS.heart,
+      bg: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=400&auto=format&fit=crop",
       title: "Kehadiran yang Diam"
     }
   ];
@@ -273,19 +317,21 @@ export default function HomePage() {
   const cuplikanItems = [
     {
       quote: "Ada hari-hari di mana aku hanya ingin menjadi secangkir kopi di tangan seseorang—hangat, hadir, dan cukup untuk menemani diam.",
-      page: "halaman 23"
+      page: "halaman 23",
+      book: "Seni Menyeduh Kehidupan"
     },
     {
       quote: "Kita tidak butuh selalu kuat. Kadang, kita hanya butuh tahu bahwa ada yang mengerti—bahwa lelah kita bukan aib, bahwa diam kita bukan kelemahan.",
-      page: "halaman 47"
+      page: "halaman 47",
+      book: "Di Balik Bar"
     },
     {
       quote: "Menulis adalah caraku untuk tetap di sini. Bukan untuk menjelaskan, tapi untuk mengingatkan diri sendiri—bahwa aku masih merasakan.",
-      page: "halaman 78"
+      page: "halaman 78",
+      book: "Kami Menulis Pelan"
     }
   ];
 
-  // Ruang Sunyi items dengan icon yang sesuai
   const ruangSunyiItems = [
     {
       icon: <Sparkles size={20} />,
@@ -309,11 +355,14 @@ export default function HomePage() {
     }
   ];
 
-  // Duplicate array untuk infinite scroll effect
   const duplicatedComments = [...kataPembaca, ...kataPembaca];
 
   return (
     <main className="bg-[#faf8f5] text-[#2b2b2b] font-sans selection:bg-[#e8e0d5] overflow-x-hidden">
+
+      {/* Reading Progress Indicator */}
+      <div className="fixed top-0 left-0 h-1 bg-[#8b7355] z-[60] transition-all duration-300" 
+           style={{ width: `${(Object.keys(readingProgress).length / BUKU_LIST.length) * 100}%` }}></div>
 
       {/* ================= NAVBAR ================= */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf8f5]/90 backdrop-blur-md border-b border-[#e8e0d5]/30 transition-all duration-300">
@@ -376,7 +425,6 @@ export default function HomePage() {
 
       {/* ================= HERO ================= */}
       <section className="relative min-h-screen w-full overflow-hidden pt-20 flex items-center">
-        {/* Background dengan overlay gradient yang lebih kuat */}
         <div className="absolute inset-0 bg-[#2b2b2b]/40 z-10" />
         <img
           src={HERO_BG}
@@ -409,7 +457,7 @@ export default function HomePage() {
               onClick={() => scrollToSection('rak-buku')}
               className="bg-[#faf8f5] text-[#2b2b2b] px-8 py-4 rounded-full text-sm font-medium hover:bg-white transition-all hover:scale-105 shadow-xl flex items-center justify-center gap-2 group"
             >
-              Lihat Koleksi Buku
+              Jelajahi Koleksi
               <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform" />
             </button>
             <button 
@@ -421,7 +469,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce">
           <div className="w-6 h-10 border-2 border-[#faf8f5]/50 rounded-full flex justify-center pt-2">
             <div className="w-1 h-2 bg-[#faf8f5] rounded-full animate-scroll-down"></div>
@@ -431,7 +478,6 @@ export default function HomePage() {
 
       {/* ================= TENTANG BUKU ================= */}
       <section id="tentang" className="max-w-3xl mx-auto px-6 py-24 relative">
-        {/* Decorative elements */}
         <div className="absolute top-10 left-0 w-24 h-24 bg-[#e8e0d5]/30 rounded-full blur-3xl"></div>
         <div className="absolute bottom-10 right-0 w-32 h-32 bg-[#d4c8b8]/20 rounded-full blur-3xl"></div>
         
@@ -468,7 +514,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= BUKU INI UNTUK (Dengan Background Ilustrasi Kopi) ================= */}
+      {/* ================= BUKU INI UNTUK ================= */}
       <section id="buku-ini-untuk" className="py-20 bg-[#f5f0e8]/30">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
@@ -482,7 +528,6 @@ export default function HomePage() {
                 key={index}
                 className="group relative overflow-hidden rounded-3xl min-h-[280px] cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500"
               >
-                {/* Background Image dengan overlay */}
                 <div className="absolute inset-0">
                   <img 
                     src={item.bg} 
@@ -492,7 +537,6 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-[#2b2b2b]/90 via-[#2b2b2b]/50 to-[#2b2b2b]/20 group-hover:from-[#2b2b2b]/95 transition-all duration-500"></div>
                 </div>
                 
-                {/* Content */}
                 <div className="relative z-10 h-full flex flex-col justify-end p-8 text-[#faf8f5]">
                   <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                     <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4 group-hover:bg-[#8b7355] transition-colors duration-300">
@@ -505,7 +549,6 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Hover border effect */}
                 <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#8b7355]/50 rounded-3xl transition-all duration-500"></div>
               </div>
             ))}
@@ -513,89 +556,214 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= RAK BUKU / KOLEKSI ================= */}
-      <section id="rak-buku" className="py-24 bg-[#2b2b2b] relative overflow-hidden" ref={rakBukuRef}>
-        {/* Background decorative */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')]"></div>
+      {/* ================= RAK BUKU / KOLEKSI (NEW AESTHETIC DESIGN) ================= */}
+      <section id="rak-buku" className="py-24 relative overflow-hidden" ref={rakBukuRef}>
+        {/* Background mocha texture */}
+        <div className="absolute inset-0">
+          <img 
+            src={MOCHA_BG} 
+            alt="Mocha background" 
+            className="w-full h-full object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#faf8f5] via-transparent to-[#faf8f5]"></div>
         </div>
-        <div className="absolute top-20 left-10 w-64 h-64 bg-[#8b7355]/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#8b7355]/10 rounded-full blur-3xl"></div>
 
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#8b7355]/20 border border-[#8b7355]/30 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#8b7355]/10 border border-[#8b7355]/20 mb-6">
               <Library size={16} className="text-[#8b7355]" />
               <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase">Perpustakaan Mini</p>
             </div>
-            <h3 className="font-serif text-4xl md:text-5xl text-[#faf8f5] mb-4">Rak Buku Digital</h3>
-            <p className="text-[#faf8f5]/70 max-w-2xl mx-auto text-lg">
-              Kumpulan tulisan yang bisa kamu baca kapan saja, di mana saja. 
-              Gratis untuk dibaca, dibagikan, dan dijadikan teman.
+            <h3 className="font-serif text-4xl md:text-5xl text-[#2b2b2b] mb-4">Rak Buku Digital</h3>
+            <p className="text-[#5a5a5a] max-w-2xl mx-auto text-lg leading-relaxed">
+              Empat kumpulan tulisan yang bisa kamu baca kapan saja, di mana saja. 
+              <span className="italic text-[#8b7355]"> Gratis untuk dibaca, dibagikan, dan dijadikan teman.</span>
             </p>
           </div>
 
-          {/* Grid Buku */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {/* Grid Buku - New Design */}
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
             {BUKU_LIST.map((buku, index) => (
               <div 
                 key={buku.id}
-                className="group relative bg-[#1a1a1a] rounded-2xl overflow-hidden border border-[#8b7355]/20 hover:border-[#8b7355]/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#8b7355]/10"
+                className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#e8e0d5]"
               >
-                {/* Book Cover Simulation */}
-                <div className={`h-48 bg-gradient-to-br ${buku.warna} relative overflow-hidden`}>
-                  <div className="absolute inset-0 bg-black/20"></div>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-[#faf8f5] p-6 text-center">
-                    <div className="mb-3 opacity-80">{buku.icon}</div>
-                    <h4 className="font-serif text-lg leading-tight mb-2">{buku.judul}</h4>
-                    <div className="w-12 h-0.5 bg-white/30"></div>
+                {/* Book Cover Area with Image */}
+                <div className="relative h-64 overflow-hidden">
+                  <img 
+                    src={buku.ilustrasi} 
+                    alt={buku.judul}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                  
+                  {/* Badge Tema */}
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-[#8b7355]">
+                      {buku.tema}
+                    </span>
                   </div>
-                  {/* Decorative spine effect */}
-                  <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-r from-black/30 to-transparent"></div>
+
+                  {/* Downloaded Badge */}
+                  {readingProgress[buku.id]?.downloaded && (
+                    <div className="absolute top-4 right-4">
+                      <span className="px-3 py-1 bg-[#8b7355] rounded-full text-xs font-medium text-white flex items-center gap-1">
+                        <Bookmark size={12} fill="currentColor" /> Tersimpan
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Title Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                    <h4 className="font-serif text-2xl mb-1 drop-shadow-lg">{buku.judul}</h4>
+                    <div className="flex items-center gap-3 text-sm text-white/80">
+                      <span className="flex items-center gap-1">
+                        <BookOpen size={14} /> {buku.halaman} halaman
+                      </span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <Clock size={14} /> {buku.readTime}
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Book Info */}
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-3 text-xs text-[#8b7355]">
-                    <BookOpen size={12} />
-                    <span>{buku.halaman}</span>
-                    <span className="mx-2">•</span>
-                    <span>PDF</span>
-                  </div>
-                  
-                  <p className="text-[#faf8f5]/70 text-sm leading-relaxed mb-6 line-clamp-3">
+                <div className="p-6 bg-[#faf8f5]">
+                  <p className="text-[#5a5a5a] leading-relaxed mb-6 text-sm line-clamp-3">
                     {buku.deskripsi}
                   </p>
 
-                  <a 
-                    href={buku.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full bg-[#8b7355] hover:bg-[#9c8565] text-[#faf8f5] py-3 rounded-xl transition-all duration-300 group-hover:shadow-lg"
-                  >
-                    <Download size={16} />
-                    <span className="font-medium">Unduh Buku</span>
-                  </a>
+                  <div className="flex gap-3">
+                    <button 
+                      onClick={() => openBookModal(buku)}
+                      className="flex-1 bg-white border border-[#e8e0d5] text-[#2b2b2b] py-3 rounded-xl font-medium hover:bg-[#f5f0e8] transition-all duration-300 flex items-center justify-center gap-2"
+                    >
+                      <Eye size={16} />
+                      Detail
+                    </button>
+                    <a 
+                      href={buku.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => handleDownload(buku.id)}
+                      className="flex-[2] bg-[#8b7355] hover:bg-[#9c8565] text-white py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 group"
+                    >
+                      <Download size={16} className="group-hover:animate-bounce" />
+                      Baca & Unduh
+                    </a>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Info tambahan */}
-          <div className="bg-[#1a1a1a]/50 border border-[#8b7355]/20 rounded-2xl p-8 text-center">
-            <p className="text-[#faf8f5]/60 text-sm mb-4">
-              Semua buku tersedia dalam format PDF dan bisa diunduh secara gratis.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 text-xs text-[#8b7355]">
-              <span className="flex items-center gap-1"><BookOpen size={12} /> 4 Buku</span>
-              <span className="flex items-center gap-1"><Download size={12} /> Gratis</span>
-              <span className="flex items-center gap-1"><Heart size={12} /> Dari hati ke hati</span>
+          {/* Reading Stats */}
+          <div className="bg-white/80 backdrop-blur-sm border border-[#e8e0d5] rounded-2xl p-8 text-center">
+            <div className="flex flex-wrap justify-center gap-8 text-sm">
+              <div className="flex items-center gap-2 text-[#8b7355]">
+                <Library size={18} />
+                <span className="font-medium">4 Buku</span>
+                <span className="text-[#5a5a5a]">tersedia</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#8b7355]">
+                <Download size={18} />
+                <span className="font-medium">Gratis</span>
+                <span className="text-[#5a5a5a]">unduhan</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#8b7355]">
+                <Heart size={18} />
+                <span className="font-medium">Dari hati</span>
+                <span className="text-[#5a5a5a]">ke hati</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#8b7355]">
+                <BookOpen size={18} />
+                <span className="font-medium">176+</span>
+                <span className="text-[#5a5a5a]">halaman total</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ================= RUANG SUNYI (Dengan Icon untuk semua card) ================= */}
+      {/* Book Detail Modal */}
+      {showModal && selectedBook && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-scale-up">
+            <div className="relative h-72">
+              <img 
+                src={selectedBook.ilustrasi} 
+                alt={selectedBook.judul}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+              <button 
+                onClick={closeModal}
+                className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+              >
+                <X size={20} />
+              </button>
+              <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+                <span className="px-3 py-1 bg-[#8b7355] rounded-full text-xs font-medium mb-3 inline-block">
+                  {selectedBook.tema}
+                </span>
+                <h3 className="font-serif text-3xl mb-2">{selectedBook.judul}</h3>
+                <p className="text-white/80 text-sm">{selectedBook.halaman} halaman • {selectedBook.readTime} membaca</p>
+              </div>
+            </div>
+            <div className="p-8">
+              <p className="text-[#5a5a5a] leading-relaxed mb-6 text-lg">
+                {selectedBook.deskripsi}
+              </p>
+              
+              <div className="bg-[#faf8f5] rounded-2xl p-6 mb-6">
+                <h4 className="font-medium text-[#2b2b2b] mb-3 flex items-center gap-2">
+                  <Sparkles size={16} className="text-[#8b7355]" />
+                  Yang akan kamu temukan:
+                </h4>
+                <ul className="space-y-2 text-sm text-[#5a5a5a]">
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#8b7355] mt-1">•</span>
+                    Catatan personal yang jujur dan tanpa filter
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#8b7355] mt-1">•</span>
+                    Renungan singkat untuk malam-malam sunyi
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#8b7355] mt-1">•</span>
+                    Perspektif dari seseorang yang juga sedang belajar
+                  </li>
+                </ul>
+              </div>
+
+              <div className="flex gap-3">
+                <button 
+                  onClick={closeModal}
+                  className="flex-1 border border-[#e8e0d5] text-[#2b2b2b] py-4 rounded-xl font-medium hover:bg-[#faf8f5] transition-all"
+                >
+                  Tutup
+                </button>
+                <a 
+                  href={selectedBook.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    handleDownload(selectedBook.id);
+                    closeModal();
+                  }}
+                  className="flex-[2] bg-[#8b7355] hover:bg-[#9c8565] text-white py-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2"
+                >
+                  <Download size={18} />
+                  Unduh Sekarang
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= RUANG SUNYI ================= */}
       <section className="max-w-4xl mx-auto px-6 py-24">
         <div className="text-center mb-16">
           <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-4">Ruang Sunyi</p>
@@ -608,7 +776,6 @@ export default function HomePage() {
             <div 
               key={index}
               className="group bg-white border border-[#e8e0d5] rounded-2xl p-6 hover:shadow-xl transition-all duration-500 hover:-translate-y-1 flex items-start gap-4"
-              style={{ animationDelay: `${item.delay}ms` }}
             >
               <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#f5f0e8] flex items-center justify-center text-[#8b7355] group-hover:bg-[#8b7355] group-hover:text-white transition-all duration-300">
                 {item.icon}
@@ -637,22 +804,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= TENTANG PENULIS (FIXED: Tanpa tahun & perbaikan teks) ================= */}
+      {/* ================= TENTANG PENULIS ================= */}
       <section id="penulis" className="max-w-4xl mx-auto px-6 py-24">
         <div className="bg-white border border-[#e8e0d5] rounded-[2rem] overflow-hidden shadow-2xl shadow-[#2b2b2b]/5">
-          {/* Foto dengan gradient overlay yang lebih kuat */}
           <div className="relative h-[500px] overflow-hidden">
             <img
               src="/wildan.png"
               alt="Wildan Ferdiansyah"
               className="w-full h-full object-cover object-center"
             />
-            {/* Gradient overlay yang lebih kuat agar teks tidak menyatu */}
             <div className="absolute inset-0 bg-gradient-to-t from-white via-white/60 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/90" />
           </div>
           
-          {/* Content - dipindahkan ke bawah dengan background solid */}
           <div className="px-8 pb-12 pt-8 relative z-10 text-center bg-white">
             <div className="w-20 h-1 bg-[#8b7355] mx-auto mb-6 rounded-full"></div>
             
@@ -674,7 +838,6 @@ export default function HomePage() {
               "Aku menulis untuk hadir, bukan untuk memukau."
             </p>
             
-            {/* Timeline tanpa tahun */}
             <div className="max-w-md mx-auto">
               <div className="relative">
                 <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-[#e8e0d5]"></div>
@@ -698,9 +861,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= CUPLIKAN (Dengan Background Aesthetic yang lebih baik) ================= */}
+      {/* ================= CUPLIKAN ================= */}
       <section id="cuplikan" className="py-24 bg-[#2b2b2b] relative overflow-hidden">
-        {/* Background patterns */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-20 left-20 w-64 h-64 rounded-full border border-white"></div>
           <div className="absolute bottom-20 right-20 w-96 h-96 rounded-full border border-white"></div>
@@ -718,24 +880,24 @@ export default function HomePage() {
                 key={index}
                 className="group relative rounded-3xl p-8 md:p-12 overflow-hidden border border-[#8b7355]/30 bg-[#1a1a1a]/50 backdrop-blur-sm hover:border-[#8b7355]/60 transition-all duration-500"
               >
-                {/* Decorative quote marks */}
                 <div className="absolute top-6 left-6 text-[#8b7355]/20 font-serif text-8xl leading-none">"</div>
                 <div className="absolute bottom-6 right-6 text-[#8b7355]/20 font-serif text-8xl leading-none rotate-180">"</div>
                 
-                {/* Content */}
                 <div className="relative z-10 text-center">
                   <blockquote className="font-serif text-xl md:text-2xl leading-relaxed text-[#faf8f5] italic mb-6">
                     {item.quote}
                   </blockquote>
                   
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="h-px w-8 bg-[#8b7355]/50"></div>
-                    <p className="text-sm text-[#8b7355] tracking-wide font-medium">— {item.page}</p>
-                    <div className="h-px w-8 bg-[#8b7355]/50"></div>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className="h-px w-8 bg-[#8b7355]/50"></div>
+                      <p className="text-sm text-[#8b7355] tracking-wide font-medium">— {item.page}</p>
+                      <div className="h-px w-8 bg-[#8b7355]/50"></div>
+                    </div>
+                    <p className="text-xs text-[#faf8f5]/50 italic">{item.book}</p>
                   </div>
                 </div>
 
-                {/* Hover glow effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#8b7355]/10 via-transparent to-[#8b7355]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
               </div>
             ))}
@@ -743,7 +905,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= KATA PEMBACA (HORIZONTAL AUTO SCROLL + DRAG) ================= */}
+      {/* ================= KATA PEMBACA ================= */}
       <section className="py-24 bg-[#faf8f5]">
         <div className="max-w-6xl mx-auto px-6 mb-12">
           <div className="text-center">
@@ -771,11 +933,7 @@ export default function HomePage() {
             <div 
               key={`${item.id}-${index}`}
               className="flex-shrink-0 w-[340px] md:w-[400px] bg-white border border-[#e8e0d5] rounded-2xl p-8 relative hover:shadow-2xl transition-all duration-500 select-none group hover:-translate-y-2"
-              style={{
-                background: 'linear-gradient(135deg, #ffffff 0%, #faf8f5 100%)'
-              }}
             >
-              {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#f5f0e8] rounded-full -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
               
               <div className="relative z-10">
@@ -864,7 +1022,6 @@ export default function HomePage() {
       <footer className="bg-[#2b2b2b] text-[#faf8f5] py-16">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-3 gap-12 mb-12">
-            {/* Brand */}
             <div>
               <button 
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -878,7 +1035,6 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Quick Links */}
             <div>
               <h5 className="font-medium mb-4 text-[#8b7355]">Navigasi</h5>
               <ul className="space-y-2 text-[#faf8f5]/70">
@@ -905,7 +1061,6 @@ export default function HomePage() {
               </ul>
             </div>
 
-            {/* Share */}
             <div>
               <h5 className="font-medium mb-4 text-[#8b7355]">Bagikan</h5>
               <div className="flex gap-3">
@@ -938,7 +1093,7 @@ export default function HomePage() {
           </div>
 
           <div className="border-t border-[#faf8f5]/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#faf8f5]/50">
-            <p>&copy; 2024 Wildan Ferdiansyah. Seluruh hak cipta dilindungi.</p>
+            <p>&copy; 2026 Wildan Ferdiansyah. Seluruh hak cipta dilindungi.</p>
             <p className="flex items-center gap-1">
               Dibuat dengan <Heart size={14} className="text-[#8b7355] fill-[#8b7355]" /> dan secangkir kopi
             </p>
@@ -946,7 +1101,7 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* Custom Styles untuk animasi dan drop cap */}
+      {/* Custom Styles */}
       <style jsx>{`
         @keyframes slow-zoom {
           0% { transform: scale(1.05); }
@@ -967,12 +1122,32 @@ export default function HomePage() {
           0% { transform: translateY(0); opacity: 1; }
           100% { transform: translateY(12px); opacity: 0; }
         }
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes scale-up {
+          from { 
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to { 
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
         .animate-slow-zoom {
           animation: slow-zoom 20s ease-in-out infinite;
         }
         .animate-fade-in-up {
           animation: fade-in-up 0.8s ease-out forwards;
           opacity: 0;
+        }
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out forwards;
+        }
+        .animate-scale-up {
+          animation: scale-up 0.3s ease-out forwards;
         }
         .delay-100 { animation-delay: 100ms; }
         .delay-200 { animation-delay: 200ms; }
@@ -984,8 +1159,6 @@ export default function HomePage() {
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
         }
-        
-        /* Drop Cap yang lebih rapi */
         .drop-cap-paragraph::first-letter {
           float: left;
           font-family: serif;
@@ -996,8 +1169,6 @@ export default function HomePage() {
           color: #8b7355;
           font-weight: 400;
         }
-        
-        /* Line clamp untuk deskripsi buku */
         .line-clamp-3 {
           display: -webkit-box;
           -webkit-line-clamp: 3;
