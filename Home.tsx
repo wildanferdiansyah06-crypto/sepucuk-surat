@@ -21,7 +21,9 @@ import {
   X,
   Menu,
   Share2,
-  Bookmark
+  Bookmark,
+  Mail,
+  Phone
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
@@ -102,6 +104,7 @@ export default function HomePage() {
   const [showModal, setShowModal] = useState(false);
   const [catatanIndex, setCatatanIndex] = useState(0);
   const [visibleSections, setVisibleSections] = useState({});
+  const [isTransitioning, setIsTransitioning] = useState(false);
   
   const [nama, setNama] = useState("");
   const [catatan, setCatatan] = useState("");
@@ -114,6 +117,7 @@ export default function HomePage() {
     { id: 6, text: "Baru pertama kali ngerasa gak sendirian dalam kesendirian.", nama: "Reza" }
   ]);
 
+  // Intersection Observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -133,9 +137,14 @@ export default function HomePage() {
     return () => observer.disconnect();
   }, []);
 
+  // Catatan harian dengan transition yang proper
   useEffect(() => {
     const interval = setInterval(() => {
-      setCatatanIndex((prev) => (prev + 1) % CATATAN_HARIAN.length);
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCatatanIndex((prev) => (prev + 1) % CATATAN_HARIAN.length);
+        setIsTransitioning(false);
+      }, 500);
     }, 8000);
     return () => clearInterval(interval);
   }, []);
@@ -194,22 +203,15 @@ export default function HomePage() {
     window.open(shareUrls[platform], '_blank', 'width=600,height=400');
   };
 
-  // Dynamic classes based on dark mode
+  // Dynamic classes
   const bgClass = isDarkMode ? "bg-[#1a1816]" : "bg-[#faf8f5]";
   const textClass = isDarkMode ? "text-[#e8e0d5]" : "text-[#2b2b2b]";
-  const subtleText = isDarkMode ? "text-[#e8e0d5]/60" : "text-[#2b2b2b]/60";
-  const cardBg = isDarkMode ? "bg-[#2a2826]" : "bg-[#faf8f5]";
   const borderColor = isDarkMode ? "border-[#e8e0d5]/10" : "border-[#8b7355]/10";
-  const modalBg = isDarkMode ? "bg-[#2a2826]" : "bg-[#faf8f5]";
-  const modalText = isDarkMode ? "text-[#e8e0d5]" : "text-[#2b2b2b]";
-  const buttonBg = isDarkMode ? "bg-[#e8e0d5]" : "bg-[#2b2b2b]";
-  const buttonText = isDarkMode ? "text-[#1a1816]" : "text-[#faf8f5]";
-  const heroTextOverlay = isDarkMode ? "from-[#1a1816]/80 via-[#1a1816]/50 to-[#1a1816]" : "from-transparent via-[#faf8f5]/50 to-[#faf8f5]";
 
   return (
     <main className={`${bgClass} ${textClass} font-sans min-h-screen transition-colors duration-700`}>
       
-      {/* Grain Texture Overlay */}
+      {/* Grain Texture */}
       <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]" 
            style={{ backgroundImage: `url(${GRAIN_TEXTURE})` }}></div>
 
@@ -251,28 +253,35 @@ export default function HomePage() {
         )}
       </nav>
 
-      {/* Hero - Fixed for dark mode */}
+      {/* Hero - FIXED: Always readable text */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img src={HERO_BG} className="w-full h-full object-cover opacity-40 scale-105 animate-breathe" alt="" />
-          <div className={`absolute inset-0 bg-gradient-to-b ${heroTextOverlay}`}></div>
+          {/* Gradient overlay yang lebih kuat */}
+          <div className={`absolute inset-0 ${isDarkMode ? 'bg-gradient-to-b from-[#1a1816]/70 via-[#1a1816]/50 to-[#1a1816]' : 'bg-gradient-to-b from-[#faf8f5]/30 via-[#faf8f5]/60 to-[#faf8f5]'}`}></div>
         </div>
         
         <div className="relative z-10 text-center px-6 max-w-3xl mx-auto pt-20">
-          {/* Fixed: Always dark text for hero section */}
-          <p className="text-[10px] tracking-[0.5em] uppercase text-[#2b2b2b]/40 mb-8 animate-fade-in-slow">Sebuah Buku Oleh</p>
+          {/* FIXED: Text dengan shadow agar selalu terbaca */}
+          <p className="text-[10px] tracking-[0.5em] uppercase mb-8 animate-fade-in-slow"
+             style={{ color: isDarkMode ? '#e8e0d5' : '#2b2b2b', opacity: 0.6, textShadow: isDarkMode ? '0 2px 10px rgba(0,0,0,0.5)' : 'none' }}>
+            Sebuah Buku Oleh
+          </p>
           
-          <h1 className="font-serif text-5xl md:text-7xl leading-[0.9] mb-6 animate-fade-in-slower text-[#2b2b2b]/90">
-            <span className="block">Sepucuk Surat</span>
+          <h1 className="font-serif text-5xl md:text-7xl leading-[0.9] mb-6 animate-fade-in-slower"
+              style={{ color: isDarkMode ? '#e8e0d5' : '#2b2b2b', textShadow: isDarkMode ? '0 2px 20px rgba(0,0,0,0.8)' : '0 1px 2px rgba(255,255,255,0.5)' }}>
+            <span className="block opacity-90">Sepucuk Surat</span>
             <span className="block italic text-[#8b7355] text-4xl md:text-6xl mt-2">untuk Malam</span>
           </h1>
           
-          <p className="font-serif italic text-lg md:text-xl text-[#2b2b2b]/50 max-w-md mx-auto mb-12 leading-relaxed animate-fade-in-slowest">
+          <p className="font-serif italic text-lg md:text-xl max-w-md mx-auto mb-12 leading-relaxed animate-fade-in-slowest"
+             style={{ color: isDarkMode ? '#e8e0d5' : '#2b2b2b', opacity: 0.6, textShadow: isDarkMode ? '0 2px 10px rgba(0,0,0,0.5)' : 'none' }}>
             "Kita semua pernah lelah.<br/>Tapi kita masih di sini."
           </p>
           
           <button onClick={() => scrollToSection('koleksi')} 
-                  className="group flex items-center gap-2 mx-auto text-xs tracking-[0.3em] uppercase text-[#2b2b2b]/50 hover:text-[#2b2b2b] transition-all duration-500">
+                  className="group flex items-center gap-2 mx-auto text-xs tracking-[0.3em] uppercase transition-all duration-500"
+                  style={{ color: isDarkMode ? '#e8e0d5' : '#2b2b2b', opacity: 0.5 }}>
             <span>Mulai Membaca</span>
             <ChevronDown size={14} className="group-hover:translate-y-1 transition-transform" />
           </button>
@@ -308,7 +317,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Rak Buku */}
+      {/* Rak Buku - Tidak diubah, sudah aman */}
       <section id="koleksi" className={`py-32 px-6 ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/20'} transition-all duration-1000 ${visibleSections['koleksi'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-20">
@@ -339,7 +348,7 @@ export default function HomePage() {
                     {buku.judul}
                   </h4>
                   
-                  <p className={`text-sm leading-relaxed opacity-50 line-clamp-2 font-light ${subtleText}`}>
+                  <p className="text-sm leading-relaxed opacity-50 line-clamp-2 font-light">
                     {buku.deskripsi}
                   </p>
                 </div>
@@ -355,16 +364,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Book Modal - Fixed for dark mode */}
+      {/* Modal - FIXED for dark mode */}
       {showModal && selectedBook && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={closeModal}>
-          <div className={`${modalBg} ${modalText} max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl animate-scale-up`} onClick={e => e.stopPropagation()}>
+          <div className={`${isDarkMode ? 'bg-[#2a2826] text-[#e8e0d5]' : 'bg-[#faf8f5] text-[#2b2b2b]'} max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl animate-scale-up`} onClick={e => e.stopPropagation()}>
             <div className="relative aspect-video">
               <img src={selectedBook.ilustrasi} alt={selectedBook.judul} className="w-full h-full object-cover opacity-90" />
-              <button onClick={closeModal} className={`absolute top-4 right-4 w-8 h-8 ${isDarkMode ? 'bg-[#1a1816]/80 text-[#e8e0d5]' : 'bg-white/80 text-[#2b2b2b]'} rounded-full flex items-center justify-center text-xs hover:opacity-80 transition-colors`}>✕</button>
+              <button onClick={closeModal} 
+                      className={`absolute top-4 right-4 w-8 h-8 ${isDarkMode ? 'bg-[#1a1816]/80 text-[#e8e0d5]' : 'bg-white/80 text-[#2b2b2b]'} rounded-full flex items-center justify-center text-xs hover:opacity-80 transition-colors`}>
+                ✕
+              </button>
             </div>
             <div className="p-8">
-              <div className={`flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase opacity-40 mb-3 ${modalText}`}>
+              <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase opacity-40 mb-3">
                 <span>{selectedBook.tema}</span>
                 <span>•</span>
                 <span>{selectedBook.halaman} halaman</span>
@@ -372,14 +384,14 @@ export default function HomePage() {
                 <span>{selectedBook.readTime}</span>
               </div>
               
-              <h3 className={`font-serif text-2xl mb-4 ${modalText}`}>{selectedBook.judul}</h3>
+              <h3 className="font-serif text-2xl mb-4">{selectedBook.judul}</h3>
               
-              <p className={`text-sm leading-relaxed mb-6 opacity-70 font-light ${modalText}`}>
+              <p className="text-sm leading-relaxed mb-6 opacity-70 font-light">
                 {selectedBook.deskripsi}
               </p>
 
               <div className={`${isDarkMode ? 'bg-[#1a1816]/50' : 'bg-[#f5f0e8]/50'} rounded-lg p-4 mb-6`}>
-                <p className={`text-sm italic opacity-60 ${modalText}`}>
+                <p className="text-sm italic opacity-60">
                   "{selectedBook.preview}"
                 </p>
               </div>
@@ -390,7 +402,7 @@ export default function HomePage() {
                   Tutup
                 </button>
                 <a href={selectedBook.link} target="_blank" rel="noopener noreferrer"
-                   className={`flex-[2] ${buttonBg} ${buttonText} py-3 text-center text-xs tracking-[0.2em] uppercase hover:opacity-90 transition-colors flex items-center justify-center gap-2`}>
+                   className={`flex-[2] ${isDarkMode ? 'bg-[#e8e0d5] text-[#1a1816]' : 'bg-[#2b2b2b] text-[#faf8f5]'} py-3 text-center text-xs tracking-[0.2em] uppercase hover:opacity-90 transition-colors flex items-center justify-center gap-2`}>
                   <Download size={14} />
                   Unduh & Baca
                 </a>
@@ -426,25 +438,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Penulis - Fixed for dark mode */}
+      {/* Tentang Penulis - FIXED: Always light text in dark mode */}
       <section id="penulis" className={`relative py-32 overflow-hidden transition-all duration-1000 ${visibleSections['penulis'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        {/* Background - softer blur */}
         <div className="absolute inset-0">
           <img src="/wildan.png" alt="" className="w-full h-full object-cover opacity-5 blur-2xl scale-110" />
-          <div className={`absolute inset-0 bg-gradient-to-b ${isDarkMode ? 'from-[#1a1816] via-[#1a1816]/90 to-[#1a1816]' : 'from-[#faf8f5] via-[#faf8f5]/80 to-[#faf8f5]'}`}></div>
+          <div className={`absolute inset-0 ${isDarkMode ? 'bg-gradient-to-b from-[#1a1816] via-[#1a1816]/95 to-[#1a1816]' : 'bg-gradient-to-b from-[#faf8f5] via-[#faf8f5]/80 to-[#faf8f5]'}`}></div>
         </div>
 
-        <div className={`relative z-10 max-w-2xl mx-auto px-6 text-center ${textClass}`}>
+        {/* FIXED: Force light text color */}
+        <div className="relative z-10 max-w-2xl mx-auto px-6 text-center" style={{ color: isDarkMode ? '#e8e0d5' : '#2b2b2b' }}>
           <div className="mb-12">
-            {/* Larger photo, no grayscale filter */}
-            <div className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-6 rounded-full overflow-hidden shadow-lg">
+            {/* Larger photo, no grayscale, with shadow */}
+            <div className="w-28 h-28 md:w-36 md:h-36 mx-auto mb-6 rounded-full overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
               <img src="/wildan.png" alt="Wildan" className="w-full h-full object-cover" />
             </div>
           </div>
 
           <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-8">Tentang Penulis</p>
           
-          <div className="space-y-6 text-[15px] leading-[1.9] opacity-70 font-light max-w-lg mx-auto">
+          <div className="space-y-6 text-[15px] leading-[1.9] opacity-80 font-light max-w-lg mx-auto">
             <p>
               Bukan penulis profesional. Bukan motivator. Hanya seseorang yang mencoba memahami hidupnya melalui kata-kata.
             </p>
@@ -454,7 +466,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-12 pt-8">
-            <p className="font-serif italic text-lg opacity-50">
+            <p className="font-serif italic text-lg opacity-60">
               "Aku menulis untuk hadir,<br/>bukan untuk memukau."
             </p>
           </div>
@@ -469,21 +481,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Catatan Harian */}
+      {/* Catatan Kecil - FIXED: Proper transition */}
       <section className={`py-24 px-6 ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/30'} transition-all duration-1000`}>
         <div className="max-w-xl mx-auto text-center">
           <p className="text-[10px] tracking-[0.4em] uppercase opacity-30 mb-8">Catatan Kecil</p>
-          <div className="relative h-24 flex items-center justify-center">
+          <div className="relative h-32 flex items-center justify-center overflow-hidden">
             {CATATAN_HARIAN.map((catatan, index) => (
               <p key={index} 
-                 className={`absolute font-serif italic text-lg md:text-xl opacity-60 transition-all duration-1000 ${index === catatanIndex ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                 className={`absolute font-serif italic text-lg md:text-xl px-6 transition-all duration-500 ease-in-out
+                   ${index === catatanIndex && !isTransitioning ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                 "{catatan}"
               </p>
             ))}
           </div>
-          <div className="flex justify-center gap-1 mt-6">
+          <div className="flex justify-center gap-2 mt-6">
             {CATATAN_HARIAN.map((_, index) => (
-              <div key={index} className={`w-1 h-1 rounded-full transition-all duration-500 ${index === catatanIndex ? 'bg-[#8b7355]' : 'bg-[#8b7355]/20'}`}></div>
+              <div key={index} 
+                   className={`w-1.5 h-1.5 rounded-full transition-all duration-300 
+                     ${index === catatanIndex ? 'bg-[#8b7355] w-4' : 'bg-[#8b7355]/20'}`}></div>
             ))}
           </div>
         </div>
@@ -511,39 +526,63 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer - With all share buttons */}
+      {/* Footer - With all contact info */}
       <footer className={`py-12 px-6 border-t ${borderColor}`}>
         <div className="max-w-4xl mx-auto">
-          {/* Share Buttons - All included */}
+          {/* Share Buttons */}
           <div className="flex justify-center gap-4 mb-8">
             <button onClick={() => handleShare('whatsapp')} 
-                    className="w-10 h-10 rounded-full border border-[#8b7355]/20 flex items-center justify-center opacity-50 hover:opacity-100 hover:bg-[#8b7355]/10 transition-all">
+                    className="w-10 h-10 rounded-full border border-[#8b7355]/20 flex items-center justify-center opacity-50 hover:opacity-100 hover:bg-[#8b7355]/10 transition-all"
+                    title="Share to WhatsApp">
               <MessageCircle size={18} />
             </button>
             <button onClick={() => handleShare('facebook')} 
-                    className="w-10 h-10 rounded-full border border-[#8b7355]/20 flex items-center justify-center opacity-50 hover:opacity-100 hover:bg-[#8b7355]/10 transition-all">
+                    className="w-10 h-10 rounded-full border border-[#8b7355]/20 flex items-center justify-center opacity-50 hover:opacity-100 hover:bg-[#8b7355]/10 transition-all"
+                    title="Share to Facebook">
               <Facebook size={18} />
             </button>
             <button onClick={() => handleShare('twitter')} 
-                    className="w-10 h-10 rounded-full border border-[#8b7355]/20 flex items-center justify-center opacity-50 hover:opacity-100 hover:bg-[#8b7355]/10 transition-all">
+                    className="w-10 h-10 rounded-full border border-[#8b7355]/20 flex items-center justify-center opacity-50 hover:opacity-100 hover:bg-[#8b7355]/10 transition-all"
+                    title="Share to Twitter">
               <Twitter size={18} />
             </button>
             <button onClick={() => handleShare('instagram')} 
-                    className="w-10 h-10 rounded-full border border-[#8b7355]/20 flex items-center justify-center opacity-50 hover:opacity-100 hover:bg-[#8b7355]/10 transition-all">
+                    className="w-10 h-10 rounded-full border border-[#8b7355]/20 flex items-center justify-center opacity-50 hover:opacity-100 hover:bg-[#8b7355]/10 transition-all"
+                    title="Copy link for Instagram">
               <Instagram size={18} />
             </button>
           </div>
 
-          <div className="text-center">
-            <p className="text-[10px] tracking-[0.15em] uppercase opacity-40 mb-2">Hubungi Penulis</p>
-            <p className="text-sm opacity-60 mb-6">wildan.ferdiansyah@email.com</p>
+          {/* Contact Info */}
+          <div className="text-center mb-8">
+            <p className="text-[10px] tracking-[0.15em] uppercase opacity-40 mb-4">Hubungi Penulis</p>
             
-            <div className={`flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] tracking-[0.15em] uppercase opacity-40 pt-6 border-t ${borderColor}`}>
-              <p>&copy; 2026 Wildan Ferdiansyah</p>
-              <p className="flex items-center gap-1">
-                Dibuat dengan <Heart size={12} className="text-[#8b7355]" /> dan secangkir kopi
-              </p>
+            <div className="flex flex-col md:flex-row justify-center items-center gap-4 text-sm opacity-60">
+              <a href="https://wa.me/6289636357091" target="_blank" rel="noopener noreferrer" 
+                 className="flex items-center gap-2 hover:opacity-100 transition-opacity">
+                <Phone size={14} />
+                <span>0896-3635-7091</span>
+              </a>
+              <span className="hidden md:block opacity-30">•</span>
+              <a href="mailto:wildanferdiansyah06@gmail.com" 
+                 className="flex items-center gap-2 hover:opacity-100 transition-opacity">
+                <Mail size={14} />
+                <span>wildanferdiansyah06@gmail.com</span>
+              </a>
+              <span className="hidden md:block opacity-30">•</span>
+              <a href="https://instagram.com/_iamwildan_" target="_blank" rel="noopener noreferrer"
+                 className="flex items-center gap-2 hover:opacity-100 transition-opacity">
+                <Instagram size={14} />
+                <span>@_iamwildan_</span>
+              </a>
             </div>
+          </div>
+          
+          <div className={`flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] tracking-[0.15em] uppercase opacity-40 pt-6 border-t ${borderColor}`}>
+            <p>&copy; 2026 Wildan Ferdiansyah</p>
+            <p className="flex items-center gap-1">
+              Dibuat dengan <Heart size={12} className="text-[#8b7355]" /> dan secangkir kopi
+            </p>
           </div>
         </div>
       </footer>
@@ -560,7 +599,7 @@ export default function HomePage() {
         }
         @keyframes fade-in-slow {
           from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 0.4; transform: translateY(0); }
+          to { opacity: 0.6; transform: translateY(0); }
         }
         @keyframes fade-in-slower {
           from { opacity: 0; transform: translateY(15px); }
@@ -568,7 +607,7 @@ export default function HomePage() {
         }
         @keyframes fade-in-slowest {
           from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 0.5; transform: translateY(0); }
+          to { opacity: 0.6; transform: translateY(0); }
         }
         @keyframes scale-up {
           from { opacity: 0; transform: scale(0.95); }
