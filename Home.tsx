@@ -1,48 +1,28 @@
+import React, { useState, useEffect, useRef } from "react";
 import { 
   ExternalLink, 
   MessageCircle, 
-  Facebook, 
-  Instagram, 
-  Twitter, 
-  BookOpen, 
   Coffee, 
   Moon, 
   Heart,
   ArrowUpRight,
   Send,
-  Palette,
   Sparkles,
   Clock,
   Music,
   Feather,
-  Download,
   ChevronDown,
-  Library,
   Sun,
-  Volume2,
-  Bookmark,
-  Share2,
-  Eye,
-  X
+  BookOpen,
+  Menu,
+  X,
+  Quote
 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
 
-// Ganti dengan ilustrasi Anda yang sebenarnya jika ada
-const HERO_BG =
-  "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1400&auto=format&fit=crop";
+// --- Assets & Data ---
 
-// Ilustrasi untuk setiap buku - tema mocha aesthetic
-const BUKU_ILUSTRASI = {
-  seniMenyeduh: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=600&auto=format&fit=crop", // V60/coffee brewing
-  diBalikBar: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=600&auto=format&fit=crop", // Coffee bar/counter
-  diAtasCangkir: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=600&auto=format&fit=crop", // Coffee cup from above
-  menulisPelan: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=600&auto=format&fit=crop" // Writing/journal
-};
+const HERO_BG = "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000&auto=format&fit=crop";
 
-// Background texture mocha
-const MOCHA_BG = "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2000&auto=format&fit=crop";
-
-// Data Buku
 const BUKU_LIST = [
   {
     id: 1,
@@ -51,7 +31,7 @@ const BUKU_LIST = [
     deskripsi: "Catatan tentang bagaimana kita menyikapi hidup dengan cara yang lebih gentle dan penuh makna, seperti menyeduh kopi yang sempurna.",
     halaman: "45",
     readTime: "25 menit",
-    ilustrasi: BUKU_ILUSTRASI.seniMenyeduh,
+    cover: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=600&auto=format&fit=crop",
     tema: "Kehidupan & Kesadaran"
   },
   {
@@ -61,7 +41,7 @@ const BUKU_LIST = [
     deskripsi: "Cerita-cerita dari balik meja bar, tempat di mana setiap cangkir memiliki kisahnya sendiri dan setiap penumpang membawa dunia mereka.",
     halaman: "38",
     readTime: "20 menit",
-    ilustrasi: BUKU_ILUSTRASI.diBalikBar,
+    cover: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=600&auto=format&fit=crop",
     tema: "Cerita & Interaksi"
   },
   {
@@ -71,7 +51,7 @@ const BUKU_LIST = [
     deskripsi: "Renungan tentang konsistensi, kehadiran, dan menemukan keindahan dalam pengulangan yang tampak monoton.",
     halaman: "52",
     readTime: "30 menit",
-    ilustrasi: BUKU_ILUSTRASI.diAtasCangkir,
+    cover: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=600&auto=format&fit=crop",
     tema: "Konsistensi & Kehadiran"
   },
   {
@@ -81,420 +61,223 @@ const BUKU_LIST = [
     deskripsi: "Kumpulan tulisan yang lahir dari kesabaran, untuk mereka yang percaya pada proses dan kekuatan kata-kata yang diucapkan dengan lirih.",
     halaman: "41",
     readTime: "22 menit",
-    ilustrasi: BUKU_ILUSTRASI.menulisPelan,
+    cover: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=600&auto=format&fit=crop",
     tema: "Proses & Kesabaran"
   }
 ];
 
-export default function HomePage() {
-  const scrollRef = useRef(null);
-  const rakBukuRef = useRef(null);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+const UNTUK_ITEMS = [
+  {
+    icon: <BookOpen size={20} />,
+    text: "Untuk kamu yang membaca dengan pelan, bukan karena lambat—tapi karena ingin merasakan.",
+    title: "Membaca Perlahan"
+  },
+  {
+    icon: <Coffee size={20} />,
+    text: "Untuk kamu yang bekerja seharian dan baru bisa merenung saat dunia sudah tidur.",
+    title: "Malam yang Panjang"
+  },
+  {
+    icon: <Moon size={20} />,
+    text: "Untuk kamu yang duduk sendiri dengan kopi dan kesunyian, dan merasa itu cukup.",
+    title: "Kesendirian yang Nyaman"
+  },
+  {
+    icon: <Heart size={20} />,
+    text: "Untuk kamu yang sering merasa tak terlihat, tapi tetap hadir—setiap hari.",
+    title: "Kehadiran yang Diam"
+  }
+];
+
+const CUPLIKAN_ITEMS = [
+  {
+    quote: "Ada hari-hari di mana aku hanya ingin menjadi secangkir kopi di tangan seseorang—hangat, hadir, dan cukup untuk menemani diam.",
+    page: "hal. 23",
+    book: "Seni Menyeduh Kehidupan"
+  },
+  {
+    quote: "Kita tidak butuh selalu kuat. Kadang, kita hanya butuh tahu bahwa ada yang mengerti—bahwa lelah kita bukan aib, bahwa diam kita bukan kelemahan.",
+    page: "hal. 47",
+    book: "Di Balik Bar"
+  },
+  {
+    quote: "Menulis adalah caraku untuk tetap di sini. Bukan untuk menjelaskan, tapi untuk mengingatkan diri sendiri—bahwa aku masih merasakan.",
+    page: "hal. 78",
+    book: "Kami Menulis Pelan"
+  }
+];
+
+// --- Components ---
+
+export default function SepucukSurat() {
+  const [readingMode, setReadingMode] = useState(false); // false = light, true = dark/sepia
   const [activeSection, setActiveSection] = useState("");
-  const [selectedBook, setSelectedBook] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [readingProgress, setReadingProgress] = useState({});
-  
-  // State untuk form catatan
-  const [nama, setNama] = useState("");
-  const [catatan, setCatatan] = useState("");
-  
-  // State untuk kata pembaca
-  const [kataPembaca, setKataPembaca] = useState([
-    {
-      id: 1,
-      text: "Aku biasanya susah selesain buku, tapi yang ini beda. Bukan karena cepat, tapi karena aku nggak pengen buru-buru.",
-      nama: "Rizky"
-    },
-    {
-      id: 2,
-      text: "Simple. Nggak ribet. Kayak ngobrol sama diri sendiri yang lebih jujur.",
-      nama: "Anisa"
-    },
-    {
-      id: 3,
-      text: "Baca ini sambil ngopi sore, rasanya kayak ada yang ngerti tanpa perlu jelasin apa-apa.",
-      nama: "Dian"
-    },
-    {
-      id: 4,
-      text: "Tidak mencoba menggurui, hanya berbagi. Itu yang bikin nyaman.",
-      nama: "Bagas"
-    },
-    {
-      id: 5,
-      text: "Setiap halaman kayak pelukan hangat yang nggak bikin sesak. Cocok buat hari-hari berat.",
-      nama: "Sinta"
-    },
-    {
-      id: 6,
-      text: "Baru pertama kali ngerasa gak sendirian dalam kesendirian. Makasih sudah nulis.",
-      nama: "Reza"
-    }
-  ]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Load reading progress from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('readingProgress');
-    if (saved) {
-      setReadingProgress(JSON.parse(saved));
-    }
-  }, []);
-
-  // Scroll spy untuk navigasi aktif
+  // Scroll Spy
   useEffect(() => {
     const handleScroll = () => {
       const sections = ['tentang', 'buku-ini-untuk', 'rak-buku', 'cuplikan', 'penulis'];
-      const scrollPosition = window.scrollY + 100;
+      const scrollPosition = window.scrollY + 200;
 
       sections.forEach(section => {
         const element = document.getElementById(section);
         if (element) {
           const offsetTop = element.offsetTop;
           const offsetHeight = element.offsetHeight;
-          
           if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
             setActiveSection(section);
           }
         }
       });
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Auto scroll effect
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer || isDragging) return;
-
-    let animationId;
-    let currentScroll = scrollContainer.scrollLeft;
-    
-    const scroll = () => {
-      if (!isPaused && !isDragging) {
-        currentScroll += 0.3;
-        if (currentScroll >= scrollContainer.scrollWidth / 2) {
-          currentScroll = 0;
-        }
-        scrollContainer.scrollLeft = currentScroll;
-      }
-      animationId = requestAnimationFrame(scroll);
-    };
-    
-    animationId = requestAnimationFrame(scroll);
-    
-    return () => cancelAnimationFrame(animationId);
-  }, [isPaused, isDragging]);
-
-  // Handle scroll to section
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const offsetTop = element.offsetTop - 80;
-      window.scrollTo({
-        top: offsetTop,
-        behavior: 'smooth'
-      });
+      window.scrollTo({ top: element.offsetTop - 80, behavior: 'smooth' });
+      setMobileMenuOpen(false);
     }
   };
 
-  // Handle book selection
-  const openBookModal = (book) => {
-    setSelectedBook(book);
-    setShowModal(true);
-    document.body.style.overflow = 'hidden';
+  // Dynamic Styles based on Reading Mode
+  const theme = readingMode ? {
+    bg: "bg-[#1c1917]", // stone-900
+    text: "text-[#e7e5e4]", // stone-200
+    subtext: "text-[#a8a29e]", // stone-400
+    accent: "text-[#d6d3d1]", // stone-300
+    card: "bg-[#292524] border-[#44403c]", // stone-800
+    nav: "bg-[#1c1917]/90 border-[#44403c]",
+    grain: "opacity-5"
+  } : {
+    bg: "bg-[#faf8f5]", // warm white
+    text: "text-[#2b2b2b]", // dark charcoal
+    subtext: "text-[#78716c]", // stone-500
+    accent: "text-[#8b7355]", // mocha
+    card: "bg-white border-[#e8e0d5]",
+    nav: "bg-[#faf8f5]/90 border-[#e8e0d5]/50",
+    grain: "opacity-[0.03]"
   };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedBook(null);
-    document.body.style.overflow = 'unset';
-  };
-
-  // Track download
-  const handleDownload = (bookId) => {
-    const newProgress = { ...readingProgress, [bookId]: { downloaded: true, date: new Date().toISOString() } };
-    setReadingProgress(newProgress);
-    localStorage.setItem('readingProgress', JSON.stringify(newProgress));
-  };
-
-  // Handle mouse events untuk drag scroll
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setStartX(e.pageX - scrollRef.current.offsetLeft);
-    setScrollLeft(scrollRef.current.scrollLeft);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = e.pageX - scrollRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    scrollRef.current.scrollLeft = scrollLeft - walk;
-  };
-
-  // Handle touch events untuk mobile
-  const handleTouchStart = () => {
-    setIsPaused(true);
-  };
-
-  const handleTouchEnd = () => {
-    setIsPaused(false);
-  };
-
-  // Handle submit catatan
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!catatan.trim()) return;
-    
-    const newComment = {
-      id: Date.now(),
-      text: catatan,
-      nama: nama.trim() || "Anonim"
-    };
-    
-    setKataPembaca([...kataPembaca, newComment]);
-    setNama("");
-    setCatatan("");
-  };
-
-  // Fungsi share
-  const handleShare = (platform) => {
-    const url = encodeURIComponent(window.location.href);
-    const text = encodeURIComponent("Sepucuk Surat — Catatan sunyi dari seorang barista");
-    
-    const shareUrls = {
-      whatsapp: `https://wa.me/?text=${text}%20${url}`,
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
-      twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
-    };
-
-    if (platform === 'instagram') {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Link telah disalin! Silakan paste di Instagram Anda.');
-      return;
-    }
-
-    window.open(shareUrls[platform], '_blank', 'width=600,height=400');
-  };
-
-  const untukItems = [
-    {
-      icon: <BookOpen size={24} />,
-      text: "Untuk kamu yang membaca dengan pelan, bukan karena lambat—tapi karena ingin merasakan.",
-      bg: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?q=80&w=400&auto=format&fit=crop",
-      title: "Membaca Perlahan"
-    },
-    {
-      icon: <Coffee size={24} />,
-      text: "Untuk kamu yang bekerja seharian dan baru bisa merenung saat dunia sudah tidur.",
-      bg: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=400&auto=format&fit=crop",
-      title: "Malam yang Panjang"
-    },
-    {
-      icon: <Moon size={24} />,
-      text: "Untuk kamu yang duduk sendiri dengan kopi dan kesunyian, dan merasa itu cukup.",
-      bg: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop",
-      title: "Kesendirian yang Nyaman"
-    },
-    {
-      icon: <Heart size={24} />,
-      text: "Untuk kamu yang sering merasa tak terlihat, tapi tetap hadir—setiap hari.",
-      bg: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=400&auto=format&fit=crop",
-      title: "Kehadiran yang Diam"
-    }
-  ];
-
-  const cuplikanItems = [
-    {
-      quote: "Ada hari-hari di mana aku hanya ingin menjadi secangkir kopi di tangan seseorang—hangat, hadir, dan cukup untuk menemani diam.",
-      page: "halaman 23",
-      book: "Seni Menyeduh Kehidupan"
-    },
-    {
-      quote: "Kita tidak butuh selalu kuat. Kadang, kita hanya butuh tahu bahwa ada yang mengerti—bahwa lelah kita bukan aib, bahwa diam kita bukan kelemahan.",
-      page: "halaman 47",
-      book: "Di Balik Bar"
-    },
-    {
-      quote: "Menulis adalah caraku untuk tetap di sini. Bukan untuk menjelaskan, tapi untuk mengingatkan diri sendiri—bahwa aku masih merasakan.",
-      page: "halaman 78",
-      book: "Kami Menulis Pelan"
-    }
-  ];
-
-  const ruangSunyiItems = [
-    {
-      icon: <Sparkles size={20} />,
-      text: "Kopi yang sudah dingin, tapi tetap diminum.",
-      delay: "0"
-    },
-    {
-      icon: <Clock size={20} />,
-      text: "Lagu yang diputar berulang kali.",
-      delay: "100"
-    },
-    {
-      icon: <Music size={20} />,
-      text: "Buku yang dibaca dengan napas pelan.",
-      delay: "200"
-    },
-    {
-      icon: <Feather size={20} />,
-      text: "Catatan yang ditulis tanpa tujuan, hanya untuk mengingat.",
-      delay: "300"
-    }
-  ];
-
-  const duplicatedComments = [...kataPembaca, ...kataPembaca];
 
   return (
-    <main className="bg-[#faf8f5] text-[#2b2b2b] font-sans selection:bg-[#e8e0d5] overflow-x-hidden">
+    <div className={`${theme.bg} ${theme.text} font-sans transition-colors duration-700 ease-in-out selection:bg-[#8b7355] selection:text-white overflow-x-hidden`}>
+      
+      {/* Global Grain Texture */}
+      <div className={`fixed inset-0 pointer-events-none z-[100] mix-blend-overlay ${theme.grain}`} 
+           style={{backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`}}>
+      </div>
 
-      {/* Reading Progress Indicator */}
-      <div className="fixed top-0 left-0 h-1 bg-[#8b7355] z-[60] transition-all duration-300" 
-           style={{ width: `${(Object.keys(readingProgress).length / BUKU_LIST.length) * 100}%` }}></div>
-
-      {/* ================= NAVBAR ================= */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf8f5]/90 backdrop-blur-md border-b border-[#e8e0d5]/30 transition-all duration-300">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <button 
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex items-center gap-2 hover:opacity-70 transition-opacity"
-          >
-            <Coffee size={20} className="text-[#8b7355]" />
-            <p className="font-serif text-lg tracking-wide text-[#2b2b2b]">Sepucuk Surat</p>
+      {/* Navigation */}
+      <nav className={`fixed top-0 w-full z-50 backdrop-blur-md border-b transition-colors duration-500 ${theme.nav}`}>
+        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 group">
+            <Coffee size={18} className={`${theme.accent} group-hover:rotate-12 transition-transform`} />
+            <span className="font-serif text-lg tracking-wide">Sepucuk Surat</span>
           </button>
-          
-          <div className="hidden md:flex items-center gap-8 text-sm">
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium">
+            {['tentang', 'buku-ini-untuk', 'rak-buku', 'cuplikan', 'penulis'].map((item) => (
+              <button 
+                key={item}
+                onClick={() => scrollToSection(item)}
+                className={`capitalize hover:${theme.accent} transition-colors relative py-1 ${activeSection === item ? theme.accent : theme.subtext}`}
+              >
+                {item.replace(/-/g, ' ')}
+                {activeSection === item && (
+                  <span className={`absolute bottom-0 left-0 w-full h-[1px] bg-current opacity-50`}></span>
+                )}
+              </button>
+            ))}
+            
             <button 
-              onClick={() => scrollToSection('tentang')}
-              className={`hover:text-[#8b7355] transition-colors relative group ${activeSection === 'tentang' ? 'text-[#8b7355]' : ''}`}
+              onClick={() => setReadingMode(!readingMode)}
+              className={`ml-4 p-2 rounded-full border ${readingMode ? 'border-[#44403c] bg-[#292524]' : 'border-[#e8e0d5] bg-white'} hover:scale-110 transition-all`}
+              title="Toggle Reading Mode"
             >
-              Tentang
-              <span className={`absolute -bottom-1 left-0 h-px bg-[#8b7355] transition-all ${activeSection === 'tentang' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
-            </button>
-            <button 
-              onClick={() => scrollToSection('buku-ini-untuk')}
-              className={`hover:text-[#8b7355] transition-colors relative group ${activeSection === 'buku-ini-untuk' ? 'text-[#8b7355]' : ''}`}
-            >
-              Untuk
-              <span className={`absolute -bottom-1 left-0 h-px bg-[#8b7355] transition-all ${activeSection === 'buku-ini-untuk' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
-            </button>
-            <button 
-              onClick={() => scrollToSection('rak-buku')}
-              className={`hover:text-[#8b7355] transition-colors relative group ${activeSection === 'rak-buku' ? 'text-[#8b7355]' : ''}`}
-            >
-              Koleksi
-              <span className={`absolute -bottom-1 left-0 h-px bg-[#8b7355] transition-all ${activeSection === 'rak-buku' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
-            </button>
-            <button 
-              onClick={() => scrollToSection('cuplikan')}
-              className={`hover:text-[#8b7355] transition-colors relative group ${activeSection === 'cuplikan' ? 'text-[#8b7355]' : ''}`}
-            >
-              Cuplikan
-              <span className={`absolute -bottom-1 left-0 h-px bg-[#8b7355] transition-all ${activeSection === 'cuplikan' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
-            </button>
-            <button 
-              onClick={() => scrollToSection('penulis')}
-              className={`hover:text-[#8b7355] transition-colors relative group ${activeSection === 'penulis' ? 'text-[#8b7355]' : ''}`}
-            >
-              Penulis
-              <span className={`absolute -bottom-1 left-0 h-px bg-[#8b7355] transition-all ${activeSection === 'penulis' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+              {readingMode ? <Sun size={16} /> : <Moon size={16} />}
             </button>
           </div>
 
-          <button 
-            onClick={() => scrollToSection('rak-buku')}
-            className="bg-[#2b2b2b] text-[#faf8f5] px-5 py-2.5 rounded-full text-sm hover:bg-[#1a1a1a] transition-all hover:scale-105 flex items-center gap-2 shadow-lg shadow-[#2b2b2b]/10"
-          >
-            Unduh Buku
-            <ArrowUpRight size={14} />
-          </button>
+          {/* Mobile Toggle */}
+          <div className="md:hidden flex items-center gap-4">
+             <button 
+              onClick={() => setReadingMode(!readingMode)}
+              className={`p-2 rounded-full border ${readingMode ? 'border-[#44403c]' : 'border-[#e8e0d5]'}`}
+            >
+              {readingMode ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {mobileMenuOpen && (
+          <div className={`md:hidden absolute top-16 left-0 w-full ${theme.bg} border-b ${theme.nav} py-4 px-6 flex flex-col gap-4 shadow-xl`}>
+             {['tentang', 'buku-ini-untuk', 'rak-buku', 'cuplikan', 'penulis'].map((item) => (
+              <button 
+                key={item}
+                onClick={() => scrollToSection(item)}
+                className={`text-left capitalize text-lg py-2 border-b ${readingMode ? 'border-[#292524]' : 'border-[#f5f0e8]'}`}
+              >
+                {item.replace(/-/g, ' ')}
+              </button>
+            ))}
+          </div>
+        )}
       </nav>
 
-      {/* ================= HERO ================= */}
-      <section className="relative min-h-screen w-full overflow-hidden pt-20 flex items-center">
-        <div className="absolute inset-0 bg-[#2b2b2b]/40 z-10" />
-        <img
-          src={HERO_BG}
-          className="absolute inset-0 w-full h-full object-cover scale-105 animate-slow-zoom"
-          alt="Coffee illustration"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#2b2b2b]/60 via-[#2b2b2b]/20 to-[#faf8f5] z-10" />
-        
-        <div className="relative z-20 w-full flex flex-col items-center justify-center px-6 text-center py-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8 animate-fade-in-up">
-            <Sparkles size={14} className="text-[#faf8f5]" />
-            <p className="text-xs tracking-[0.3em] text-[#faf8f5] uppercase">Sebuah Buku Oleh</p>
+      {/* Hero Section */}
+      <header className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src={HERO_BG} alt="Hero" className="w-full h-full object-cover opacity-90" />
+          <div className={`absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[${readingMode ? '#1c1917' : '#faf8f5'}]`}></div>
+          <div className="absolute inset-0 bg-black/30"></div>
+        </div>
+
+        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto mt-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6 animate-fade-in">
+            <Sparkles size={12} className="text-white/80" />
+            <span className="text-[10px] tracking-[0.3em] text-white/80 uppercase">Sebuah Buku Oleh</span>
           </div>
           
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl leading-tight mb-6 text-[#faf8f5] animate-fade-in-up delay-100 drop-shadow-2xl">
+          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-white mb-6 leading-[0.9] drop-shadow-lg">
             Sepucuk Surat<br />
-            <span className="italic text-[#e8e0d5]">untuk Malam</span>
+            <span className="italic text-white/80 font-light">untuk Malam</span>
           </h1>
           
-          <p className="font-serif italic text-xl md:text-2xl text-[#faf8f5]/90 max-w-lg mb-4 animate-fade-in-up delay-200 drop-shadow-lg">
+          <p className="font-serif italic text-lg md:text-xl text-white/90 mb-8 font-light">
             "Kita semua pernah lelah. Tapi kita masih di sini."
           </p>
           
-          <p className="text-sm tracking-[0.4em] text-[#e8e0d5] uppercase mb-12 animate-fade-in-up delay-300">
-            Wildan Ferdiansyah
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up delay-400">
-            <button 
-              onClick={() => scrollToSection('rak-buku')}
-              className="bg-[#faf8f5] text-[#2b2b2b] px-8 py-4 rounded-full text-sm font-medium hover:bg-white transition-all hover:scale-105 shadow-xl flex items-center justify-center gap-2 group"
-            >
-              Jelajahi Koleksi
-              <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform" />
-            </button>
-            <button 
-              onClick={() => scrollToSection('cuplikan')}
-              className="border-2 border-[#faf8f5]/50 text-[#faf8f5] px-8 py-4 rounded-full text-sm hover:bg-[#faf8f5]/10 transition-all hover:scale-105 backdrop-blur-sm"
-            >
-              Baca Cuplikan
-            </button>
-          </div>
+          <button 
+            onClick={() => scrollToSection('tentang')}
+            className="group bg-white/10 backdrop-blur-md border border-white/30 text-white px-8 py-3 rounded-full text-sm tracking-widest hover:bg-white hover:text-black transition-all duration-500"
+          >
+            MULAI MEMBACA
+          </button>
         </div>
-
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce">
-          <div className="w-6 h-10 border-2 border-[#faf8f5]/50 rounded-full flex justify-center pt-2">
-            <div className="w-1 h-2 bg-[#faf8f5] rounded-full animate-scroll-down"></div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= TENTANG BUKU ================= */}
-      <section id="tentang" className="max-w-3xl mx-auto px-6 py-24 relative">
-        <div className="absolute top-10 left-0 w-24 h-24 bg-[#e8e0d5]/30 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 right-0 w-32 h-32 bg-[#d4c8b8]/20 rounded-full blur-3xl"></div>
         
-        <div className="text-center relative z-10">
-          <div className="inline-flex items-center gap-2 mb-6">
-            <div className="h-px w-8 bg-[#8b7355]"></div>
-            <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase">Tentang Buku</p>
-            <div className="h-px w-8 bg-[#8b7355]"></div>
-          </div>
-          
-          <h2 className="font-serif text-3xl md:text-5xl leading-tight mb-8 text-[#2b2b2b]">
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-white/50">
+          <ChevronDown size={24} />
+        </div>
+      </header>
+
+      {/* Tentang Section */}
+      <section id="tentang" className="py-24 px-6 relative">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className={`w-12 h-[1px] ${readingMode ? 'bg-stone-600' : 'bg-[#8b7355]'} mx-auto mb-8`}></div>
+          <h2 className="font-serif text-3xl md:text-5xl mb-8 leading-tight">
             Ini bukan buku motivasi.<br />
-            <span className="italic text-[#8b7355]">Ini bukan panduan hidup.</span>
+            <span className={`italic ${theme.accent} opacity-80`}>Ini bukan panduan hidup.</span>
           </h2>
-          
-          <div className="space-y-6 text-[#5a5a5a] leading-relaxed text-lg">
-            <p className="drop-cap-paragraph">
+          <div className={`space-y-6 ${theme.subtext} leading-loose text-lg font-light`}>
+            <p>
               Ini adalah catatan-catatan dari seseorang yang masih belajar hadir—
               untuk dirinya sendiri, untuk orang-orang yang ia cintai, untuk hari-hari
               yang kadang terlalu berat untuk dilalui sendirian.
@@ -504,9 +287,9 @@ export default function HomePage() {
               di antara lagu-lagu yang terlalu jujur untuk didengar sendirian.
             </p>
           </div>
-
-          <div className="mt-12 p-8 bg-white/50 border border-[#e8e0d5] rounded-2xl backdrop-blur-sm">
-            <p className="font-serif italic text-[#8b7355] text-xl leading-relaxed">
+          
+          <div className={`mt-16 p-8 border ${readingMode ? 'border-stone-700 bg-stone-800/30' : 'border-[#e8e0d5] bg-white/40'} rounded-sm backdrop-blur-sm`}>
+            <p className="font-serif italic text-xl leading-relaxed opacity-90">
               "Buku ini ditulis perlahan.<br />
               Dibuat untuk dibaca perlahan juga."
             </p>
@@ -514,668 +297,156 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= BUKU INI UNTUK ================= */}
-      <section id="buku-ini-untuk" className="py-20 bg-[#f5f0e8]/30">
-        <div className="max-w-6xl mx-auto px-6">
+      {/* Buku Ini Untuk Section */}
+      <section id="buku-ini-untuk" className={`py-24 ${readingMode ? 'bg-stone-900/50' : 'bg-[#f5f0e8]/30'}`}>
+        <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-16">
-            <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-4">Buku Ini Untuk</p>
-            <h3 className="font-serif text-3xl md:text-4xl text-[#2b2b2b]">Mereka yang...</h3>
+            <span className={`text-xs tracking-[0.2em] uppercase ${theme.subtext}`}>Untuk Siapa</span>
+            <h3 className="font-serif text-3xl mt-2">Buku Ini Untuk...</h3>
           </div>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            {untukItems.map((item, index) => (
-              <div 
-                key={index}
-                className="group relative overflow-hidden rounded-3xl min-h-[280px] cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500"
-              >
-                <div className="absolute inset-0">
-                  <img 
-                    src={item.bg} 
-                    alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#2b2b2b]/90 via-[#2b2b2b]/50 to-[#2b2b2b]/20 group-hover:from-[#2b2b2b]/95 transition-all duration-500"></div>
-                </div>
-                
-                <div className="relative z-10 h-full flex flex-col justify-end p-8 text-[#faf8f5]">
-                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4 group-hover:bg-[#8b7355] transition-colors duration-300">
-                      {item.icon}
-                    </div>
-                    <h4 className="font-serif text-xl mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">{item.title}</h4>
-                    <p className="text-[#faf8f5]/90 leading-relaxed text-sm md:text-base">
-                      {item.text}
-                    </p>
-                  </div>
-                </div>
 
-                <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#8b7355]/50 rounded-3xl transition-all duration-500"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-[#8b7355]/20 border border-[#8b7355]/20">
+            {UNTUK_ITEMS.map((item, idx) => (
+              <div key={idx} className={`p-8 md:p-12 ${theme.bg} hover:opacity-80 transition-opacity duration-500 group`}>
+                <div className={`mb-6 ${theme.accent} opacity-70 group-hover:opacity-100 transition-opacity`}>
+                  {item.icon}
+                </div>
+                <h4 className="font-serif text-xl mb-4">{item.title}</h4>
+                <p className={`${theme.subtext} leading-relaxed font-light`}>{item.text}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ================= RAK BUKU / KOLEKSI (NEW AESTHETIC DESIGN) ================= */}
-      <section id="rak-buku" className="py-24 relative overflow-hidden" ref={rakBukuRef}>
-        {/* Background mocha texture */}
-        <div className="absolute inset-0">
-          <img 
-            src={MOCHA_BG} 
-            alt="Mocha background" 
-            className="w-full h-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#faf8f5] via-transparent to-[#faf8f5]"></div>
-        </div>
-
-        <div className="max-w-6xl mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#8b7355]/10 border border-[#8b7355]/20 mb-6">
-              <Library size={16} className="text-[#8b7355]" />
-              <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase">Perpustakaan Mini</p>
-            </div>
-            <h3 className="font-serif text-4xl md:text-5xl text-[#2b2b2b] mb-4">Rak Buku Digital</h3>
-            <p className="text-[#5a5a5a] max-w-2xl mx-auto text-lg leading-relaxed">
-              Empat kumpulan tulisan yang bisa kamu baca kapan saja, di mana saja. 
-              <span className="italic text-[#8b7355]"> Gratis untuk dibaca, dibagikan, dan dijadikan teman.</span>
-            </p>
+      {/* Rak Buku (The Bookshelf) */}
+      <section id="rak-buku" className="py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-20">
+            <span className={`text-xs tracking-[0.2em] uppercase ${theme.subtext}`}>Koleksi</span>
+            <h3 className="font-serif text-4xl mt-2">Rak Buku</h3>
+            <div className={`w-16 h-[1px] ${readingMode ? 'bg-stone-700' : 'bg-[#e8e0d5]'} mx-auto mt-6`}></div>
           </div>
 
-          {/* Grid Buku - New Design */}
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            {BUKU_LIST.map((buku, index) => (
-              <div 
-                key={buku.id}
-                className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#e8e0d5]"
-              >
-                {/* Book Cover Area with Image */}
-                <div className="relative h-64 overflow-hidden">
-                  <img 
-                    src={buku.ilustrasi} 
-                    alt={buku.judul}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                  
-                  {/* Badge Tema */}
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-[#8b7355]">
-                      {buku.tema}
-                    </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24">
+            {BUKU_LIST.map((buku) => (
+              <div key={buku.id} className="group flex flex-col items-center text-center">
+                {/* Book Cover Visual */}
+                <div className="relative w-48 h-72 mb-8 perspective-1000">
+                  <div className={`absolute inset-0 rounded-r-md shadow-2xl transition-transform duration-700 group-hover:scale-[1.02] group-hover:-translate-y-2 overflow-hidden border-l-4 ${readingMode ? 'border-stone-600' : 'border-white'}`}>
+                    <img src={buku.cover} alt={buku.judul} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent pointer-events-none"></div>
                   </div>
-
-                  {/* Downloaded Badge */}
-                  {readingProgress[buku.id]?.downloaded && (
-                    <div className="absolute top-4 right-4">
-                      <span className="px-3 py-1 bg-[#8b7355] rounded-full text-xs font-medium text-white flex items-center gap-1">
-                        <Bookmark size={12} fill="currentColor" /> Tersimpan
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Title Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                    <h4 className="font-serif text-2xl mb-1 drop-shadow-lg">{buku.judul}</h4>
-                    <div className="flex items-center gap-3 text-sm text-white/80">
-                      <span className="flex items-center gap-1">
-                        <BookOpen size={14} /> {buku.halaman} halaman
-                      </span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1">
-                        <Clock size={14} /> {buku.readTime}
-                      </span>
-                    </div>
-                  </div>
+                  {/* Spine effect */}
+                  <div className={`absolute left-0 top-0 bottom-0 w-2 ${readingMode ? 'bg-stone-700' : 'bg-[#e8e0d5]'} rounded-l-sm`}></div>
                 </div>
 
                 {/* Book Info */}
-                <div className="p-6 bg-[#faf8f5]">
-                  <p className="text-[#5a5a5a] leading-relaxed mb-6 text-sm line-clamp-3">
+                <div className="max-w-sm">
+                  <div className={`text-[10px] tracking-widest uppercase mb-3 ${theme.subtext}`}>{buku.tema}</div>
+                  <h4 className="font-serif text-2xl mb-3 group-hover:text-[#8b7355] transition-colors">{buku.judul}</h4>
+                  <p className={`${theme.subtext} text-sm leading-relaxed mb-6 font-light line-clamp-3`}>
                     {buku.deskripsi}
                   </p>
-
-                  <div className="flex gap-3">
-                    <button 
-                      onClick={() => openBookModal(buku)}
-                      className="flex-1 bg-white border border-[#e8e0d5] text-[#2b2b2b] py-3 rounded-xl font-medium hover:bg-[#f5f0e8] transition-all duration-300 flex items-center justify-center gap-2"
-                    >
-                      <Eye size={16} />
-                      Detail
-                    </button>
-                    <a 
-                      href={buku.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => handleDownload(buku.id)}
-                      className="flex-[2] bg-[#8b7355] hover:bg-[#9c8565] text-white py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 group"
-                    >
-                      <Download size={16} className="group-hover:animate-bounce" />
-                      Baca & Unduh
-                    </a>
+                  
+                  <div className="flex items-center justify-center gap-6 text-xs tracking-wider opacity-60 mb-6">
+                    <span>{buku.halaman} Halaman</span>
+                    <span>•</span>
+                    <span>{buku.readTime} Baca</span>
                   </div>
+
+                  <a 
+                    href={buku.link} 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className={`inline-flex items-center gap-2 px-6 py-2 rounded-full border ${readingMode ? 'border-stone-700 hover:bg-stone-800' : 'border-[#2b2b2b] hover:bg-[#2b2b2b] hover:text-white'} transition-all text-sm`}
+                  >
+                    Baca Buku <ArrowUpRight size={14} />
+                  </a>
                 </div>
               </div>
             ))}
           </div>
-
-          {/* Reading Stats */}
-          <div className="bg-white/80 backdrop-blur-sm border border-[#e8e0d5] rounded-2xl p-8 text-center">
-            <div className="flex flex-wrap justify-center gap-8 text-sm">
-              <div className="flex items-center gap-2 text-[#8b7355]">
-                <Library size={18} />
-                <span className="font-medium">4 Buku</span>
-                <span className="text-[#5a5a5a]">tersedia</span>
-              </div>
-              <div className="flex items-center gap-2 text-[#8b7355]">
-                <Download size={18} />
-                <span className="font-medium">Gratis</span>
-                <span className="text-[#5a5a5a]">unduhan</span>
-              </div>
-              <div className="flex items-center gap-2 text-[#8b7355]">
-                <Heart size={18} />
-                <span className="font-medium">Dari hati</span>
-                <span className="text-[#5a5a5a]">ke hati</span>
-              </div>
-              <div className="flex items-center gap-2 text-[#8b7355]">
-                <BookOpen size={18} />
-                <span className="font-medium">176+</span>
-                <span className="text-[#5a5a5a]">halaman total</span>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Book Detail Modal */}
-      {showModal && selectedBook && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-scale-up">
-            <div className="relative h-72">
-              <img 
-                src={selectedBook.ilustrasi} 
-                alt={selectedBook.judul}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-              <button 
-                onClick={closeModal}
-                className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
-              >
-                <X size={20} />
-              </button>
-              <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                <span className="px-3 py-1 bg-[#8b7355] rounded-full text-xs font-medium mb-3 inline-block">
-                  {selectedBook.tema}
-                </span>
-                <h3 className="font-serif text-3xl mb-2">{selectedBook.judul}</h3>
-                <p className="text-white/80 text-sm">{selectedBook.halaman} halaman • {selectedBook.readTime} membaca</p>
-              </div>
-            </div>
-            <div className="p-8">
-              <p className="text-[#5a5a5a] leading-relaxed mb-6 text-lg">
-                {selectedBook.deskripsi}
-              </p>
-              
-              <div className="bg-[#faf8f5] rounded-2xl p-6 mb-6">
-                <h4 className="font-medium text-[#2b2b2b] mb-3 flex items-center gap-2">
-                  <Sparkles size={16} className="text-[#8b7355]" />
-                  Yang akan kamu temukan:
-                </h4>
-                <ul className="space-y-2 text-sm text-[#5a5a5a]">
-                  <li className="flex items-start gap-2">
-                    <span className="text-[#8b7355] mt-1">•</span>
-                    Catatan personal yang jujur dan tanpa filter
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-[#8b7355] mt-1">•</span>
-                    Renungan singkat untuk malam-malam sunyi
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-[#8b7355] mt-1">•</span>
-                    Perspektif dari seseorang yang juga sedang belajar
-                  </li>
-                </ul>
-              </div>
-
-              <div className="flex gap-3">
-                <button 
-                  onClick={closeModal}
-                  className="flex-1 border border-[#e8e0d5] text-[#2b2b2b] py-4 rounded-xl font-medium hover:bg-[#faf8f5] transition-all"
-                >
-                  Tutup
-                </button>
-                <a 
-                  href={selectedBook.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => {
-                    handleDownload(selectedBook.id);
-                    closeModal();
-                  }}
-                  className="flex-[2] bg-[#8b7355] hover:bg-[#9c8565] text-white py-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2"
-                >
-                  <Download size={18} />
-                  Unduh Sekarang
-                </a>
-              </div>
-            </div>
+      {/* Cuplikan (Literary Quotes) */}
+      <section id="cuplikan" className={`py-24 ${readingMode ? 'bg-[#141211]' : 'bg-[#f0ebe3]'}`}>
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <Quote size={32} className={`mx-auto mb-4 opacity-30 ${theme.accent}`} />
+            <h3 className="font-serif text-3xl">Cuplikan</h3>
           </div>
-        </div>
-      )}
 
-      {/* ================= RUANG SUNYI ================= */}
-      <section className="max-w-4xl mx-auto px-6 py-24">
-        <div className="text-center mb-16">
-          <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-4">Ruang Sunyi</p>
-          <h3 className="font-serif text-3xl md:text-4xl text-[#2b2b2b] mb-4">Tempat Berlabuh</h3>
-          <p className="text-[#5a5a5a] italic">Beberapa hal yang mungkin kamu temui di sini:</p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-6">
-          {ruangSunyiItems.map((item, index) => (
-            <div 
-              key={index}
-              className="group bg-white border border-[#e8e0d5] rounded-2xl p-6 hover:shadow-xl transition-all duration-500 hover:-translate-y-1 flex items-start gap-4"
-            >
-              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#f5f0e8] flex items-center justify-center text-[#8b7355] group-hover:bg-[#8b7355] group-hover:text-white transition-all duration-300">
-                {item.icon}
-              </div>
-              <div>
-                <p className="text-[#2b2b2b] leading-relaxed group-hover:text-[#8b7355] transition-colors duration-300">
-                  {item.text}
+          <div className="space-y-16">
+            {CUPLIKAN_ITEMS.map((item, idx) => (
+              <div key={idx} className="text-center max-w-2xl mx-auto">
+                <p className="font-serif text-2xl md:text-3xl leading-relaxed mb-6 italic opacity-90">
+                  "{item.quote}"
                 </p>
+                <div className={`text-xs tracking-widest uppercase ${theme.subtext}`}>
+                  {item.book}, <span className="opacity-70">{item.page}</span>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-12 text-center p-8 bg-[#2b2b2b] rounded-3xl text-[#faf8f5] relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#8b7355]/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#8b7355]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-          
-          <div className="relative z-10">
-            <p className="font-serif text-xl md:text-2xl italic mb-4">
-              "Tidak semua buku harus mengubah hidupmu.
-            </p>
-            <p className="text-[#faf8f5]/80">
-              Ada yang cukup menemanimu, sebentar saja."
-            </p>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ================= TENTANG PENULIS ================= */}
-      <section id="penulis" className="max-w-4xl mx-auto px-6 py-24">
-        <div className="bg-white border border-[#e8e0d5] rounded-[2rem] overflow-hidden shadow-2xl shadow-[#2b2b2b]/5">
-          <div className="relative h-[500px] overflow-hidden">
-            <img
-              src="/wildan.png"
-              alt="Wildan Ferdiansyah"
-              className="w-full h-full object-cover object-center"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/60 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/90" />
-          </div>
-          
-          <div className="px-8 pb-12 pt-8 relative z-10 text-center bg-white">
-            <div className="w-20 h-1 bg-[#8b7355] mx-auto mb-6 rounded-full"></div>
+      {/* Penulis (Cinematic) */}
+      <section id="penulis" className="relative min-h-screen flex items-center justify-center py-24 overflow-hidden">
+        {/* Background Image with Blur */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=2000&auto=format&fit=crop" 
+            alt="Background" 
+            className="w-full h-full object-cover opacity-40 grayscale"
+          />
+          <div className={`absolute inset-0 ${readingMode ? 'bg-stone-900/80' : 'bg-[#faf8f5]/80'}`}></div>
+        </div>
+
+        <div className="relative z-10 max-w-2xl mx-auto px-6 text-center">
+          <div className={`p-8 md:p-12 border ${readingMode ? 'border-stone-700 bg-stone-900/60' : 'border-[#e8e0d5] bg-white/60'} backdrop-blur-xl shadow-2xl`}>
+            <div className="mb-8">
+               <span className={`text-xs tracking-[0.3em] uppercase ${theme.subtext}`}>Tentang Penulis</span>
+            </div>
             
-            <h2 className="font-serif text-4xl mb-3 text-[#2b2b2b]">Wildan Ferdiansyah</h2>
-            <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-8">Penulis & Barista</p>
+            <h3 className="font-serif text-3xl md:text-4xl mb-8">Wildan Ferdiansyah</h3>
             
-            <div className="space-y-4 text-[#5a5a5a] leading-relaxed max-w-xl mx-auto mb-8">
-              <p className="text-lg">
-                Bukan penulis profesional. Bukan motivator. Hanya seseorang yang 
-                mencoba memahami hidupnya melalui kata-kata.
+            <div className={`space-y-6 ${theme.subtext} leading-loose font-light text-justify md:text-center`}>
+              <p>
+                Saya bukan siapa-siapa yang istimewa. Hanya seorang barista yang kebetulan suka menulis, 
+                dan seorang penulis yang kebetulan terlalu sering memikirkan kopi.
               </p>
               <p>
-                Pernah menjadi barista. Pernah menjadi mural artist. 
-                Sekarang menulis di sela-sela waktu—bukan untuk menjadi terkenal, tapi untuk tetap waras.
+                "Sepucuk Surat" lahir bukan dari kepastian, tapi dari keraguan. 
+                Dari malam-malam yang panjang dan percakapan-percakapan yang tidak pernah terjadi.
+              </p>
+              <p className="italic opacity-80">
+                "Saya menulis bukan untuk mengajari, tapi untuk mengingatkan diri sendiri 
+                bahwa perasaan ini pernah ada, dan mungkin juga ada di tempatmu."
               </p>
             </div>
-            
-            <p className="font-serif italic text-[#8b7355] text-xl mb-12 border-l-4 border-[#8b7355] pl-6 pr-6 py-2 bg-[#faf8f5] inline-block rounded-r-lg">
-              "Aku menulis untuk hadir, bukan untuk memukau."
-            </p>
-            
-            <div className="max-w-md mx-auto">
-              <div className="relative">
-                <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-[#e8e0d5]"></div>
-                <div className="space-y-8">
-                  {[
-                    { text: "Pernah menjadi barista" },
-                    { text: "Mural artist" },
-                    { text: "Mulai menulis diam-diam" },
-                    { text: "Buku pertama terbit" }
-                  ].map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-6 relative">
-                      <div className="w-16 flex-shrink-0"></div>
-                      <div className="absolute left-8 w-3 h-3 rounded-full bg-[#8b7355] border-4 border-white shadow-md -translate-x-[5px]"></div>
-                      <div className="flex-1 text-left pl-8 text-[#5a5a5a]">{item.text}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+
+            <div className={`mt-10 pt-8 border-t ${readingMode ? 'border-stone-700' : 'border-[#e8e0d5]'} flex justify-center gap-6`}>
+              <a href="#" className={`${theme.subtext} hover:text-[#8b7355] transition-colors`}><MessageCircle size={20} /></a>
+              <a href="#" className={`${theme.subtext} hover:text-[#8b7355] transition-colors`}><Coffee size={20} /></a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ================= CUPLIKAN ================= */}
-      <section id="cuplikan" className="py-24 bg-[#2b2b2b] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-20 left-20 w-64 h-64 rounded-full border border-white"></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96 rounded-full border border-white"></div>
-        </div>
-        
-        <div className="max-w-4xl mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-4">Cuplikan</p>
-            <h3 className="font-serif text-3xl md:text-4xl text-[#faf8f5]">Sekilas Isi</h3>
-          </div>
-          
-          <div className="space-y-8">
-            {cuplikanItems.map((item, index) => (
-              <div 
-                key={index}
-                className="group relative rounded-3xl p-8 md:p-12 overflow-hidden border border-[#8b7355]/30 bg-[#1a1a1a]/50 backdrop-blur-sm hover:border-[#8b7355]/60 transition-all duration-500"
-              >
-                <div className="absolute top-6 left-6 text-[#8b7355]/20 font-serif text-8xl leading-none">"</div>
-                <div className="absolute bottom-6 right-6 text-[#8b7355]/20 font-serif text-8xl leading-none rotate-180">"</div>
-                
-                <div className="relative z-10 text-center">
-                  <blockquote className="font-serif text-xl md:text-2xl leading-relaxed text-[#faf8f5] italic mb-6">
-                    {item.quote}
-                  </blockquote>
-                  
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="flex items-center gap-2">
-                      <div className="h-px w-8 bg-[#8b7355]/50"></div>
-                      <p className="text-sm text-[#8b7355] tracking-wide font-medium">— {item.page}</p>
-                      <div className="h-px w-8 bg-[#8b7355]/50"></div>
-                    </div>
-                    <p className="text-xs text-[#faf8f5]/50 italic">{item.book}</p>
-                  </div>
-                </div>
-
-                <div className="absolute inset-0 bg-gradient-to-br from-[#8b7355]/10 via-transparent to-[#8b7355]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= KATA PEMBACA ================= */}
-      <section className="py-24 bg-[#faf8f5]">
-        <div className="max-w-6xl mx-auto px-6 mb-12">
-          <div className="text-center">
-            <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-4">Kata Pembaca</p>
-            <h3 className="font-serif text-3xl md:text-4xl text-[#2b2b2b]">Yang Mereka Rasakan</h3>
-          </div>
-        </div>
-        
-        <div 
-          ref={scrollRef}
-          className="flex gap-6 overflow-x-auto px-6 cursor-grab active:cursor-grabbing scrollbar-hide pb-4"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => {
-            setIsPaused(false);
-            setIsDragging(false);
-          }}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
-          {duplicatedComments.map((item, index) => (
-            <div 
-              key={`${item.id}-${index}`}
-              className="flex-shrink-0 w-[340px] md:w-[400px] bg-white border border-[#e8e0d5] rounded-2xl p-8 relative hover:shadow-2xl transition-all duration-500 select-none group hover:-translate-y-2"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#f5f0e8] rounded-full -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
-              
-              <div className="relative z-10">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Sparkles key={i} size={12} className="text-[#8b7355] fill-[#8b7355]" />
-                  ))}
-                </div>
-                
-                <p className="text-[#5a5a5a] leading-relaxed mb-6 italic text-lg">
-                  "{item.text}"
-                </p>
-                
-                <div className="flex items-center gap-3 pt-4 border-t border-[#e8e0d5]">
-                  <div className="w-10 h-10 rounded-full bg-[#f5f0e8] flex items-center justify-center text-[#8b7355] font-serif font-bold">
-                    {item.nama[0]}
-                  </div>
-                  <p className="text-sm text-[#2b2b2b] font-medium">— {item.nama}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        <p className="text-center text-xs text-[#8b7355]/60 mt-8 italic">
-          Sentuh dan geser untuk melihat lebih banyak ✨
-        </p>
-      </section>
-
-      {/* ================= CATATAN PEMBACA FORM ================= */}
-      <section className="max-w-2xl mx-auto px-6 py-24">
-        <div className="text-center mb-12">
-          <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-4">Catatan Pembaca</p>
-          <p className="text-[#2b2b2b] italic text-xl font-serif">
-            "Kalau tulisan ini menemani harimu,<br />
-            kamu boleh meninggalkan jejak kecil di sini."
+      {/* Footer / Ruang Sunyi */}
+      <footer className={`py-12 border-t ${readingMode ? 'border-stone-800' : 'border-[#e8e0d5]'} text-center`}>
+        <div className="max-w-md mx-auto px-6 opacity-60">
+          <Coffee size={24} className="mx-auto mb-4 opacity-50" />
+          <p className="font-serif text-sm mb-2">Sepucuk Surat</p>
+          <p className={`text-xs ${theme.subtext} font-light`}>
+            © {new Date().getFullYear()} Wildan Ferdiansyah. <br/>
+            Dibuat dengan pelan di malam hari.
           </p>
         </div>
-        
-        <form onSubmit={handleSubmit} className="bg-white border border-[#e8e0d5] rounded-3xl p-8 md:p-10 shadow-xl shadow-[#2b2b2b]/5 space-y-6">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder=" "
-              value={nama}
-              onChange={(e) => setNama(e.target.value)}
-              className="peer w-full px-5 py-4 rounded-xl border border-[#e8e0d5] bg-[#faf8f5] focus:outline-none focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 transition-all placeholder-transparent"
-              id="nama"
-            />
-            <label 
-              htmlFor="nama"
-              className="absolute left-5 top-4 text-[#b0a090] text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#b0a090] peer-placeholder-shown:top-4 peer-focus:top-[-10px] peer-focus:text-xs peer-focus:text-[#8b7355] peer-focus:bg-white peer-focus:px-2 bg-transparent pointer-events-none"
-            >
-              Nama (opsional)
-            </label>
-          </div>
-          
-          <div className="relative">
-            <textarea
-              placeholder=" "
-              rows={4}
-              value={catatan}
-              onChange={(e) => setCatatan(e.target.value)}
-              className="peer w-full px-5 py-4 rounded-xl border border-[#e8e0d5] bg-[#faf8f5] focus:outline-none focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 transition-all placeholder-transparent resize-none"
-              id="catatan"
-            />
-            <label 
-              htmlFor="catatan"
-              className="absolute left-5 top-4 text-[#b0a090] text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#b0a090] peer-placeholder-shown:top-4 peer-focus:top-[-10px] peer-focus:text-xs peer-focus:text-[#8b7355] peer-focus:bg-white peer-focus:px-2 bg-transparent pointer-events-none"
-            >
-              Tulis catatanmu...
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-[#2b2b2b] text-[#faf8f5] py-4 rounded-xl font-medium hover:bg-[#1a1a1a] transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 group"
-          >
-            <Send size={18} className="group-hover:translate-x-1 transition-transform" />
-            Kirim Catatan
-          </button>
-        </form>
-      </section>
-
-      {/* ================= FOOTER ================= */}
-      <footer className="bg-[#2b2b2b] text-[#faf8f5] py-16">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-12 mb-12">
-            <div>
-              <button 
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="flex items-center gap-2 mb-4 hover:opacity-70 transition-opacity"
-              >
-                <Coffee size={24} className="text-[#8b7355]" />
-                <h4 className="font-serif text-2xl">Sepucuk Surat</h4>
-              </button>
-              <p className="text-[#faf8f5]/70 leading-relaxed">
-                Catatan sunyi dari seorang barista yang mencoba memahami hidup melalui kata-kata.
-              </p>
-            </div>
-
-            <div>
-              <h5 className="font-medium mb-4 text-[#8b7355]">Navigasi</h5>
-              <ul className="space-y-2 text-[#faf8f5]/70">
-                <li>
-                  <button onClick={() => scrollToSection('tentang')} className="hover:text-[#8b7355] transition-colors text-left">
-                    Tentang Buku
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => scrollToSection('rak-buku')} className="hover:text-[#8b7355] transition-colors text-left">
-                    Koleksi Buku
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => scrollToSection('cuplikan')} className="hover:text-[#8b7355] transition-colors text-left">
-                    Cuplikan
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => scrollToSection('penulis')} className="hover:text-[#8b7355] transition-colors text-left">
-                    Tentang Penulis
-                  </button>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h5 className="font-medium mb-4 text-[#8b7355]">Bagikan</h5>
-              <div className="flex gap-3">
-                <button 
-                  onClick={() => handleShare('whatsapp')}
-                  className="w-10 h-10 rounded-full bg-[#faf8f5]/10 flex items-center justify-center hover:bg-[#8b7355] transition-all hover:scale-110"
-                >
-                  <MessageCircle size={18} />
-                </button>
-                <button 
-                  onClick={() => handleShare('facebook')}
-                  className="w-10 h-10 rounded-full bg-[#faf8f5]/10 flex items-center justify-center hover:bg-[#8b7355] transition-all hover:scale-110"
-                >
-                  <Facebook size={18} />
-                </button>
-                <button 
-                  onClick={() => handleShare('twitter')}
-                  className="w-10 h-10 rounded-full bg-[#faf8f5]/10 flex items-center justify-center hover:bg-[#8b7355] transition-all hover:scale-110"
-                >
-                  <Twitter size={18} />
-                </button>
-                <button 
-                  onClick={() => handleShare('instagram')}
-                  className="w-10 h-10 rounded-full bg-[#faf8f5]/10 flex items-center justify-center hover:bg-[#8b7355] transition-all hover:scale-110"
-                >
-                  <Instagram size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-[#faf8f5]/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#faf8f5]/50">
-            <p>&copy; 2026 Wildan Ferdiansyah. Seluruh hak cipta dilindungi.</p>
-            <p className="flex items-center gap-1">
-              Dibuat dengan <Heart size={14} className="text-[#8b7355] fill-[#8b7355]" /> dan secangkir kopi
-            </p>
-          </div>
-        </div>
       </footer>
-
-      {/* Custom Styles */}
-      <style jsx>{`
-        @keyframes slow-zoom {
-          0% { transform: scale(1.05); }
-          50% { transform: scale(1.1); }
-          100% { transform: scale(1.05); }
-        }
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes scroll-down {
-          0% { transform: translateY(0); opacity: 1; }
-          100% { transform: translateY(12px); opacity: 0; }
-        }
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes scale-up {
-          from { 
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to { 
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        .animate-slow-zoom {
-          animation: slow-zoom 20s ease-in-out infinite;
-        }
-        .animate-fade-in-up {
-          animation: fade-in-up 0.8s ease-out forwards;
-          opacity: 0;
-        }
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out forwards;
-        }
-        .animate-scale-up {
-          animation: scale-up 0.3s ease-out forwards;
-        }
-        .delay-100 { animation-delay: 100ms; }
-        .delay-200 { animation-delay: 200ms; }
-        .delay-300 { animation-delay: 300ms; }
-        .delay-400 { animation-delay: 400ms; }
-        .animate-scroll-down {
-          animation: scroll-down 2s ease-in-out infinite;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .drop-cap-paragraph::first-letter {
-          float: left;
-          font-family: serif;
-          font-size: 3.5rem;
-          line-height: 0.8;
-          padding-right: 0.75rem;
-          padding-top: 0.25rem;
-          color: #8b7355;
-          font-weight: 400;
-        }
-        .line-clamp-3 {
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-      `}</style>
-    </main>
+    </div>
   );
 }
