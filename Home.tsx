@@ -10,13 +10,25 @@ import {
   Heart,
   ArrowUpRight,
   Send,
-  Palette
+  Palette,
+  Sparkles,
+  Clock,
+  Music,
+  Feather
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 // Ganti dengan ilustrasi Anda yang sebenarnya jika ada
 const HERO_BG =
   "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1400&auto=format&fit=crop";
+
+// Ilustrasi kopi untuk background cards
+const COFFE_ILLUSTRATIONS = {
+  v60: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?q=80&w=400&auto=format&fit=crop",
+  cup: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=400&auto=format&fit=crop",
+  night: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop",
+  heart: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=400&auto=format&fit=crop"
+};
 
 export default function HomePage() {
   const scrollRef = useRef(null);
@@ -73,7 +85,7 @@ export default function HomePage() {
     
     const scroll = () => {
       if (!isPaused && !isDragging) {
-        currentScroll += 0.3; // Kecepatan lebih lambat agar aesthetic
+        currentScroll += 0.3;
         if (currentScroll >= scrollContainer.scrollWidth / 2) {
           currentScroll = 0;
         }
@@ -153,24 +165,28 @@ export default function HomePage() {
 
   const untukItems = [
     {
-      icon: <BookOpen size={20} />,
+      icon: <BookOpen size={24} />,
       text: "Untuk kamu yang membaca dengan pelan, bukan karena lambat—tapi karena ingin merasakan.",
-      bg: "bg-gradient-to-br from-[#f5f0e8] via-[#faf8f5] to-[#e8e0d5]"
+      bg: COFFE_ILLUSTRATIONS.v60,
+      title: "Membaca Perlahan"
     },
     {
-      icon: <Coffee size={20} />,
+      icon: <Coffee size={24} />,
       text: "Untuk kamu yang bekerja seharian dan baru bisa merenung saat dunia sudah tidur.",
-      bg: "bg-gradient-to-br from-[#e8e0d5] via-[#f5f0e8] to-[#d4c8b8]"
+      bg: COFFE_ILLUSTRATIONS.cup,
+      title: "Malam yang Panjang"
     },
     {
-      icon: <Moon size={20} />,
+      icon: <Moon size={24} />,
       text: "Untuk kamu yang duduk sendiri dengan kopi dan kesunyian, dan merasa itu cukup.",
-      bg: "bg-gradient-to-br from-[#d4c8b8]/30 via-[#e8e0d5]/50 to-[#f5f0e8]"
+      bg: COFFE_ILLUSTRATIONS.night,
+      title: "Kesendirian yang Nyaman"
     },
     {
-      icon: <Heart size={20} />,
+      icon: <Heart size={24} />,
       text: "Untuk kamu yang sering merasa tak terlihat, tapi tetap hadir—setiap hari.",
-      bg: "bg-gradient-to-br from-[#f5f0e8] via-[#e8e0d5]/60 to-[#d4c8b8]/40"
+      bg: COFFE_ILLUSTRATIONS.heart,
+      title: "Kehadiran yang Diam"
     }
   ];
 
@@ -189,84 +205,148 @@ export default function HomePage() {
     }
   ];
 
+  // Ruang Sunyi items dengan icon yang sesuai
+  const ruangSunyiItems = [
+    {
+      icon: <Sparkles size={20} />,
+      text: "Kopi yang sudah dingin, tapi tetap diminum.",
+      delay: "0"
+    },
+    {
+      icon: <Clock size={20} />,
+      text: "Lagu yang diputar berulang kali.",
+      delay: "100"
+    },
+    {
+      icon: <Music size={20} />,
+      text: "Buku yang dibaca dengan napas pelan.",
+      delay: "200"
+    },
+    {
+      icon: <Feather size={20} />,
+      text: "Catatan yang ditulis tanpa tujuan, hanya untuk mengingat.",
+      delay: "300"
+    }
+  ];
+
   // Duplicate array untuk infinite scroll effect
   const duplicatedComments = [...kataPembaca, ...kataPembaca];
 
   return (
-    <main className="bg-[#faf8f5] text-[#2b2b2b] font-sans selection:bg-[#e8e0d5]">
+    <main className="bg-[#faf8f5] text-[#2b2b2b] font-sans selection:bg-[#e8e0d5] overflow-x-hidden">
 
       {/* ================= NAVBAR ================= */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf8f5]/90 backdrop-blur-sm border-b border-[#e8e0d5]/50">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf8f5]/80 backdrop-blur-md border-b border-[#e8e0d5]/30 transition-all duration-300">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <p className="font-serif text-lg tracking-wide">Sepucuk Surat</p>
+          <div className="flex items-center gap-2">
+            <Coffee size={20} className="text-[#8b7355]" />
+            <p className="font-serif text-lg tracking-wide text-[#2b2b2b]">Sepucuk Surat</p>
+          </div>
           
           <div className="hidden md:flex items-center gap-8 text-sm">
-            <a href="#tentang" className="hover:text-[#8b7355] transition">Tentang</a>
-            <a href="#cuplikan" className="hover:text-[#8b7355] transition">Cuplikan</a>
-            <a href="#penulis" className="hover:text-[#8b7355] transition">Penulis</a>
+            <a href="#tentang" className="hover:text-[#8b7355] transition-colors relative group">
+              Tentang
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#8b7355] transition-all group-hover:w-full"></span>
+            </a>
+            <a href="#cuplikan" className="hover:text-[#8b7355] transition-colors relative group">
+              Cuplikan
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#8b7355] transition-all group-hover:w-full"></span>
+            </a>
+            <a href="#penulis" className="hover:text-[#8b7355] transition-colors relative group">
+              Penulis
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#8b7355] transition-all group-hover:w-full"></span>
+            </a>
           </div>
 
           <a 
             href="https://drive.google.com" 
             target="_blank"
-            className="bg-[#2b2b2b] text-[#faf8f5] px-5 py-2 rounded-full text-sm hover:bg-[#1a1a1a] transition"
+            rel="noopener noreferrer"
+            className="bg-[#2b2b2b] text-[#faf8f5] px-5 py-2.5 rounded-full text-sm hover:bg-[#1a1a1a] transition-all hover:scale-105 flex items-center gap-2 shadow-lg shadow-[#2b2b2b]/10"
           >
             Unduh Buku
+            <ArrowUpRight size={14} />
           </a>
         </div>
       </nav>
 
       {/* ================= HERO ================= */}
-      <section className="relative h-[90vh] w-full overflow-hidden pt-20">
-        <div className="absolute inset-0 bg-[#d4c8b8]/20" />
+      <section className="relative min-h-screen w-full overflow-hidden pt-20 flex items-center">
+        {/* Background dengan overlay gradient yang lebih kuat */}
+        <div className="absolute inset-0 bg-[#2b2b2b]/40 z-10" />
         <img
           src={HERO_BG}
-          className="absolute inset-0 w-full h-full object-cover opacity-90"
+          className="absolute inset-0 w-full h-full object-cover scale-105 animate-slow-zoom"
           alt="Coffee illustration"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#faf8f5]/30 via-transparent to-[#faf8f5]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#2b2b2b]/60 via-[#2b2b2b]/20 to-[#faf8f5] z-10" />
         
-        <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center">
-          <p className="text-xs tracking-[0.4em] text-[#5a5a5a] uppercase mb-6">Sebuah Buku Oleh</p>
-          <h1 className="font-serif text-5xl md:text-7xl leading-tight mb-4">
+        <div className="relative z-20 w-full flex flex-col items-center justify-center px-6 text-center py-20">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8 animate-fade-in-up">
+            <Sparkles size={14} className="text-[#faf8f5]" />
+            <p className="text-xs tracking-[0.3em] text-[#faf8f5] uppercase">Sebuah Buku Oleh</p>
+          </div>
+          
+          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl leading-tight mb-6 text-[#faf8f5] animate-fade-in-up delay-100 drop-shadow-2xl">
             Sepucuk Surat<br />
-            <span className="italic text-[#8b7355]">untuk Malam</span>
+            <span className="italic text-[#e8e0d5]">untuk Malam</span>
           </h1>
-          <p className="font-serif italic text-lg text-[#5a5a5a] max-w-md mb-2">
+          
+          <p className="font-serif italic text-xl md:text-2xl text-[#faf8f5]/90 max-w-lg mb-4 animate-fade-in-up delay-200 drop-shadow-lg">
             "Kita semua pernah lelah. Tapi kita masih di sini."
           </p>
-          <p className="text-sm tracking-widest text-[#8b7355] uppercase mb-10">Wildan Ferdiansyah</p>
           
-          <div className="flex gap-4">
+          <p className="text-sm tracking-[0.4em] text-[#e8e0d5] uppercase mb-12 animate-fade-in-up delay-300">
+            Wildan Ferdiansyah
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up delay-400">
             <a 
               href="https://drive.google.com" 
               target="_blank"
-              className="bg-[#2b2b2b] text-[#faf8f5] px-8 py-3 rounded-full text-sm hover:bg-[#1a1a1a] transition"
+              rel="noopener noreferrer"
+              className="bg-[#faf8f5] text-[#2b2b2b] px-8 py-4 rounded-full text-sm font-medium hover:bg-white transition-all hover:scale-105 shadow-xl flex items-center justify-center gap-2 group"
             >
               Unduh Buku
+              <ArrowUpRight size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </a>
             <a 
               href="#cuplikan"
-              className="border border-[#2b2b2b] text-[#2b2b2b] px-8 py-3 rounded-full text-sm hover:bg-[#2b2b2b] hover:text-[#faf8f5] transition"
+              className="border-2 border-[#faf8f5]/50 text-[#faf8f5] px-8 py-4 rounded-full text-sm hover:bg-[#faf8f5]/10 transition-all hover:scale-105 backdrop-blur-sm"
             >
               Baca Cuplikan
             </a>
           </div>
         </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+          <div className="w-6 h-10 border-2 border-[#faf8f5]/50 rounded-full flex justify-center pt-2">
+            <div className="w-1 h-2 bg-[#faf8f5] rounded-full animate-scroll-down"></div>
+          </div>
+        </div>
       </section>
 
       {/* ================= TENTANG BUKU ================= */}
-      <section id="tentang" className="max-w-3xl mx-auto px-6 py-20">
-        <div className="text-center">
-          <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-8">Tentang Buku</p>
+      <section id="tentang" className="max-w-3xl mx-auto px-6 py-24 relative">
+        {/* Decorative elements */}
+        <div className="absolute top-10 left-0 w-24 h-24 bg-[#e8e0d5]/30 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 right-0 w-32 h-32 bg-[#d4c8b8]/20 rounded-full blur-3xl"></div>
+        
+        <div className="text-center relative z-10">
+          <div className="inline-flex items-center gap-2 mb-6">
+            <div className="h-px w-8 bg-[#8b7355]"></div>
+            <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase">Tentang Buku</p>
+            <div className="h-px w-8 bg-[#8b7355]"></div>
+          </div>
           
-          <h2 className="font-serif text-3xl md:text-4xl leading-snug mb-8">
+          <h2 className="font-serif text-3xl md:text-5xl leading-tight mb-8 text-[#2b2b2b]">
             Ini bukan buku motivasi.<br />
-            Ini bukan panduan hidup.
+            <span className="italic text-[#8b7355]">Ini bukan panduan hidup.</span>
           </h2>
           
-          <div className="space-y-4 text-[#5a5a5a] leading-relaxed">
-            <p>
+          <div className="space-y-6 text-[#5a5a5a] leading-relaxed text-lg">
+            <p className="first-letter:text-5xl first-letter:font-serif first-letter:text-[#8b7355] first-letter:float-left first-letter:mr-3 first-letter:mt-[-4px]">
               Ini adalah catatan-catatan dari seseorang yang masih belajar hadir—
               untuk dirinya sendiri, untuk orang-orang yang ia cintai, untuk hari-hari
               yang kadang terlalu berat untuk dilalui sendirian.
@@ -277,60 +357,126 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mt-8 font-serif italic text-[#8b7355]">
-            <p>Buku ini ditulis perlahan.</p>
-            <p>Dibuat untuk dibaca perlahan juga.</p>
+          <div className="mt-12 p-8 bg-white/50 border border-[#e8e0d5] rounded-2xl backdrop-blur-sm">
+            <p className="font-serif italic text-[#8b7355] text-xl leading-relaxed">
+              "Buku ini ditulis perlahan.<br />
+              Dibuat untuk dibaca perlahan juga."
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ================= BUKU INI UNTUK (Dengan Background Aesthetic) ================= */}
-      <section className="max-w-3xl mx-auto px-6 py-16">
-        <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase text-center mb-12">Buku Ini Untuk</p>
-        
-        <div className="space-y-4">
-          {untukItems.map((item, index) => (
+      {/* ================= BUKU INI UNTUK (Dengan Background Ilustrasi Kopi) ================= */}
+      <section className="py-20 bg-[#f5f0e8]/30">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-4">Buku Ini Untuk</p>
+            <h3 className="font-serif text-3xl md:text-4xl text-[#2b2b2b]">Mereka yang...</h3>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            {untukItems.map((item, index) => (
+              <div 
+                key={index}
+                className="group relative overflow-hidden rounded-3xl min-h-[280px] cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500"
+              >
+                {/* Background Image dengan overlay */}
+                <div className="absolute inset-0">
+                  <img 
+                    src={item.bg} 
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#2b2b2b]/90 via-[#2b2b2b]/50 to-[#2b2b2b]/20 group-hover:from-[#2b2b2b]/95 transition-all duration-500"></div>
+                </div>
+                
+                {/* Content */}
+                <div className="relative z-10 h-full flex flex-col justify-end p-8 text-[#faf8f5]">
+                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4 group-hover:bg-[#8b7355] transition-colors duration-300">
+                      {item.icon}
+                    </div>
+                    <h4 className="font-serif text-xl mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">{item.title}</h4>
+                    <p className="text-[#faf8f5]/90 leading-relaxed text-sm md:text-base">
+                      {item.text}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Hover border effect */}
+                <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#8b7355]/50 rounded-3xl transition-all duration-500"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= RUANG SUNYI (Dengan Icon untuk semua card) ================= */}
+      <section className="max-w-4xl mx-auto px-6 py-24">
+        <div className="text-center mb-16">
+          <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-4">Ruang Sunyi</p>
+          <h3 className="font-serif text-3xl md:text-4xl text-[#2b2b2b] mb-4">Tempat Berlabuh</h3>
+          <p className="text-[#5a5a5a] italic">Beberapa hal yang mungkin kamu temui di sini:</p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-6">
+          {ruangSunyiItems.map((item, index) => (
             <div 
               key={index}
-              className={`group relative overflow-hidden rounded-2xl p-6 border border-[#e8e0d5] hover:shadow-xl transition-all duration-500 cursor-pointer ${item.bg}`}
+              className="group bg-white border border-[#e8e0d5] rounded-2xl p-6 hover:shadow-xl transition-all duration-500 hover:-translate-y-1 flex items-start gap-4"
+              style={{ animationDelay: `${item.delay}ms` }}
             >
-              {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:scale-150 transition-transform duration-700" />
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#8b7355]/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-xl group-hover:scale-150 transition-transform duration-700" />
-              
-              <div className="relative z-10 flex items-start gap-5">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-[#8b7355] shadow-sm group-hover:scale-110 transition-transform duration-300">
-                  {item.icon}
-                </div>
-                <p className="text-[#4a4a4a] leading-relaxed pt-2 group-hover:text-[#2b2b2b] transition-colors">
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#f5f0e8] flex items-center justify-center text-[#8b7355] group-hover:bg-[#8b7355] group-hover:text-white transition-all duration-300">
+                {item.icon}
+              </div>
+              <div>
+                <p className="text-[#2b2b2b] leading-relaxed group-hover:text-[#8b7355] transition-colors duration-300">
                   {item.text}
                 </p>
               </div>
             </div>
           ))}
         </div>
+
+        <div className="mt-12 text-center p-8 bg-[#2b2b2b] rounded-3xl text-[#faf8f5] relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#8b7355]/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#8b7355]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+          
+          <div className="relative z-10">
+            <p className="font-serif text-xl md:text-2xl italic mb-4">
+              "Tidak semua buku harus mengubah hidupmu.
+            </p>
+            <p className="text-[#faf8f5]/80">
+              Ada yang cukup menemanimu, sebentar saja."
+            </p>
+          </div>
+        </div>
       </section>
 
-      {/* ================= TENTANG PENULIS (UPDATE POSISI & KONTEN) ================= */}
-      <section id="penulis" className="max-w-3xl mx-auto px-6 py-16">
-        <div className="bg-white border border-[#e8e0d5] rounded-3xl overflow-hidden">
-          {/* Foto dengan gradient overlay */}
-          <div className="relative h-[400px] overflow-hidden">
+      {/* ================= TENTANG PENULIS (FIXED: Posisi teks diperbaiki) ================= */}
+      <section id="penulis" className="max-w-4xl mx-auto px-6 py-24">
+        <div className="bg-white border border-[#e8e0d5] rounded-[2rem] overflow-hidden shadow-2xl shadow-[#2b2b2b]/5">
+          {/* Foto dengan gradient overlay yang lebih kuat */}
+          <div className="relative h-[500px] overflow-hidden">
             <img
               src="/wildan.png"
               alt="Wildan Ferdiansyah"
-              className="w-full h-full object-cover object-top"
+              className="w-full h-full object-cover object-center"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent" />
+            {/* Gradient overlay yang lebih kuat agar teks tidak menyatu */}
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/90" />
           </div>
           
-          {/* Content */}
-          <div className="px-8 pb-12 -mt-20 relative z-10 text-center">
-            <h2 className="font-serif text-3xl mb-2">Wildan Ferdiansyah</h2>
-            <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-8">Penulis</p>
+          {/* Content - dipindahkan ke bawah dengan background solid */}
+          <div className="px-8 pb-12 pt-8 relative z-10 text-center bg-white">
+            <div className="w-20 h-1 bg-[#8b7355] mx-auto mb-6 rounded-full"></div>
             
-            <div className="space-y-4 text-[#5a5a5a] leading-relaxed max-w-xl mx-auto">
-              <p>
+            <h2 className="font-serif text-4xl mb-3 text-[#2b2b2b]">Wildan Ferdiansyah</h2>
+            <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-8">Penulis & Barista</p>
+            
+            <div className="space-y-4 text-[#5a5a5a] leading-relaxed max-w-xl mx-auto mb-8">
+              <p className="text-lg">
                 Bukan penulis profesional. Bukan motivator. Hanya seseorang yang 
                 mencoba memahami hidupnya melalui kata-kata.
               </p>
@@ -340,31 +486,27 @@ export default function HomePage() {
               </p>
             </div>
             
-            <p className="font-serif italic text-[#8b7355] mt-6 mb-10">
+            <p className="font-serif italic text-[#8b7355] text-xl mb-12 border-l-4 border-[#8b7355] pl-6 pr-6 py-2 bg-[#faf8f5] inline-block rounded-r-lg">
               "Aku menulis untuk hadir, bukan untuk memukau."
             </p>
             
-            {/* Timeline */}
-            <div className="flex justify-center">
+            {/* Timeline dengan desain yang lebih baik */}
+            <div className="max-w-md mx-auto">
               <div className="relative">
-                <div className="absolute left-0 top-0 bottom-0 w-px bg-[#e8e0d5]" />
-                <div className="space-y-6">
-                  <div className="flex items-center gap-6 pl-6 relative">
-                    <div className="absolute left-0 top-2 w-2 h-2 rounded-full bg-[#c4b8a8] -translate-x-[3px]" />
-                    <span className="text-sm text-[#5a5a5a]">Pernah menjadi barista</span>
-                  </div>
-                  <div className="flex items-center gap-6 pl-6 relative">
-                    <div className="absolute left-0 top-2 w-2 h-2 rounded-full bg-[#c4b8a8] -translate-x-[3px]" />
-                    <span className="text-sm text-[#5a5a5a]">Mural artist selama bertahun-tahun</span>
-                  </div>
-                  <div className="flex items-center gap-6 pl-6 relative">
-                    <div className="absolute left-0 top-2 w-2 h-2 rounded-full bg-[#c4b8a8] -translate-x-[3px]" />
-                    <span className="text-sm text-[#5a5a5a]">Mulai menulis diam-diam</span>
-                  </div>
-                  <div className="flex items-center gap-6 pl-6 relative">
-                    <div className="absolute left-0 top-2 w-2 h-2 rounded-full bg-[#c4b8a8] -translate-x-[3px]" />
-                    <span className="text-sm text-[#5a5a5a]">Buku pertama terbit</span>
-                  </div>
+                <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-[#e8e0d5]"></div>
+                <div className="space-y-8">
+                  {[
+                    { year: "2018", text: "Pernah menjadi barista" },
+                    { year: "2019", text: "Mural artist selama bertahun-tahun" },
+                    { year: "2022", text: "Mulai menulis diam-diam" },
+                    { year: "2024", text: "Buku pertama terbit" }
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-6 relative">
+                      <div className="w-16 text-right font-serif text-[#8b7355] font-bold">{item.year}</div>
+                      <div className="absolute left-8 w-3 h-3 rounded-full bg-[#8b7355] border-4 border-white shadow-md -translate-x-[5px]"></div>
+                      <div className="flex-1 text-left pl-8 text-[#5a5a5a]">{item.text}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -372,50 +514,63 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= CUPLIKAN (Dengan Background Aesthetic) ================= */}
-      <section id="cuplikan" className="max-w-3xl mx-auto px-6 py-16">
-        <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase text-center mb-12">Cuplikan</p>
+      {/* ================= CUPLIKAN (Dengan Background Aesthetic yang lebih baik) ================= */}
+      <section id="cuplikan" className="py-24 bg-[#2b2b2b] relative overflow-hidden">
+        {/* Background patterns */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-20 w-64 h-64 rounded-full border border-white"></div>
+          <div className="absolute bottom-20 right-20 w-96 h-96 rounded-full border border-white"></div>
+        </div>
         
-        <div className="space-y-8">
-          {cuplikanItems.map((item, index) => (
-            <div 
-              key={index}
-              className="group relative rounded-3xl p-8 md:p-12 text-center overflow-hidden border border-[#e8e0d5]"
-            >
-              {/* Background layers */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#f5f0e8] via-[#faf8f5] to-[#e8e0d5]" />
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-30" />
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#d4c8b8]/20 via-transparent to-[#8b7355]/10" />
-              
-              {/* Decorative coffee stain */}
-              <div className="absolute top-10 right-10 w-20 h-20 rounded-full border-2 border-[#d4c8b8]/30 opacity-50 group-hover:scale-110 transition-transform duration-700" />
-              <div className="absolute bottom-10 left-10 w-16 h-16 rounded-full border border-[#8b7355]/20 opacity-40 group-hover:scale-110 transition-transform duration-700 delay-100" />
-              
-              {/* Content */}
-              <div className="relative z-10">
-                <div className="text-[#d4c8b8] font-serif text-6xl leading-none mb-4 opacity-60">"</div>
+        <div className="max-w-4xl mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-4">Cuplikan</p>
+            <h3 className="font-serif text-3xl md:text-4xl text-[#faf8f5]">Sekilas Isi</h3>
+          </div>
+          
+          <div className="space-y-8">
+            {cuplikanItems.map((item, index) => (
+              <div 
+                key={index}
+                className="group relative rounded-3xl p-8 md:p-12 overflow-hidden border border-[#8b7355]/30 bg-[#1a1a1a]/50 backdrop-blur-sm hover:border-[#8b7355]/60 transition-all duration-500"
+              >
+                {/* Decorative quote marks */}
+                <div className="absolute top-6 left-6 text-[#8b7355]/20 font-serif text-8xl leading-none">"</div>
+                <div className="absolute bottom-6 right-6 text-[#8b7355]/20 font-serif text-8xl leading-none rotate-180">"</div>
                 
-                <blockquote className="font-serif text-xl md:text-2xl leading-relaxed text-[#3a3a3a] italic mb-6 group-hover:text-[#2b2b2b] transition-colors">
-                  {item.quote}
-                </blockquote>
-                
-                <p className="text-sm text-[#8b7355] tracking-wide">— {item.page}</p>
-              </div>
+                {/* Content */}
+                <div className="relative z-10 text-center">
+                  <blockquote className="font-serif text-xl md:text-2xl leading-relaxed text-[#faf8f5] italic mb-6">
+                    {item.quote}
+                  </blockquote>
+                  
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="h-px w-8 bg-[#8b7355]/50"></div>
+                    <p className="text-sm text-[#8b7355] tracking-wide font-medium">— {item.page}</p>
+                    <div className="h-px w-8 bg-[#8b7355]/50"></div>
+                  </div>
+                </div>
 
-              {/* Hover overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#8b7355]/5 via-transparent to-[#d4c8b8]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            </div>
-          ))}
+                {/* Hover glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#8b7355]/10 via-transparent to-[#8b7355]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ================= KATA PEMBACA (HORIZONTAL AUTO SCROLL + DRAG) ================= */}
-      <section className="py-16 overflow-hidden">
-        <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase text-center mb-12">Kata Pembaca</p>
+      <section className="py-24 bg-[#faf8f5]">
+        <div className="max-w-6xl mx-auto px-6 mb-12">
+          <div className="text-center">
+            <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-4">Kata Pembaca</p>
+            <h3 className="font-serif text-3xl md:text-4xl text-[#2b2b2b]">Yang Mereka Rasakan</h3>
+          </div>
+        </div>
         
         <div 
           ref={scrollRef}
-          className="flex gap-6 overflow-x-auto px-6 cursor-grab active:cursor-grabbing scrollbar-hide"
+          className="flex gap-6 overflow-x-auto px-6 cursor-grab active:cursor-grabbing scrollbar-hide pb-4"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => {
@@ -431,191 +586,201 @@ export default function HomePage() {
           {duplicatedComments.map((item, index) => (
             <div 
               key={`${item.id}-${index}`}
-              className="flex-shrink-0 w-[320px] md:w-[380px] bg-white border border-[#e8e0d5] rounded-2xl p-8 relative hover:shadow-xl transition-all duration-300 select-none"
+              className="flex-shrink-0 w-[340px] md:w-[400px] bg-white border border-[#e8e0d5] rounded-2xl p-8 relative hover:shadow-2xl transition-all duration-500 select-none group hover:-translate-y-2"
               style={{
                 background: 'linear-gradient(135deg, #ffffff 0%, #faf8f5 100%)'
               }}
             >
-              <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#f5f0e8] flex items-center justify-center">
-                <span className="text-[#8b7355] font-serif text-lg">"</span>
+              {/* Decorative elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#f5f0e8] rounded-full -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Sparkles key={i} size={12} className="text-[#8b7355] fill-[#8b7355]" />
+                  ))}
+                </div>
+                
+                <p className="text-[#5a5a5a] leading-relaxed mb-6 italic text-lg">
+                  "{item.text}"
+                </p>
+                
+                <div className="flex items-center gap-3 pt-4 border-t border-[#e8e0d5]">
+                  <div className="w-10 h-10 rounded-full bg-[#f5f0e8] flex items-center justify-center text-[#8b7355] font-serif font-bold">
+                    {item.nama[0]}
+                  </div>
+                  <p className="text-sm text-[#2b2b2b] font-medium">— {item.nama}</p>
+                </div>
               </div>
-              <p className="text-[#5a5a5a] leading-relaxed mb-4 italic text-sm pt-4">
-                {item.text}
-              </p>
-              <p className="text-sm text-[#8b7355] font-medium">— {item.nama}</p>
             </div>
           ))}
         </div>
         
-        <p className="text-center text-xs text-[#8b7355]/60 mt-6 italic">
-          Sentuh dan geser untuk melihat lebih banyak
+        <p className="text-center text-xs text-[#8b7355]/60 mt-8 italic">
+          Sentuh dan geser untuk melihat lebih banyak ✨
         </p>
       </section>
 
       {/* ================= CATATAN PEMBACA FORM ================= */}
-      <section className="max-w-2xl mx-auto px-6 py-16">
-        <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase text-center mb-4">Catatan Pembaca</p>
-        <p className="text-center text-[#8b7355] italic mb-10 font-serif">
-          Kalau tulisan ini menemani harimu, kamu boleh meninggalkan jejak kecil di sini.
-        </p>
+      <section className="max-w-2xl mx-auto px-6 py-24">
+        <div className="text-center mb-12">
+          <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-4">Catatan Pembaca</p>
+          <p className="text-[#2b2b2b] italic text-xl font-serif">
+            "Kalau tulisan ini menemani harimu,<br />
+            kamu boleh meninggalkan jejak kecil di sini."
+          </p>
+        </div>
         
-        <form onSubmit={handleSubmit} className="bg-white border border-[#e8e0d5] rounded-3xl p-8 space-y-4">
-          <input
-            type="text"
-            placeholder="Nama (opsional)"
-            value={nama}
-            onChange={(e) => setNama(e.target.value)}
-            className="w-full px-5 py-4 rounded-xl border border-[#e8e0d5] bg-[#faf8f5] focus:outline-none focus:border-[#8b7355] transition placeholder:text-[#b0a090]"
-          />
-          <textarea
-            placeholder="Tulis catatanmu..."
-            rows={4}
-            value={catatan}
-            onChange={(e) => setCatatan(e.target.value)}
-            className="w-full px-5 py-4 rounded-xl border border-[#e8e0d5] bg-[#faf8f5] focus:outline-none focus:border-[#8b7355] transition resize-none placeholder:text-[#b0a090]"
-          />
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="bg-[#c4b8a8] text-white px-8 py-3 rounded-full text-sm hover:bg-[#b0a090] transition flex items-center gap-2"
+        <form onSubmit={handleSubmit} className="bg-white border border-[#e8e0d5] rounded-3xl p-8 md:p-10 shadow-xl shadow-[#2b2b2b]/5 space-y-6">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder=" "
+              value={nama}
+              onChange={(e) => setNama(e.target.value)}
+              className="peer w-full px-5 py-4 rounded-xl border border-[#e8e0d5] bg-[#faf8f5] focus:outline-none focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 transition-all placeholder-transparent"
+              id="nama"
+            />
+            <label 
+              htmlFor="nama"
+              className="absolute left-5 top-4 text-[#b0a090] text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#b0a090] peer-placeholder-shown:top-4 peer-focus:top-[-10px] peer-focus:text-xs peer-focus:text-[#8b7355] peer-focus:bg-white peer-focus:px-2 bg-transparent pointer-events-none"
             >
-              <Send size={16} />
-              Kirim Catatan
-            </button>
+              Nama (opsional)
+            </label>
           </div>
+          
+          <div className="relative">
+            <textarea
+              placeholder=" "
+              rows={4}
+              value={catatan}
+              onChange={(e) => setCatatan(e.target.value)}
+              className="peer w-full px-5 py-4 rounded-xl border border-[#e8e0d5] bg-[#faf8f5] focus:outline-none focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 transition-all placeholder-transparent resize-none"
+              id="catatan"
+            />
+            <label 
+              htmlFor="catatan"
+              className="absolute left-5 top-4 text-[#b0a090] text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#b0a090] peer-placeholder-shown:top-4 peer-focus:top-[-10px] peer-focus:text-xs peer-focus:text-[#8b7355] peer-focus:bg-white peer-focus:px-2 bg-transparent pointer-events-none"
+            >
+              Tulis catatanmu...
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-[#2b2b2b] text-[#faf8f5] py-4 rounded-xl font-medium hover:bg-[#1a1a1a] transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 group"
+          >
+            <Send size={18} className="group-hover:translate-x-1 transition-transform" />
+            Kirim Catatan
+          </button>
         </form>
       </section>
 
-      {/* ================= RUANG SUNYI (Ditambah 1 Card) ================= */}
-      <section className="max-w-3xl mx-auto px-6 py-16">
-        <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase text-center mb-12">Ruang Sunyi</p>
-        
-        <div className="space-y-6">
-          <div className="group relative bg-white border border-[#e8e0d5] rounded-2xl p-8 hover:shadow-xl transition-all duration-500 overflow-hidden cursor-pointer">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#f5f0e8]/50 via-transparent to-[#e8e0d5]/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-[#d4c8b8]/20 blur-2xl group-hover:scale-150 transition-transform duration-700" />
-            
-            <div className="relative z-10">
-              <h3 className="font-serif text-xl mb-3 text-[#2b2b2b] group-hover:text-[#8b7355] transition-colors">Tentang Hujan</h3>
-              <p className="text-[#5a5a5a] text-sm leading-relaxed">
-                Hujan selalu datang tanpa izin. Seperti rindu yang tiba-tiba muncul saat kita sedang sibuk melupakan.
-              </p>
-            </div>
-          </div>
-          
-          <div className="group relative bg-white border border-[#e8e0d5] rounded-2xl p-8 hover:shadow-xl transition-all duration-500 overflow-hidden cursor-pointer">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#e8e0d5]/40 via-transparent to-[#d4c8b8]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="absolute -left-10 -bottom-10 w-40 h-40 rounded-full bg-[#8b7355]/10 blur-2xl group-hover:scale-150 transition-transform duration-700" />
-            
-            <div className="relative z-10">
-              <h3 className="font-serif text-xl mb-3 text-[#2b2b2b] group-hover:text-[#8b7355] transition-colors">Tentang Menunggu</h3>
-              <p className="text-[#5a5a5a] text-sm leading-relaxed">
-                Ada keindahan dalam menunggu—bukan pada akhirnya, tapi pada kesabaran yang kita pelajari di sepanjang jalan.
-              </p>
-            </div>
-          </div>
-
-          {/* Card Baru */}
-          <div className="group relative bg-white border border-[#e8e0d5] rounded-2xl p-8 hover:shadow-xl transition-all duration-500 overflow-hidden cursor-pointer">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#d4c8b8]/30 via-[#f5f0e8]/50 to-[#e8e0d5]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="absolute right-10 top-10 w-24 h-24 rounded-full border-2 border-[#c4b8a8]/20 opacity-40 group-hover:scale-150 transition-transform duration-700" />
-            <div className="absolute left-10 bottom-10 w-16 h-16 rounded-full bg-[#8b7355]/10 blur-xl group-hover:scale-150 transition-transform duration-700 delay-100" />
-            
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-3">
-                <Coffee size={18} className="text-[#8b7355]" />
-                <h3 className="font-serif text-xl text-[#2b2b2b] group-hover:text-[#8b7355] transition-colors">Tentang Kopi yang Dingin</h3>
-              </div>
-              <p className="text-[#5a5a5a] text-sm leading-relaxed italic">
-                Kopi yang dingin bukan berarti gagal. Mungkin kita hanya terlalu sibuk menikmati percakapan yang lebih hangat.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= QUOTE CTA ================= */}
-      <section className="max-w-3xl mx-auto px-6 py-20 text-center">
-        <blockquote className="font-serif text-2xl md:text-3xl leading-relaxed text-[#3a3a3a] italic mb-10">
-          "Tidak semua buku harus mengubah hidupmu.<br />
-          Ada yang cukup menemanimu, sebentar saja."
-        </blockquote>
-        
-        <a 
-          href="https://drive.google.com"
-          target="_blank"
-          className="inline-block bg-[#2b2b2b] text-[#faf8f5] px-10 py-4 rounded-full text-sm tracking-widest uppercase hover:bg-[#1a1a1a] transition transform hover:scale-105"
-        >
-          Unduh Buku
-        </a>
-      </section>
-
-      {/* ================= BAGIKAN ================= */}
-      <section className="max-w-3xl mx-auto px-6 py-16 text-center">
-        <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-8">Bagikan Halaman Ini</p>
-        
-        <div className="flex justify-center gap-6">
-          <button
-            onClick={() => handleShare('whatsapp')}
-            className="w-12 h-12 rounded-full border border-[#d4c8b8] flex items-center justify-center text-[#8b7355] hover:bg-[#25D366] hover:border-[#25D366] hover:text-white transition-all duration-300"
-          >
-            <MessageCircle size={20} />
-          </button>
-          
-          <button
-            onClick={() => handleShare('facebook')}
-            className="w-12 h-12 rounded-full border border-[#d4c8b8] flex items-center justify-center text-[#8b7355] hover:bg-[#1877F2] hover:border-[#1877F2] hover:text-white transition-all duration-300"
-          >
-            <Facebook size={20} />
-          </button>
-          
-          <button
-            onClick={() => handleShare('instagram')}
-            className="w-12 h-12 rounded-full border border-[#d4c8b8] flex items-center justify-center text-[#8b7355] hover:bg-gradient-to-br hover:from-[#833AB4] hover:via-[#FD1D1D] hover:to-[#F77737] hover:border-transparent hover:text-white transition-all duration-300"
-          >
-            <Instagram size={20} />
-          </button>
-          
-          <button
-            onClick={() => handleShare('twitter')}
-            className="w-12 h-12 rounded-full border border-[#d4c8b8] flex items-center justify-center text-[#8b7355] hover:bg-[#000000] hover:border-[#000000] hover:text-white transition-all duration-300"
-          >
-            <Twitter size={20} />
-          </button>
-        </div>
-      </section>
-
       {/* ================= FOOTER ================= */}
-      <footer className="border-t border-[#e8e0d5] mt-20">
-        <div className="max-w-6xl mx-auto px-6 py-12">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-            
+      <footer className="bg-[#2b2b2b] text-[#faf8f5] py-16">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-3 gap-12 mb-12">
+            {/* Brand */}
             <div>
-              <p className="font-serif text-xl mb-1">Sepucuk Surat untuk Malam</p>
-              <p className="text-sm text-[#8b7355]">© 2026 Wildan Ferdiansyah</p>
+              <div className="flex items-center gap-2 mb-4">
+                <Coffee size={24} className="text-[#8b7355]" />
+                <h4 className="font-serif text-2xl">Sepucuk Surat</h4>
+              </div>
+              <p className="text-[#faf8f5]/70 leading-relaxed">
+                Catatan sunyi dari seorang barista yang mencoba memahami hidup melalui kata-kata.
+              </p>
             </div>
 
-            <div className="flex flex-col gap-2">
-              <p className="text-xs tracking-[0.2em] text-[#8b7355] uppercase">Kontak</p>
-              <a 
-                href="https://wa.me/6289636357091"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-[#5a5a5a] hover:text-[#25D366] transition group"
-              >
-                <span>WhatsApp</span>
-                <ArrowUpRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
+            {/* Quick Links */}
+            <div>
+              <h5 className="font-medium mb-4 text-[#8b7355]">Navigasi</h5>
+              <ul className="space-y-2 text-[#faf8f5]/70">
+                <li><a href="#tentang" className="hover:text-[#8b7355] transition-colors">Tentang Buku</a></li>
+                <li><a href="#cuplikan" className="hover:text-[#8b7355] transition-colors">Cuplikan</a></li>
+                <li><a href="#penulis" className="hover:text-[#8b7355] transition-colors">Tentang Penulis</a></li>
+              </ul>
             </div>
 
-            <div className="text-right">
-              <p className="font-serif italic text-[#8b7355] text-sm">Ditulis perlahan.</p>
-              <p className="font-serif italic text-[#8b7355] text-sm">Dibaca dengan cinta.</p>
+            {/* Share */}
+            <div>
+              <h5 className="font-medium mb-4 text-[#8b7355]">Bagikan</h5>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => handleShare('whatsapp')}
+                  className="w-10 h-10 rounded-full bg-[#faf8f5]/10 flex items-center justify-center hover:bg-[#8b7355] transition-all hover:scale-110"
+                >
+                  <MessageCircle size={18} />
+                </button>
+                <button 
+                  onClick={() => handleShare('facebook')}
+                  className="w-10 h-10 rounded-full bg-[#faf8f5]/10 flex items-center justify-center hover:bg-[#8b7355] transition-all hover:scale-110"
+                >
+                  <Facebook size={18} />
+                </button>
+                <button 
+                  onClick={() => handleShare('twitter')}
+                  className="w-10 h-10 rounded-full bg-[#faf8f5]/10 flex items-center justify-center hover:bg-[#8b7355] transition-all hover:scale-110"
+                >
+                  <Twitter size={18} />
+                </button>
+                <button 
+                  onClick={() => handleShare('instagram')}
+                  className="w-10 h-10 rounded-full bg-[#faf8f5]/10 flex items-center justify-center hover:bg-[#8b7355] transition-all hover:scale-110"
+                >
+                  <Instagram size={18} />
+                </button>
+              </div>
             </div>
+          </div>
+
+          <div className="border-t border-[#faf8f5]/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#faf8f5]/50">
+            <p>&copy; 2024 Wildan Ferdiansyah. Seluruh hak cipta dilindungi.</p>
+            <p className="flex items-center gap-1">
+              Dibuat dengan <Heart size={14} className="text-[#8b7355] fill-[#8b7355]" /> dan secangkir kopi
+            </p>
           </div>
         </div>
       </footer>
 
+      {/* Custom Styles untuk animasi */}
+      <style jsx>{`
+        @keyframes slow-zoom {
+          0% { transform: scale(1.05); }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1.05); }
+        }
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes scroll-down {
+          0% { transform: translateY(0); opacity: 1; }
+          100% { transform: translateY(12px); opacity: 0; }
+        }
+        .animate-slow-zoom {
+          animation: slow-zoom 20s ease-in-out infinite;
+        }
+        .animate-fade-in-up {
+          animation: fade-in-up 0.8s ease-out forwards;
+          opacity: 0;
+        }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        .animate-scroll-down {
+          animation: scroll-down 2s ease-in-out infinite;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </main>
   );
 }
