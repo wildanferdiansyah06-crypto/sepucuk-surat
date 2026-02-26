@@ -14,7 +14,10 @@ import {
   Sparkles,
   Clock,
   Music,
-  Feather
+  Feather,
+  Download,
+  ChevronDown,
+  Library
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
@@ -30,12 +33,54 @@ const COFFE_ILLUSTRATIONS = {
   heart: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=400&auto=format&fit=crop"
 };
 
+// Data Buku
+const BUKU_LIST = [
+  {
+    id: 1,
+    judul: "Seni Menyeduh Kehidupan",
+    link: "https://drive.google.com/file/d/17Zd1FKFK4X_vmKhITFU5lXihOmMEkezI/view?usp=drivesdk",
+    deskripsi: "Catatan tentang bagaimana kita menyikapi hidup dengan cara yang lebih gentle dan penuh makna.",
+    halaman: "45 halaman",
+    warna: "from-amber-700 to-amber-900",
+    icon: <Coffee size={24} />
+  },
+  {
+    id: 2,
+    judul: "Di Balik Bar",
+    link: "https://drive.google.com/file/d/1N1zwGLqkbVQOzFV_fpRXJxQdawbgZGAl/view?usp=drivesdk",
+    deskripsi: "Cerita-cerita dari balik meja bar, tempat di mana setiap cangkir memiliki kisahnya sendiri.",
+    halaman: "38 halaman",
+    warna: "from-stone-700 to-stone-900",
+    icon: <BookOpen size={24} />
+  },
+  {
+    id: 3,
+    judul: "Di Atas Cangkir Yang Sama",
+    link: "https://drive.google.com/file/d/1cqRI8rfb7_0MIUXLekZJtV0xTFKXr-CD/view?usp=drivesdk",
+    deskripsi: "Renungan tentang konsistensi, kehadiran, dan menemukan keindahan dalam pengulangan.",
+    halaman: "52 halaman",
+    warna: "from-orange-700 to-orange-900",
+    icon: <Moon size={24} />
+  },
+  {
+    id: 4,
+    judul: "Kami Menulis Pelan",
+    link: "https://drive.google.com/file/d/1Mc6pOQ5z2xSn8Wmhf65kdgTrv5T5EzPm/view?usp=drivesdk",
+    deskripsi: "Kumpulan tulisan yang lahir dari kesabaran, untuk mereka yang percaya pada proses.",
+    halaman: "41 halaman",
+    warna: "from-emerald-700 to-emerald-900",
+    icon: <Feather size={24} />
+  }
+];
+
 export default function HomePage() {
   const scrollRef = useRef(null);
+  const rakBukuRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const [activeSection, setActiveSection] = useState("");
   
   // State untuk form catatan
   const [nama, setNama] = useState("");
@@ -75,6 +120,29 @@ export default function HomePage() {
     }
   ]);
 
+  // Scroll spy untuk navigasi aktif
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['tentang', 'buku-ini-untuk', 'rak-buku', 'cuplikan', 'penulis'];
+      const scrollPosition = window.scrollY + 100;
+
+      sections.forEach(section => {
+        const element = document.getElementById(section);
+        if (element) {
+          const offsetTop = element.offsetTop;
+          const offsetHeight = element.offsetHeight;
+          
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section);
+          }
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Auto scroll effect
   useEffect(() => {
     const scrollContainer = scrollRef.current;
@@ -98,6 +166,18 @@ export default function HomePage() {
     
     return () => cancelAnimationFrame(animationId);
   }, [isPaused, isDragging]);
+
+  // Handle scroll to section
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offsetTop = element.offsetTop - 80; // Offset untuk navbar
+      window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   // Handle mouse events untuk drag scroll
   const handleMouseDown = (e) => {
@@ -236,37 +316,61 @@ export default function HomePage() {
     <main className="bg-[#faf8f5] text-[#2b2b2b] font-sans selection:bg-[#e8e0d5] overflow-x-hidden">
 
       {/* ================= NAVBAR ================= */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf8f5]/80 backdrop-blur-md border-b border-[#e8e0d5]/30 transition-all duration-300">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf8f5]/90 backdrop-blur-md border-b border-[#e8e0d5]/30 transition-all duration-300">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <button 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-2 hover:opacity-70 transition-opacity"
+          >
             <Coffee size={20} className="text-[#8b7355]" />
             <p className="font-serif text-lg tracking-wide text-[#2b2b2b]">Sepucuk Surat</p>
-          </div>
+          </button>
           
           <div className="hidden md:flex items-center gap-8 text-sm">
-            <a href="#tentang" className="hover:text-[#8b7355] transition-colors relative group">
+            <button 
+              onClick={() => scrollToSection('tentang')}
+              className={`hover:text-[#8b7355] transition-colors relative group ${activeSection === 'tentang' ? 'text-[#8b7355]' : ''}`}
+            >
               Tentang
-              <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#8b7355] transition-all group-hover:w-full"></span>
-            </a>
-            <a href="#cuplikan" className="hover:text-[#8b7355] transition-colors relative group">
+              <span className={`absolute -bottom-1 left-0 h-px bg-[#8b7355] transition-all ${activeSection === 'tentang' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+            </button>
+            <button 
+              onClick={() => scrollToSection('buku-ini-untuk')}
+              className={`hover:text-[#8b7355] transition-colors relative group ${activeSection === 'buku-ini-untuk' ? 'text-[#8b7355]' : ''}`}
+            >
+              Untuk
+              <span className={`absolute -bottom-1 left-0 h-px bg-[#8b7355] transition-all ${activeSection === 'buku-ini-untuk' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+            </button>
+            <button 
+              onClick={() => scrollToSection('rak-buku')}
+              className={`hover:text-[#8b7355] transition-colors relative group ${activeSection === 'rak-buku' ? 'text-[#8b7355]' : ''}`}
+            >
+              Koleksi
+              <span className={`absolute -bottom-1 left-0 h-px bg-[#8b7355] transition-all ${activeSection === 'rak-buku' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+            </button>
+            <button 
+              onClick={() => scrollToSection('cuplikan')}
+              className={`hover:text-[#8b7355] transition-colors relative group ${activeSection === 'cuplikan' ? 'text-[#8b7355]' : ''}`}
+            >
               Cuplikan
-              <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#8b7355] transition-all group-hover:w-full"></span>
-            </a>
-            <a href="#penulis" className="hover:text-[#8b7355] transition-colors relative group">
+              <span className={`absolute -bottom-1 left-0 h-px bg-[#8b7355] transition-all ${activeSection === 'cuplikan' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+            </button>
+            <button 
+              onClick={() => scrollToSection('penulis')}
+              className={`hover:text-[#8b7355] transition-colors relative group ${activeSection === 'penulis' ? 'text-[#8b7355]' : ''}`}
+            >
               Penulis
-              <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#8b7355] transition-all group-hover:w-full"></span>
-            </a>
+              <span className={`absolute -bottom-1 left-0 h-px bg-[#8b7355] transition-all ${activeSection === 'penulis' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+            </button>
           </div>
 
-          <a 
-            href="https://drive.google.com" 
-            target="_blank"
-            rel="noopener noreferrer"
+          <button 
+            onClick={() => scrollToSection('rak-buku')}
             className="bg-[#2b2b2b] text-[#faf8f5] px-5 py-2.5 rounded-full text-sm hover:bg-[#1a1a1a] transition-all hover:scale-105 flex items-center gap-2 shadow-lg shadow-[#2b2b2b]/10"
           >
             Unduh Buku
             <ArrowUpRight size={14} />
-          </a>
+          </button>
         </div>
       </nav>
 
@@ -301,21 +405,19 @@ export default function HomePage() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up delay-400">
-            <a 
-              href="https://drive.google.com" 
-              target="_blank"
-              rel="noopener noreferrer"
+            <button 
+              onClick={() => scrollToSection('rak-buku')}
               className="bg-[#faf8f5] text-[#2b2b2b] px-8 py-4 rounded-full text-sm font-medium hover:bg-white transition-all hover:scale-105 shadow-xl flex items-center justify-center gap-2 group"
             >
-              Unduh Buku
-              <ArrowUpRight size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-            </a>
-            <a 
-              href="#cuplikan"
+              Lihat Koleksi Buku
+              <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform" />
+            </button>
+            <button 
+              onClick={() => scrollToSection('cuplikan')}
               className="border-2 border-[#faf8f5]/50 text-[#faf8f5] px-8 py-4 rounded-full text-sm hover:bg-[#faf8f5]/10 transition-all hover:scale-105 backdrop-blur-sm"
             >
               Baca Cuplikan
-            </a>
+            </button>
           </div>
         </div>
 
@@ -346,7 +448,7 @@ export default function HomePage() {
           </h2>
           
           <div className="space-y-6 text-[#5a5a5a] leading-relaxed text-lg">
-            <p className="first-letter:text-5xl first-letter:font-serif first-letter:text-[#8b7355] first-letter:float-left first-letter:mr-3 first-letter:mt-[-4px]">
+            <p className="drop-cap-paragraph">
               Ini adalah catatan-catatan dari seseorang yang masih belajar hadir—
               untuk dirinya sendiri, untuk orang-orang yang ia cintai, untuk hari-hari
               yang kadang terlalu berat untuk dilalui sendirian.
@@ -367,7 +469,7 @@ export default function HomePage() {
       </section>
 
       {/* ================= BUKU INI UNTUK (Dengan Background Ilustrasi Kopi) ================= */}
-      <section className="py-20 bg-[#f5f0e8]/30">
+      <section id="buku-ini-untuk" className="py-20 bg-[#f5f0e8]/30">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase mb-4">Buku Ini Untuk</p>
@@ -407,6 +509,88 @@ export default function HomePage() {
                 <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#8b7355]/50 rounded-3xl transition-all duration-500"></div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= RAK BUKU / KOLEKSI ================= */}
+      <section id="rak-buku" className="py-24 bg-[#2b2b2b] relative overflow-hidden" ref={rakBukuRef}>
+        {/* Background decorative */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')]"></div>
+        </div>
+        <div className="absolute top-20 left-10 w-64 h-64 bg-[#8b7355]/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#8b7355]/10 rounded-full blur-3xl"></div>
+
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#8b7355]/20 border border-[#8b7355]/30 mb-6">
+              <Library size={16} className="text-[#8b7355]" />
+              <p className="text-xs tracking-[0.3em] text-[#8b7355] uppercase">Perpustakaan Mini</p>
+            </div>
+            <h3 className="font-serif text-4xl md:text-5xl text-[#faf8f5] mb-4">Rak Buku Digital</h3>
+            <p className="text-[#faf8f5]/70 max-w-2xl mx-auto text-lg">
+              Kumpulan tulisan yang bisa kamu baca kapan saja, di mana saja. 
+              Gratis untuk dibaca, dibagikan, dan dijadikan teman.
+            </p>
+          </div>
+
+          {/* Grid Buku */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {BUKU_LIST.map((buku, index) => (
+              <div 
+                key={buku.id}
+                className="group relative bg-[#1a1a1a] rounded-2xl overflow-hidden border border-[#8b7355]/20 hover:border-[#8b7355]/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#8b7355]/10"
+              >
+                {/* Book Cover Simulation */}
+                <div className={`h-48 bg-gradient-to-br ${buku.warna} relative overflow-hidden`}>
+                  <div className="absolute inset-0 bg-black/20"></div>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-[#faf8f5] p-6 text-center">
+                    <div className="mb-3 opacity-80">{buku.icon}</div>
+                    <h4 className="font-serif text-lg leading-tight mb-2">{buku.judul}</h4>
+                    <div className="w-12 h-0.5 bg-white/30"></div>
+                  </div>
+                  {/* Decorative spine effect */}
+                  <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-r from-black/30 to-transparent"></div>
+                </div>
+
+                {/* Book Info */}
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-3 text-xs text-[#8b7355]">
+                    <BookOpen size={12} />
+                    <span>{buku.halaman}</span>
+                    <span className="mx-2">•</span>
+                    <span>PDF</span>
+                  </div>
+                  
+                  <p className="text-[#faf8f5]/70 text-sm leading-relaxed mb-6 line-clamp-3">
+                    {buku.deskripsi}
+                  </p>
+
+                  <a 
+                    href={buku.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full bg-[#8b7355] hover:bg-[#9c8565] text-[#faf8f5] py-3 rounded-xl transition-all duration-300 group-hover:shadow-lg"
+                  >
+                    <Download size={16} />
+                    <span className="font-medium">Unduh Buku</span>
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Info tambahan */}
+          <div className="bg-[#1a1a1a]/50 border border-[#8b7355]/20 rounded-2xl p-8 text-center">
+            <p className="text-[#faf8f5]/60 text-sm mb-4">
+              Semua buku tersedia dalam format PDF dan bisa diunduh secara gratis.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 text-xs text-[#8b7355]">
+              <span className="flex items-center gap-1"><BookOpen size={12} /> 4 Buku</span>
+              <span className="flex items-center gap-1"><Download size={12} /> Gratis</span>
+              <span className="flex items-center gap-1"><Heart size={12} /> Dari hati ke hati</span>
+            </div>
           </div>
         </div>
       </section>
@@ -453,7 +637,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= TENTANG PENULIS (FIXED: Posisi teks diperbaiki) ================= */}
+      {/* ================= TENTANG PENULIS (FIXED: Tanpa tahun & perbaikan teks) ================= */}
       <section id="penulis" className="max-w-4xl mx-auto px-6 py-24">
         <div className="bg-white border border-[#e8e0d5] rounded-[2rem] overflow-hidden shadow-2xl shadow-[#2b2b2b]/5">
           {/* Foto dengan gradient overlay yang lebih kuat */}
@@ -481,7 +665,7 @@ export default function HomePage() {
                 mencoba memahami hidupnya melalui kata-kata.
               </p>
               <p>
-                Pernah menjadi barista. Pernah menjadi pelukis mural selama bertahun-tahun. 
+                Pernah menjadi barista. Pernah menjadi mural artist. 
                 Sekarang menulis di sela-sela waktu—bukan untuk menjadi terkenal, tapi untuk tetap waras.
               </p>
             </div>
@@ -490,19 +674,19 @@ export default function HomePage() {
               "Aku menulis untuk hadir, bukan untuk memukau."
             </p>
             
-            {/* Timeline dengan desain yang lebih baik */}
+            {/* Timeline tanpa tahun */}
             <div className="max-w-md mx-auto">
               <div className="relative">
                 <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-[#e8e0d5]"></div>
                 <div className="space-y-8">
                   {[
-                    { year: "2018", text: "Pernah menjadi barista" },
-                    { year: "2019", text: "Mural artist selama bertahun-tahun" },
-                    { year: "2022", text: "Mulai menulis diam-diam" },
-                    { year: "2024", text: "Buku pertama terbit" }
+                    { text: "Pernah menjadi barista" },
+                    { text: "Mural artist" },
+                    { text: "Mulai menulis diam-diam" },
+                    { text: "Buku pertama terbit" }
                   ].map((item, idx) => (
                     <div key={idx} className="flex items-center gap-6 relative">
-                      <div className="w-16 text-right font-serif text-[#8b7355] font-bold">{item.year}</div>
+                      <div className="w-16 flex-shrink-0"></div>
                       <div className="absolute left-8 w-3 h-3 rounded-full bg-[#8b7355] border-4 border-white shadow-md -translate-x-[5px]"></div>
                       <div className="flex-1 text-left pl-8 text-[#5a5a5a]">{item.text}</div>
                     </div>
@@ -682,10 +866,13 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-12 mb-12">
             {/* Brand */}
             <div>
-              <div className="flex items-center gap-2 mb-4">
+              <button 
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="flex items-center gap-2 mb-4 hover:opacity-70 transition-opacity"
+              >
                 <Coffee size={24} className="text-[#8b7355]" />
                 <h4 className="font-serif text-2xl">Sepucuk Surat</h4>
-              </div>
+              </button>
               <p className="text-[#faf8f5]/70 leading-relaxed">
                 Catatan sunyi dari seorang barista yang mencoba memahami hidup melalui kata-kata.
               </p>
@@ -695,9 +882,26 @@ export default function HomePage() {
             <div>
               <h5 className="font-medium mb-4 text-[#8b7355]">Navigasi</h5>
               <ul className="space-y-2 text-[#faf8f5]/70">
-                <li><a href="#tentang" className="hover:text-[#8b7355] transition-colors">Tentang Buku</a></li>
-                <li><a href="#cuplikan" className="hover:text-[#8b7355] transition-colors">Cuplikan</a></li>
-                <li><a href="#penulis" className="hover:text-[#8b7355] transition-colors">Tentang Penulis</a></li>
+                <li>
+                  <button onClick={() => scrollToSection('tentang')} className="hover:text-[#8b7355] transition-colors text-left">
+                    Tentang Buku
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => scrollToSection('rak-buku')} className="hover:text-[#8b7355] transition-colors text-left">
+                    Koleksi Buku
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => scrollToSection('cuplikan')} className="hover:text-[#8b7355] transition-colors text-left">
+                    Cuplikan
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => scrollToSection('penulis')} className="hover:text-[#8b7355] transition-colors text-left">
+                    Tentang Penulis
+                  </button>
+                </li>
               </ul>
             </div>
 
@@ -742,7 +946,7 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* Custom Styles untuk animasi */}
+      {/* Custom Styles untuk animasi dan drop cap */}
       <style jsx>{`
         @keyframes slow-zoom {
           0% { transform: scale(1.05); }
@@ -779,6 +983,26 @@ export default function HomePage() {
         }
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
+        }
+        
+        /* Drop Cap yang lebih rapi */
+        .drop-cap-paragraph::first-letter {
+          float: left;
+          font-family: serif;
+          font-size: 3.5rem;
+          line-height: 0.8;
+          padding-right: 0.75rem;
+          padding-top: 0.25rem;
+          color: #8b7355;
+          font-weight: 400;
+        }
+        
+        /* Line clamp untuk deskripsi buku */
+        .line-clamp-3 {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
       `}</style>
     </main>
