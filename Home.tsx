@@ -39,7 +39,6 @@ export default function HomePage() {
 
   <div className="font-serif italic mt-10 space-y-4 text-sm text-[#555]">
     <p>“Tidak semua kata ingin dibaca keras.”</p>
-    <p>“Kopi bisa dingin, tapi cerita tetap hangat.”</p>
     <p>“Ada halaman yang hanya bisa dipahami ketika kamu berhenti terburu-buru.”</p>
     <p>“Beberapa cerita tidak selesai di sini — mereka hanya dimulai.”</p>
     <p>“Ini bukan rak buku. Ini hanya meja kecil sebelum perjalanan panjang.”</p>
