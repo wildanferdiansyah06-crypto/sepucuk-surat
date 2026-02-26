@@ -106,6 +106,14 @@ export default function HomePage() {
   const [visibleSections, setVisibleSections] = useState({});
   const [isTransitioning, setIsTransitioning] = useState(false);
   
+  // Touch handling
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const minSwipeDistance = 50;
+  
+  // Hover state for books
+  const [hoveredBook, setHoveredBook] = useState(null);
+  
   const [nama, setNama] = useState("");
   const [catatan, setCatatan] = useState("");
   const [kataPembaca, setKataPembaca] = useState([
@@ -137,7 +145,7 @@ export default function HomePage() {
     return () => observer.disconnect();
   }, []);
 
-  // Catatan harian dengan transition yang proper
+  // Catatan harian auto-slide
   useEffect(() => {
     const interval = setInterval(() => {
       setIsTransitioning(true);
@@ -148,6 +156,48 @@ export default function HomePage() {
     }, 8000);
     return () => clearInterval(interval);
   }, []);
+
+  // Touch handlers
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCatatanIndex((prev) => (prev + 1) % CATATAN_HARIAN.length);
+        setIsTransitioning(false);
+      }, 500);
+    }
+    if (isRightSwipe) {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCatatanIndex((prev) => (prev - 1 + CATATAN_HARIAN.length) % CATATAN_HARIAN.length);
+        setIsTransitioning(false);
+      }, 500);
+    }
+  };
+
+  // Dot clickable handler
+  const goToCatatan = (index) => {
+    if (index === catatanIndex) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCatatanIndex(index);
+      setIsTransitioning(false);
+    }, 500);
+  };
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -253,16 +303,14 @@ export default function HomePage() {
         )}
       </nav>
 
-      {/* Hero - FIXED: Always readable text */}
+      {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img src={HERO_BG} className="w-full h-full object-cover opacity-40 scale-105 animate-breathe" alt="" />
-          {/* Gradient overlay yang lebih kuat */}
           <div className={`absolute inset-0 ${isDarkMode ? 'bg-gradient-to-b from-[#1a1816]/70 via-[#1a1816]/50 to-[#1a1816]' : 'bg-gradient-to-b from-[#faf8f5]/30 via-[#faf8f5]/60 to-[#faf8f5]'}`}></div>
         </div>
         
         <div className="relative z-10 text-center px-6 max-w-3xl mx-auto pt-20">
-          {/* FIXED: Text dengan shadow agar selalu terbaca */}
           <p className="text-[10px] tracking-[0.5em] uppercase mb-8 animate-fade-in-slow"
              style={{ color: isDarkMode ? '#e8e0d5' : '#2b2b2b', opacity: 0.6, textShadow: isDarkMode ? '0 2px 10px rgba(0,0,0,0.5)' : 'none' }}>
             Sebuah Buku Oleh
@@ -317,7 +365,39 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Rak Buku - Tidak diubah, sudah aman */}
+      {/* Catatan Kecil dengan Swipe + Dot Clickable */}
+      <section className={`py-24 px-6 ${isDarkMode ? 'bg-[#2a2826]/20' : 'bg-[#f5f0e8]/30'} transition-all duration-1000`}>
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-12">Catatan Kecil</p>
+          
+          <div 
+            className="relative overflow-hidden cursor-grab active:cursor-grabbing min-h-[120px] flex items-center justify-center"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
+            <p className={`text-lg md:text-2xl font-serif italic leading-relaxed transition-all duration-500 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-60 translate-y-0'}`}>
+              "{CATATAN_HARIAN[catatanIndex]}"
+            </p>
+          </div>
+
+          {/* Dot indicators */}
+          <div className="flex gap-2 mt-8 justify-center">
+            {CATATAN_HARIAN.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => goToCatatan(idx)}
+                className={`h-2 rounded-full transition-all duration-300 ${idx === catatanIndex ? 'bg-[#8b7355] w-6' : 'bg-[#8b7355]/30 w-2 hover:bg-[#8b7355]/50'}`}
+                aria-label={`Go to note ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          <p className="text-[10px] opacity-30 mt-4 tracking-wider">← Geser untuk navigasi →</p>
+        </div>
+      </section>
+
+      {/* Rak Buku dengan Hover Effect + Icon Mata */}
       <section id="koleksi" className={`py-32 px-6 ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/20'} transition-all duration-1000 ${visibleSections['koleksi'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-20">
@@ -327,29 +407,53 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-2 gap-12 md:gap-16">
             {BUKU_LIST.map((buku) => (
-              <div key={buku.id} 
-                   className="group cursor-pointer"
-                   onClick={() => openBookModal(buku)}>
-                <div className="relative aspect-[4/3] mb-6 overflow-hidden rounded-sm shadow-[0_4px_20px_-10px_rgba(0,0,0,0.15)] group-hover:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.2)] transition-all duration-700">
-                  <img src={buku.ilustrasi} alt={buku.judul} 
-                       className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-1000" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60"></div>
-                  <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
+              <div 
+                key={buku.id} 
+                className="group cursor-pointer"
+                onClick={() => openBookModal(buku)}
+                onMouseEnter={() => setHoveredBook(buku.id)}
+                onMouseLeave={() => setHoveredBook(null)}
+              >
+                <div className="relative aspect-[4/3] mb-6 overflow-hidden rounded-sm transition-all duration-500 ease-out transform group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)]">
+                  <img 
+                    src={buku.ilustrasi} 
+                    alt={buku.judul} 
+                    className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-[1.05] transition-all duration-700" 
+                  />
+                  
+                  {/* Overlay gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500"></div>
+                  
+                  {/* Icon mata yang muncul */}
+                  <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${hoveredBook === buku.id ? 'opacity-100' : 'opacity-0'}`}>
+                    <div className={`w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-sm transition-transform duration-500 ${hoveredBook === buku.id ? 'scale-100' : 'scale-50'}`}
+                         style={{ backgroundColor: isDarkMode ? 'rgba(232,224,213,0.15)' : 'rgba(255,255,255,0.25)' }}>
+                      <Eye size={24} className={isDarkMode ? 'text-[#e8e0d5]' : 'text-white'} />
+                    </div>
+                  </div>
+                  
+                  {/* Border accent */}
+                  <div className="absolute inset-0 border-2 border-[#8b7355]/0 group-hover:border-[#8b7355]/30 rounded-sm transition-colors duration-500"></div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 text-[10px] tracking-[0.2em] uppercase opacity-40">
+                <div className="space-y-3 transform group-hover:translate-y-1 transition-transform duration-500">
+                  <div className="flex items-center gap-3 text-[10px] tracking-[0.2em] uppercase opacity-40 group-hover:opacity-60 transition-opacity">
                     <span>{buku.tema}</span>
                     <span className="w-1 h-1 rounded-full bg-current"></span>
                     <span>{buku.halaman} halaman</span>
                   </div>
                   
-                  <h4 className="font-serif text-xl md:text-2xl opacity-80 group-hover:opacity-100 transition-opacity">
+                  <h4 className="font-serif text-xl md:text-2xl opacity-80 group-hover:opacity-100 group-hover:text-[#8b7355] transition-all duration-300">
                     {buku.judul}
                   </h4>
                   
-                  <p className="text-sm leading-relaxed opacity-50 line-clamp-2 font-light">
+                  <p className="text-sm leading-relaxed opacity-50 line-clamp-2 font-light group-hover:opacity-70 transition-opacity">
                     {buku.deskripsi}
+                  </p>
+                  
+                  {/* Text hint */}
+                  <p className="text-[10px] tracking-wider opacity-0 group-hover:opacity-40 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0 flex items-center gap-1">
+                    Klik untuk membaca <ArrowUpRight size={10} />
                   </p>
                 </div>
               </div>
@@ -364,7 +468,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Modal - FIXED for dark mode */}
+      {/* Modal */}
       {showModal && selectedBook && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={closeModal}>
           <div className={`${isDarkMode ? 'bg-[#2a2826] text-[#e8e0d5]' : 'bg-[#faf8f5] text-[#2b2b2b]'} max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl animate-scale-up`} onClick={e => e.stopPropagation()}>
@@ -417,227 +521,91 @@ export default function HomePage() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-20">
             <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-4">Cuplikan</p>
-            <h3 className="font-serif text-3xl opacity-90">Sekilas Isi</h3>
+            <h3 className="font-serif text-3xl opacity-90">Yang Mereka Katakan</h3>
           </div>
 
-          <div className="space-y-16">
-            {[
-              { quote: "Ada hari-hari di mana aku hanya ingin menjadi secangkir kopi di tangan seseorang—hangat, hadir, dan cukup untuk menemani diam.", page: "halaman 23" },
-              { quote: "Kita tidak butuh selalu kuat. Kadang, kita hanya butuh tahu bahwa ada yang mengerti—bahwa lelah kita bukan aib, bahwa diam kita bukan kelemahan.", page: "halaman 47" },
-              { quote: "Menulis adalah caraku untuk tetap di sini. Bukan untuk menjelaskan, tapi untuk mengingatkan diri sendiri—bahwa aku masih merasakan.", page: "halaman 78" }
-            ].map((item, index) => (
-              <div key={index} className="relative pl-8 md:pl-12 border-l border-[#8b7355]/20">
-                <div className="absolute -left-[5px] top-0 w-[9px] h-[9px] rounded-full bg-[#8b7355]/30"></div>
-                <blockquote className="font-serif text-xl md:text-2xl leading-relaxed opacity-80 mb-4 italic">
-                  "{item.quote}"
-                </blockquote>
-                <p className="text-[10px] tracking-[0.2em] uppercase opacity-40">— {item.page}</p>
+          <div className="grid md:grid-cols-2 gap-6">
+            {kataPembaca.map((kata, idx) => (
+              <div key={kata.id} className={`${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/30'} p-6 rounded-sm transition-all duration-500 hover:scale-[1.02]`}>
+                <p className="font-serif italic text-sm leading-relaxed mb-4 opacity-80">"{kata.text}"</p>
+                <p className="text-[10px] tracking-wider opacity-40">— {kata.nama}</p>
               </div>
             ))}
           </div>
+
+          {/* Form Kata Pembaca */}
+          <div className="mt-16 pt-12 border-t border-[#8b7355]/10">
+            <p className="text-center text-[10px] tracking-[0.4em] uppercase opacity-40 mb-8">Tinggalkan Jejak</p>
+            
+            <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
+              <input
+                type="text"
+                placeholder="Namamu (opsional)"
+                value={nama}
+                onChange={(e) => setNama(e.target.value)}
+                className={`w-full px-4 py-3 text-sm bg-transparent border ${borderColor} rounded-sm focus:outline-none focus:border-[#8b7355]/50 transition-colors placeholder:opacity-30`}
+              />
+              <textarea
+                placeholder="Tuliskan sesuatu..."
+                value={catatan}
+                onChange={(e) => setCatatan(e.target.value)}
+                rows={3}
+                className={`w-full px-4 py-3 text-sm bg-transparent border ${borderColor} rounded-sm focus:outline-none focus:border-[#8b7355]/50 transition-colors resize-none placeholder:opacity-30`}
+              />
+              <button
+                type="submit"
+                disabled={!catatan.trim()}
+                className={`w-full py-3 text-xs tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center gap-2 ${catatan.trim() ? (isDarkMode ? 'bg-[#e8e0d5] text-[#1a1816]' : 'bg-[#2b2b2b] text-[#faf8f5]') : 'opacity-30 cursor-not-allowed'}`}
+              >
+                <Send size={14} />
+                Kirim
+              </button>
+            </form>
+          </div>
         </div>
       </section>
 
-      {/* Tentang Penulis - FIXED: Always light text in dark mode */}
-      <section id="penulis" className={`relative py-32 overflow-hidden transition-all duration-1000 ${visibleSections['penulis'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="absolute inset-0">
-          <img src="/wildan.png" alt="" className="w-full h-full object-cover opacity-5 blur-2xl scale-110" />
-          <div className={`absolute inset-0 ${isDarkMode ? 'bg-gradient-to-b from-[#1a1816] via-[#1a1816]/95 to-[#1a1816]' : 'bg-gradient-to-b from-[#faf8f5] via-[#faf8f5]/80 to-[#faf8f5]'}`}></div>
-        </div>
-
-        {/* FIXED: Force light text color */}
-        <div className="relative z-10 max-w-2xl mx-auto px-6 text-center" style={{ color: isDarkMode ? '#e8e0d5' : '#2b2b2b' }}>
-          <div className="mb-12">
-            {/* Larger photo, no grayscale, with shadow */}
-            <div className="w-28 h-28 md:w-36 md:h-36 mx-auto mb-6 rounded-full overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
-              <img src="/wildan.png" alt="Wildan" className="w-full h-full object-cover" />
-            </div>
+      {/* Penulis */}
+      <section id="penulis" className={`py-32 px-6 ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/20'} transition-all duration-1000 ${visibleSections['penulis'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="w-20 h-20 mx-auto mb-8 rounded-full overflow-hidden opacity-80">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" alt="Penulis" className="w-full h-full object-cover grayscale" />
           </div>
-
-          <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-8">Tentang Penulis</p>
           
-          <div className="space-y-6 text-[15px] leading-[1.9] opacity-80 font-light max-w-lg mx-auto">
-            <p>
-              Bukan penulis profesional. Bukan motivator. Hanya seseorang yang mencoba memahami hidupnya melalui kata-kata.
-            </p>
-            <p>
-              Pernah menjadi barista. Pernah menjadi mural artist. Sekarang menulis di sela-sela waktu—bukan untuk menjadi terkenal, tapi untuk tetap waras.
-            </p>
-          </div>
-
-          <div className="mt-12 pt-8">
-            <p className="font-serif italic text-lg opacity-60">
-              "Aku menulis untuk hadir,<br/>bukan untuk memukau."
-            </p>
-          </div>
-
-          <div className="mt-16 flex justify-center gap-8 text-[10px] tracking-[0.15em] uppercase opacity-40">
-            <span>Barista</span>
-            <span>•</span>
-            <span>Mural Artist</span>
-            <span>•</span>
-            <span>Penulis</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Catatan Kecil - FIXED: Proper transition */}
-      <section className={`py-24 px-6 ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/30'} transition-all duration-1000`}>
-        <div className="max-w-xl mx-auto text-center">
-          <p className="text-[10px] tracking-[0.4em] uppercase opacity-30 mb-8">Catatan Kecil</p>
-          <div className="relative h-32 flex items-center justify-center overflow-hidden">
-            {CATATAN_HARIAN.map((catatan, index) => (
-              <p key={index} 
-                 className={`absolute font-serif italic text-lg md:text-xl px-6 transition-all duration-500 ease-in-out
-                   ${index === catatanIndex && !isTransitioning ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                "{catatan}"
-              </p>
-            ))}
-          </div>
-          <div className="flex justify-center gap-2 mt-6">
-            {CATATAN_HARIAN.map((_, index) => (
-              <div key={index} 
-                   className={`w-1.5 h-1.5 rounded-full transition-all duration-300 
-                     ${index === catatanIndex ? 'bg-[#8b7355] w-4' : 'bg-[#8b7355]/20'}`}></div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Ruang Sunyi */}
-      <section className="py-32 px-6">
-        <div className="max-w-xl mx-auto text-center">
-          <div className="w-12 h-px bg-[#8b7355]/30 mx-auto mb-12"></div>
+          <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-4">Penulis</p>
+          <h3 className="font-serif text-2xl mb-6 opacity-90">Seorang yang Masih Belajar</h3>
           
-          <p className="font-serif text-2xl md:text-3xl leading-relaxed opacity-80 mb-8">
-            "Tidak semua buku harus mengubah hidupmu."
-          </p>
-          <p className="text-sm opacity-50 font-light">
-            Ada yang cukup menemanimu,<br/>sebentar saja.
+          <p className="text-sm leading-relaxed opacity-70 font-light mb-8">
+            Menulis bukan untuk dikenal, tapi untuk mengingat. Bahwa kita pernah di sini. Bahwa kita pernah merasa.
           </p>
 
-          <div className="mt-16 flex justify-center gap-6 opacity-40">
-            <Coffee size={16} />
-            <span className="text-xs">•</span>
-            <BookOpen size={16} />
-            <span className="text-xs">•</span>
-            <Moon size={16} />
-          </div>
-        </div>
-      </section>
-
-      {/* Footer - With all contact info */}
-      <footer className={`py-12 px-6 border-t ${borderColor}`}>
-        <div className="max-w-4xl mx-auto">
-          {/* Share Buttons */}
-          <div className="flex justify-center gap-4 mb-8">
-            <button onClick={() => handleShare('whatsapp')} 
-                    className="w-10 h-10 rounded-full border border-[#8b7355]/20 flex items-center justify-center opacity-50 hover:opacity-100 hover:bg-[#8b7355]/10 transition-all"
-                    title="Share to WhatsApp">
-              <MessageCircle size={18} />
-            </button>
-            <button onClick={() => handleShare('facebook')} 
-                    className="w-10 h-10 rounded-full border border-[#8b7355]/20 flex items-center justify-center opacity-50 hover:opacity-100 hover:bg-[#8b7355]/10 transition-all"
-                    title="Share to Facebook">
-              <Facebook size={18} />
-            </button>
-            <button onClick={() => handleShare('twitter')} 
-                    className="w-10 h-10 rounded-full border border-[#8b7355]/20 flex items-center justify-center opacity-50 hover:opacity-100 hover:bg-[#8b7355]/10 transition-all"
-                    title="Share to Twitter">
-              <Twitter size={18} />
-            </button>
-            <button onClick={() => handleShare('instagram')} 
-                    className="w-10 h-10 rounded-full border border-[#8b7355]/20 flex items-center justify-center opacity-50 hover:opacity-100 hover:bg-[#8b7355]/10 transition-all"
-                    title="Copy link for Instagram">
+          <div className="flex justify-center gap-4">
+            <button onClick={() => handleShare('instagram')} className="p-3 rounded-full hover:bg-[#8b7355]/10 transition-colors opacity-60 hover:opacity-100">
               <Instagram size={18} />
             </button>
+            <button onClick={() => handleShare('twitter')} className="p-3 rounded-full hover:bg-[#8b7355]/10 transition-colors opacity-60 hover:opacity-100">
+              <Twitter size={18} />
+            </button>
+            <button onClick={() => handleShare('facebook')} className="p-3 rounded-full hover:bg-[#8b7355]/10 transition-colors opacity-60 hover:opacity-100">
+              <Facebook size={18} />
+            </button>
           </div>
+        </div>
+      </section>
 
-          {/* Contact Info */}
-          <div className="text-center mb-8">
-            <p className="text-[10px] tracking-[0.15em] uppercase opacity-40 mb-4">Hubungi Penulis</p>
-            
-            <div className="flex flex-col md:flex-row justify-center items-center gap-4 text-sm opacity-60">
-              <a href="https://wa.me/6289636357091" target="_blank" rel="noopener noreferrer" 
-                 className="flex items-center gap-2 hover:opacity-100 transition-opacity">
-                <Phone size={14} />
-                <span>0896-3635-7091</span>
-              </a>
-              <span className="hidden md:block opacity-30">•</span>
-              <a href="mailto:wildanferdiansyah06@gmail.com" 
-                 className="flex items-center gap-2 hover:opacity-100 transition-opacity">
-                <Mail size={14} />
-                <span>wildanferdiansyah06@gmail.com</span>
-              </a>
-              <span className="hidden md:block opacity-30">•</span>
-              <a href="https://instagram.com/_iamwildan_" target="_blank" rel="noopener noreferrer"
-                 className="flex items-center gap-2 hover:opacity-100 transition-opacity">
-                <Instagram size={14} />
-                <span>@_iamwildan_</span>
-              </a>
-            </div>
-          </div>
+      {/* Footer */}
+      <footer className={`py-12 px-6 border-t ${borderColor}`}>
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="font-serif text-sm opacity-60">Sepucuk Surat</p>
           
-          <div className={`flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] tracking-[0.15em] uppercase opacity-40 pt-6 border-t ${borderColor}`}>
-            <p>&copy; 2026 Wildan Ferdiansyah</p>
-            <p className="flex items-center gap-1">
-              Dibuat dengan <Heart size={12} className="text-[#8b7355]" /> dan secangkir kopi
-            </p>
+          <div className="flex items-center gap-6 text-[10px] tracking-wider opacity-40">
+            <span>© 2024</span>
+            <span>•</span>
+            <span>Dibuat dengan <Heart size={10} className="inline" /> di sudut kopi</span>
           </div>
         </div>
       </footer>
 
-      {/* Styles */}
-      <style jsx>{`
-        @keyframes breathe {
-          0%, 100% { transform: scale(1.05); }
-          50% { transform: scale(1.08); }
-        }
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes fade-in-slow {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 0.6; transform: translateY(0); }
-        }
-        @keyframes fade-in-slower {
-          from { opacity: 0; transform: translateY(15px); }
-          to { opacity: 0.9; transform: translateY(0); }
-        }
-        @keyframes fade-in-slowest {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 0.6; transform: translateY(0); }
-        }
-        @keyframes scale-up {
-          from { opacity: 0; transform: scale(0.95); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        .animate-breathe {
-          animation: breathe 20s ease-in-out infinite;
-        }
-        .animate-fade-in {
-          animation: fade-in 0.5s ease-out forwards;
-        }
-        .animate-fade-in-slow {
-          animation: fade-in-slow 1.5s ease-out forwards;
-        }
-        .animate-fade-in-slower {
-          animation: fade-in-slower 2s ease-out forwards;
-        }
-        .animate-fade-in-slowest {
-          animation: fade-in-slowest 2.5s ease-out forwards;
-        }
-        .animate-scale-up {
-          animation: scale-up 0.4s ease-out forwards;
-        }
-        .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-      `}</style>
     </main>
   );
 }
