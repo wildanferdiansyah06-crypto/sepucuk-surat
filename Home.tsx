@@ -96,6 +96,24 @@ const CATATAN_HARIAN = [
   "Kopi dingin tetap kopi. Lelah tetap hidup."
 ];
 
+const SEKILAS_ISI = [
+  {
+    id: 1,
+    quote: "Ada hari-hari di mana aku hanya ingin menjadi secangkir kopi di tangan seseorang —hangat, hadir, dan cukup untuk menemani diam.",
+    halaman: "23"
+  },
+  {
+    id: 2,
+    quote: "Kita tidak butuh selalu kuat. Kadang, kita hanya butuh tahu bahwa ada yang mengerti —bahwa lelah kita bukan aib, bahwa diam kita bukan kelemahan.",
+    halaman: "47"
+  },
+  {
+    id: 3,
+    quote: "Menulis adalah caraku untuk tetap di sini. Bukan untuk menjelaskan, tapi untuk mengingatkan diri sendiri —bahwa aku masih merasakan.",
+    halaman: "78"
+  }
+];
+
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -105,6 +123,10 @@ export default function HomePage() {
   const [catatanIndex, setCatatanIndex] = useState(0);
   const [visibleSections, setVisibleSections] = useState({});
   const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  // Testimonial scroll
+  const testimonialRef = useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
   
   const [nama, setNama] = useState("");
   const [catatan, setCatatan] = useState("");
@@ -136,6 +158,41 @@ export default function HomePage() {
 
     return () => observer.disconnect();
   }, []);
+
+  // Catatan harian auto-slide
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCatatanIndex((prev) => (prev + 1) % CATATAN_HARIAN.length);
+        setIsTransitioning(false);
+      }, 500);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Testimonial auto-scroll
+  useEffect(() => {
+    if (!testimonialRef.current || isPaused) return;
+    
+    const scrollContainer = testimonialRef.current;
+    let animationId;
+    let scrollLeft = 0;
+    
+    const animate = () => {
+      if (!isPaused && scrollContainer) {
+        scrollLeft += 0.5;
+        if (scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+          scrollLeft = 0;
+        }
+        scrollContainer.scrollLeft = scrollLeft;
+      }
+      animationId = requestAnimationFrame(animate);
+    };
+    
+    animationId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationId);
+  }, [isPaused]);
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -230,10 +287,10 @@ export default function HomePage() {
         {isMenuOpen && (
           <div className={`absolute top-full left-0 right-0 ${isDarkMode ? 'bg-[#1a1816]/95' : 'bg-[#faf8f5]/95'} backdrop-blur-md border-b ${borderColor} py-6 px-6 animate-fade-in`}>
             <div className="max-w-4xl mx-auto flex flex-col gap-4 text-center">
-              {['tentang', 'koleksi', 'cuplikan', 'penulis'].map((item) => (
+              {['tentang', 'sekilas-isi', 'koleksi', 'catatan-kecil', 'tentang-penulis', 'testimonial'].map((item) => (
                 <button key={item} onClick={() => scrollToSection(item)} 
                         className="py-2 text-sm tracking-[0.2em] uppercase opacity-60 hover:opacity-100 transition-opacity">
-                  {item}
+                  {item.replace(/-/g, ' ')}
                 </button>
               ))}
             </div>
@@ -265,7 +322,7 @@ export default function HomePage() {
             "Kita semua pernah lelah.<br/>Tapi kita masih di sini."
           </p>
           
-          <button onClick={() => scrollToSection('koleksi')} 
+          <button onClick={() => scrollToSection('tentang')} 
                   className="group flex items-center gap-2 mx-auto text-xs tracking-[0.3em] uppercase transition-all duration-500"
                   style={{ color: isDarkMode ? '#e8e0d5' : '#2b2b2b', opacity: 0.5 }}>
             <span>Mulai Membaca</span>
@@ -303,80 +360,38 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Catatan Kecil - Swipeable + Dot Clickable */}
-      <section className={`py-24 px-6 ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/30'} transition-all duration-1000`}>
-        <div className="max-w-xl mx-auto text-center">
-          <p className="text-[10px] tracking-[0.4em] uppercase opacity-30 mb-8">Catatan Kecil</p>
-          
-          {/* Swipeable Container */}
-          <div 
-            className="relative h-32 flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing touch-pan-x"
-            onTouchStart={(e) => {
-              const touch = e.touches[0];
-              e.currentTarget.dataset.startX = touch.clientX;
-            }}
-            onTouchEnd={(e) => {
-              const touch = e.changedTouches[0];
-              const startX = parseFloat(e.currentTarget.dataset.startX || '0');
-              const diff = startX - touch.clientX;
-              
-              if (Math.abs(diff) > 50) { // Threshold 50px
-                if (diff > 0) {
-                  // Swipe left - next
-                  setIsTransitioning(true);
-                  setTimeout(() => {
-                    setCatatanIndex((prev) => (prev + 1) % CATATAN_HARIAN.length);
-                    setIsTransitioning(false);
-                  }, 300);
-                } else {
-                  // Swipe right - prev
-                  setIsTransitioning(true);
-                  setTimeout(() => {
-                    setCatatanIndex((prev) => (prev - 1 + CATATAN_HARIAN.length) % CATATAN_HARIAN.length);
-                    setIsTransitioning(false);
-                  }, 300);
-                }
-              }
-            }}
-          >
-            {CATATAN_HARIAN.map((catatan, index) => (
-              <p key={index} 
-                 className={`absolute font-serif italic text-lg md:text-xl px-6 transition-all duration-300 ease-out w-full
-                   ${index === catatanIndex && !isTransitioning ? 'opacity-60 translate-x-0' : ''}
-                   ${index === catatanIndex && isTransitioning ? 'opacity-0 translate-x-[-20px]' : ''}
-                   ${index !== catatanIndex ? 'opacity-0 translate-x-[20px]' : ''}`}>
-                "{catatan}"
-              </p>
-            ))}
-            
-            {/* Hint text */}
-            <p className="absolute bottom-0 text-[10px] opacity-20 tracking-wider">← geser →</p>
+      {/* Sekilas Isi */}
+      <section id="sekilas-isi" className={`py-32 px-6 ${isDarkMode ? 'bg-[#2a2826]/20' : 'bg-[#f5f0e8]/30'} transition-all duration-1000 ${visibleSections['sekilas-isi'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-20">
+            <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-4">Cuplikan</p>
+            <h3 className="font-serif text-3xl md:text-4xl opacity-90">Sekilas Isi</h3>
           </div>
-          
-          {/* Clickable Dots */}
-          <div className="flex justify-center gap-2 mt-6">
-            {CATATAN_HARIAN.map((_, index) => (
-              <button 
-                key={index}
-                onClick={() => {
-                  if (index !== catatanIndex) {
-                    setIsTransitioning(true);
-                    setTimeout(() => {
-                      setCatatanIndex(index);
-                      setIsTransitioning(false);
-                    }, 300);
-                  }
-                }}
-                className={`h-1.5 rounded-full transition-all duration-300 
-                  ${index === catatanIndex ? 'bg-[#8b7355] w-6' : 'bg-[#8b7355]/20 w-1.5 hover:bg-[#8b7355]/40'}`}
-                aria-label={`Catatan ${index + 1}`}
-              />
+
+          <div className="relative">
+            {/* Timeline line */}
+            <div className="absolute left-0 md:left-8 top-0 bottom-0 w-px bg-[#8b7355]/20"></div>
+            
+            {SEKILAS_ISI.map((item, index) => (
+              <div key={item.id} className="relative pl-8 md:pl-20 pb-16 last:pb-0">
+                {/* Dot */}
+                <div className="absolute left-[-4px] md:left-6 top-2 w-2 h-2 rounded-full bg-[#8b7355]/40"></div>
+                
+                <div className="space-y-4">
+                  <p className="font-serif italic text-lg md:text-xl leading-relaxed opacity-80">
+                    "{item.quote}"
+                  </p>
+                  <p className="text-[10px] tracking-[0.2em] uppercase opacity-40">
+                    — Halaman {item.halaman}
+                  </p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Rak Buku - Elegan dengan indikasi klik */}
+      {/* Rak Buku */}
       <section id="koleksi" className={`py-32 px-6 ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/20'} transition-all duration-1000 ${visibleSections['koleksi'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-20">
@@ -390,7 +405,6 @@ export default function HomePage() {
                    className="group cursor-pointer"
                    onClick={() => openBookModal(buku)}>
                 
-                {/* Image Container dengan hover effect */}
                 <div className="relative aspect-[4/3] mb-6 overflow-hidden rounded-sm 
                                 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.15)] 
                                 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] 
@@ -402,35 +416,25 @@ export default function HomePage() {
                                   group-hover:opacity-100 group-hover:scale-[1.05] 
                                   transition-all duration-700" />
                   
-                  {/* Gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60"></div>
-                  
-                  {/* Spine effect */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70"></div>
                   <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
                   
-                  {/* Icon mata - muncul saat hover */}
                   <div className="absolute top-4 right-4 w-10 h-10 rounded-full 
                                   bg-white/10 backdrop-blur-sm 
                                   flex items-center justify-center
-                                  opacity-0 group-hover:opacity-100 
-                                  transform translate-y-2 group-hover:translate-y-0
-                                  transition-all duration-300">
-                    <Eye size={18} className="text-white" />
+                                  animate-pulse">
+                    <Eye size={18} className="text-white/80" />
                   </div>
                   
-                  {/* Bottom hint */}
-                  <div className="absolute bottom-4 left-4 right-4 
-                                  opacity-0 group-hover:opacity-100 
-                                  transform translate-y-2 group-hover:translate-y-0
-                                  transition-all duration-300 delay-75">
-                    <p className="text-white/80 text-xs tracking-wider flex items-center gap-2">
-                      <span className="w-8 h-px bg-white/40"></span>
+                  <div className="absolute bottom-4 left-4 right-4 flex items-center gap-2">
+                    <span className="w-6 h-px bg-white/40"></span>
+                    <p className="text-white/70 text-xs tracking-wider flex items-center gap-1">
                       Klik untuk membaca
+                      <ArrowUpRight size={12} className="opacity-60" />
                     </p>
                   </div>
                 </div>
 
-                {/* Book Info */}
                 <div className="space-y-3 group-hover:translate-y-1 transition-transform duration-300">
                   <div className="flex items-center gap-3 text-[10px] tracking-[0.2em] uppercase opacity-40">
                     <span>{buku.tema}</span>
@@ -457,6 +461,233 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+            {/* Catatan Kecil */}
+      <section id="catatan-kecil" className={`py-24 px-6 ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/30'} transition-all duration-1000`}>
+        <div className="max-w-xl mx-auto text-center">
+          <p className="text-[10px] tracking-[0.4em] uppercase opacity-30 mb-8">Catatan Kecil</p>
+          
+          <div 
+            className="relative h-32 flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing touch-pan-x"
+            onTouchStart={(e) => {
+              const touch = e.touches[0];
+              e.currentTarget.dataset.startX = touch.clientX;
+            }}
+            onTouchEnd={(e) => {
+              const touch = e.changedTouches[0];
+              const startX = parseFloat(e.currentTarget.dataset.startX || '0');
+              const diff = startX - touch.clientX;
+              
+              if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                  setIsTransitioning(true);
+                  setTimeout(() => {
+                    setCatatanIndex((prev) => (prev + 1) % CATATAN_HARIAN.length);
+                    setIsTransitioning(false);
+                  }, 300);
+                } else {
+                  setIsTransitioning(true);
+                  setTimeout(() => {
+                    setCatatanIndex((prev) => (prev - 1 + CATATAN_HARIAN.length) % CATATAN_HARIAN.length);
+                    setIsTransitioning(false);
+                  }, 300);
+                }
+              }
+            }}
+          >
+            {CATATAN_HARIAN.map((catatan, index) => (
+              <p key={index} 
+                 className={`absolute font-serif italic text-lg md:text-xl px-6 transition-all duration-300 ease-out w-full
+                   ${index === catatanIndex && !isTransitioning ? 'opacity-60 translate-x-0' : ''}
+                   ${index === catatanIndex && isTransitioning ? 'opacity-0 translate-x-[-20px]' : ''}
+                   ${index !== catatanIndex ? 'opacity-0 translate-x-[20px]' : ''}`}>
+                "{catatan}"
+              </p>
+            ))}
+            
+            <p className="absolute bottom-0 text-[10px] opacity-20 tracking-wider">← geser →</p>
+          </div>
+          
+          <div className="flex justify-center gap-2 mt-6">
+            {CATATAN_HARIAN.map((_, index) => (
+              <button 
+                key={index}
+                onClick={() => {
+                  if (index !== catatanIndex) {
+                    setIsTransitioning(true);
+                    setTimeout(() => {
+                      setCatatanIndex(index);
+                      setIsTransitioning(false);
+                    }, 300);
+                  }
+                }}
+                className={`h-1.5 rounded-full transition-all duration-300 
+                  ${index === catatanIndex ? 'bg-[#8b7355] w-6' : 'bg-[#8b7355]/20 w-1.5 hover:bg-[#8b7355]/40'}`}
+                aria-label={`Catatan ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Tentang Penulis */}
+      <section id="tentang-penulis" className={`py-32 px-6 ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/20'} transition-all duration-1000 ${visibleSections['tentang-penulis'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="w-32 h-32 mx-auto mb-8 rounded-full overflow-hidden shadow-lg">
+            <img src="/wildan.png" alt="Wildan Ferdiansyah" className="w-full h-full object-cover" />
+          </div>
+          
+          <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-4">Tentang Penulis</p>
+          
+          <div className="space-y-6 text-[15px] leading-[1.8] opacity-70 font-light mb-8">
+            <p>
+              Bukan penulis profesional. Bukan motivator. Hanya seseorang yang mencoba memahami hidupnya melalui kata-kata.
+            </p>
+            <p>
+              Pernah menjadi barista. Pernah menjadi mural artist. Sekarang menulis di sela-sela waktu—bukan untuk menjadi terkenal, tapi untuk tetap waras.
+            </p>
+          </div>
+
+          <p className="font-serif italic text-[#8b7355] text-lg opacity-60 mb-8">
+            "Aku menulis untuk hadir,<br/>bukan untuk memukau."
+          </p>
+
+          <div className="flex items-center justify-center gap-4 text-[10px] tracking-[0.2em] uppercase opacity-40">
+            <span>Barista</span>
+            <span className="w-1 h-1 rounded-full bg-current"></span>
+            <span>Mural Artist</span>
+            <span className="w-1 h-1 rounded-full bg-current"></span>
+            <span>Penulis</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonial Horizontal Scroll */}
+      <section id="testimonial" className={`py-32 px-6 transition-all duration-1000 ${visibleSections['testimonial'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-4">Cuplikan</p>
+            <h3 className="font-serif text-3xl opacity-90">Yang Mereka Katakan</h3>
+          </div>
+
+          {/* Horizontal Scroll Container */}
+          <div 
+            ref={testimonialRef}
+            className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide cursor-grab active:cursor-grabbing"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            onTouchStart={() => setIsPaused(true)}
+            onTouchEnd={() => setTimeout(() => setIsPaused(false), 3000)}
+          >
+            {[...kataPembaca, ...kataPembaca].map((kata, idx) => (
+              <div 
+                key={`${kata.id}-${idx}`} 
+                className={`flex-shrink-0 w-[calc(50%-12px)] min-w-[280px] ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/30'} p-6 rounded-sm`}
+              >
+                <p className="font-serif italic text-sm leading-relaxed mb-4 opacity-80">"{kata.text}"</p>
+                <p className="text-[10px] tracking-wider opacity-40">— {kata.nama}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Form Input Komentar */}
+          <div className="mt-16 pt-12 border-t border-[#8b7355]/10">
+            <p className="text-center text-[10px] tracking-[0.4em] uppercase opacity-40 mb-8">Tinggalkan Jejak</p>
+            
+            <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
+              <input
+                type="text"
+                placeholder="Namamu (opsional)"
+                value={nama}
+                onChange={(e) => setNama(e.target.value)}
+                className={`w-full px-4 py-3 text-sm bg-transparent border ${borderColor} rounded-sm focus:outline-none focus:border-[#8b7355]/50 transition-colors placeholder:opacity-30`}
+              />
+              <textarea
+                placeholder="Tuliskan sesuatu..."
+                value={catatan}
+                onChange={(e) => setCatatan(e.target.value)}
+                rows={3}
+                className={`w-full px-4 py-3 text-sm bg-transparent border ${borderColor} rounded-sm focus:outline-none focus:border-[#8b7355]/50 transition-colors resize-none placeholder:opacity-30`}
+              />
+              <button
+                type="submit"
+                disabled={!catatan.trim()}
+                className={`w-full py-3 text-xs tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center gap-2 ${catatan.trim() ? (isDarkMode ? 'bg-[#e8e0d5] text-[#1a1816]' : 'bg-[#2b2b2b] text-[#faf8f5]') : 'opacity-30 cursor-not-allowed'}`}
+              >
+                <Send size={14} />
+                Kirim
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className={`py-20 px-6 border-t ${borderColor}`}>
+        <div className="max-w-3xl mx-auto text-center">
+          {/* Quote */}
+          <p className="font-serif text-2xl md:text-3xl leading-relaxed mb-4 opacity-90">
+            "Tidak semua buku harus mengubah hidupmu."
+          </p>
+          <p className="text-sm opacity-50 mb-12">
+            Ada yang cukup menemanimu,<br/>sebentar saja.
+          </p>
+
+          {/* Icons */}
+          <div className="flex items-center justify-center gap-8 mb-12">
+            <Coffee size={20} className="opacity-40" />
+            <span className="w-1 h-1 rounded-full bg-current opacity-40"></span>
+            <BookOpen size={20} className="opacity-40" />
+            <span className="w-1 h-1 rounded-full bg-current opacity-40"></span>
+            <Moon size={20} className="opacity-40" />
+          </div>
+
+          {/* Social Media */}
+          <div className="flex items-center justify-center gap-6 mb-12">
+            <button onClick={() => handleShare('whatsapp')} className="w-10 h-10 rounded-full border border-current/20 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity">
+              <MessageCircle size={18} />
+            </button>
+            <button onClick={() => handleShare('facebook')} className="w-10 h-10 rounded-full border border-current/20 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity">
+              <Facebook size={18} />
+            </button>
+            <button onClick={() => handleShare('twitter')} className="w-10 h-10 rounded-full border border-current/20 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity">
+              <Twitter size={18} />
+            </button>
+            <button onClick={() => handleShare('instagram')} className="w-10 h-10 rounded-full border border-current/20 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity">
+              <Instagram size={18} />
+            </button>
+          </div>
+
+          {/* Hubungi Penulis */}
+          <p className="text-[10px] tracking-[0.3em] uppercase opacity-40 mb-6">Hubungi Penulis</p>
+          
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-sm opacity-60 mb-12">
+            <a href="tel:089636357091" className="flex items-center gap-2 hover:opacity-100 transition-opacity">
+              <Phone size={14} />
+              0896-3635-7091
+            </a>
+            <span className="hidden md:block w-1 h-1 rounded-full bg-current opacity-40"></span>
+            <a href="mailto:wildanferdiansyah06@gmail.com" className="flex items-center gap-2 hover:opacity-100 transition-opacity">
+              <Mail size={14} />
+              wildanferdiansyah06@gmail.com
+            </a>
+            <span className="hidden md:block w-1 h-1 rounded-full bg-current opacity-40"></span>
+            <a href="https://instagram.com/_iamwildan_" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:opacity-100 transition-opacity">
+              <Instagram size={14} />
+              @_iamwildan_
+            </a>
+          </div>
+
+          {/* Copyright */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-current/10 text-[10px] tracking-wider opacity-40">
+            <span>© 2026 WILDAN FERDIANSYAH</span>
+            <span className="flex items-center gap-1">
+              DIBUAT DENGAN <Heart size={10} className="inline" /> DAN SECANGKIR KOPI
+            </span>
+          </div>
+        </div>
+      </footer>
 
       {/* Modal */}
       {showModal && selectedBook && (
@@ -505,96 +736,6 @@ export default function HomePage() {
           </div>
         </div>
       )}
-
-      {/* Cuplikan */}
-      <section id="cuplikan" className={`py-32 px-6 transition-all duration-1000 ${visibleSections['cuplikan'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-20">
-            <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-4">Cuplikan</p>
-            <h3 className="font-serif text-3xl opacity-90">Yang Mereka Katakan</h3>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {kataPembaca.map((kata, idx) => (
-              <div key={kata.id} className={`${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/30'} p-6 rounded-sm transition-all duration-500 hover:scale-[1.02]`}>
-                <p className="font-serif italic text-sm leading-relaxed mb-4 opacity-80">"{kata.text}"</p>
-                <p className="text-[10px] tracking-wider opacity-40">— {kata.nama}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Form Kata Pembaca */}
-          <div className="mt-16 pt-12 border-t border-[#8b7355]/10">
-            <p className="text-center text-[10px] tracking-[0.4em] uppercase opacity-40 mb-8">Tinggalkan Jejak</p>
-            
-            <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
-              <input
-                type="text"
-                placeholder="Namamu (opsional)"
-                value={nama}
-                onChange={(e) => setNama(e.target.value)}
-                className={`w-full px-4 py-3 text-sm bg-transparent border ${borderColor} rounded-sm focus:outline-none focus:border-[#8b7355]/50 transition-colors placeholder:opacity-30`}
-              />
-              <textarea
-                placeholder="Tuliskan sesuatu..."
-                value={catatan}
-                onChange={(e) => setCatatan(e.target.value)}
-                rows={3}
-                className={`w-full px-4 py-3 text-sm bg-transparent border ${borderColor} rounded-sm focus:outline-none focus:border-[#8b7355]/50 transition-colors resize-none placeholder:opacity-30`}
-              />
-              <button
-                type="submit"
-                disabled={!catatan.trim()}
-                className={`w-full py-3 text-xs tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center gap-2 ${catatan.trim() ? (isDarkMode ? 'bg-[#e8e0d5] text-[#1a1816]' : 'bg-[#2b2b2b] text-[#faf8f5]') : 'opacity-30 cursor-not-allowed'}`}
-              >
-                <Send size={14} />
-                Kirim
-              </button>
-            </form>
-          </div>
-        </div>
-      </section>
-
-      {/* Penulis */}
-      <section id="penulis" className={`py-32 px-6 ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/20'} transition-all duration-1000 ${visibleSections['penulis'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="w-20 h-20 mx-auto mb-8 rounded-full overflow-hidden opacity-80">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" alt="Penulis" className="w-full h-full object-cover grayscale" />
-          </div>
-          
-          <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-4">Penulis</p>
-          <h3 className="font-serif text-2xl mb-6 opacity-90">Seorang yang Masih Belajar</h3>
-          
-          <p className="text-sm leading-relaxed opacity-70 font-light mb-8">
-            Menulis bukan untuk dikenal, tapi untuk mengingat. Bahwa kita pernah di sini. Bahwa kita pernah merasa.
-          </p>
-
-          <div className="flex justify-center gap-4">
-            <button onClick={() => handleShare('instagram')} className="p-3 rounded-full hover:bg-[#8b7355]/10 transition-colors opacity-60 hover:opacity-100">
-              <Instagram size={18} />
-            </button>
-            <button onClick={() => handleShare('twitter')} className="p-3 rounded-full hover:bg-[#8b7355]/10 transition-colors opacity-60 hover:opacity-100">
-              <Twitter size={18} />
-            </button>
-            <button onClick={() => handleShare('facebook')} className="p-3 rounded-full hover:bg-[#8b7355]/10 transition-colors opacity-60 hover:opacity-100">
-              <Facebook size={18} />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className={`py-12 px-6 border-t ${borderColor}`}>
-        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="font-serif text-sm opacity-60">Sepucuk Surat</p>
-          
-          <div className="flex items-center gap-6 text-[10px] tracking-wider opacity-40">
-            <span>© 2024</span>
-            <span>•</span>
-            <span>Dibuat dengan <Heart size={10} className="inline" /> di sudut kopi</span>
-          </div>
-        </div>
-      </footer>
 
     </main>
   );
