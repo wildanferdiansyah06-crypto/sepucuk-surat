@@ -23,7 +23,10 @@ import {
   Share2,
   Bookmark,
   Mail,
-  Phone
+  Phone,
+  Copy,
+  Check,
+  Wallet
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
@@ -114,6 +117,24 @@ const SEKILAS_ISI = [
   }
 ];
 
+const REKENING = [
+  {
+    bank: "BRI",
+    nomor: "356701025106533",
+    atasNama: "WILDAN FERDIANSYAH MUCHTAR"
+  },
+  {
+    bank: "Mandiri",
+    nomor: "1430034741809",
+    atasNama: "WILDAN FERDIANSYAH M"
+  },
+  {
+    bank: "DANA",
+    nomor: "089636357091",
+    atasNama: "Wildan Ferdiansyah"
+  }
+];
+
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -123,6 +144,7 @@ export default function HomePage() {
   const [catatanIndex, setCatatanIndex] = useState(0);
   const [visibleSections, setVisibleSections] = useState({});
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [copiedBank, setCopiedBank] = useState(null);
   
   // Testimonial scroll
   const testimonialRef = useRef(null);
@@ -246,6 +268,12 @@ export default function HomePage() {
       return;
     }
     window.open(shareUrls[platform], '_blank', 'width=600,height=400');
+  };
+
+  const copyToClipboard = (text, bank) => {
+    navigator.clipboard.writeText(text);
+    setCopiedBank(bank);
+    setTimeout(() => setCopiedBank(null), 2000);
   };
 
   // Dynamic classes
@@ -462,7 +490,7 @@ export default function HomePage() {
         </div>
       </section>
 
-            {/* Catatan Kecil */}
+      {/* Catatan Kecil */}
       <section id="catatan-kecil" className={`py-24 px-6 ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/30'} transition-all duration-1000`}>
         <div className="max-w-xl mx-auto text-center">
           <p className="text-[10px] tracking-[0.4em] uppercase opacity-30 mb-8">Catatan Kecil</p>
@@ -623,7 +651,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer dengan Donasi */}
       <footer className={`py-20 px-6 border-t ${borderColor}`}>
         <div className="max-w-3xl mx-auto text-center">
           {/* Quote */}
@@ -644,7 +672,7 @@ export default function HomePage() {
           </div>
 
           {/* Social Media */}
-          <div className="flex items-center justify-center gap-6 mb-12">
+          <div className="flex items-center justify-center gap-6 mb-16">
             <button onClick={() => handleShare('whatsapp')} className="w-10 h-10 rounded-full border border-current/20 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity">
               <MessageCircle size={18} />
             </button>
@@ -657,6 +685,47 @@ export default function HomePage() {
             <button onClick={() => handleShare('instagram')} className="w-10 h-10 rounded-full border border-current/20 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity">
               <Instagram size={18} />
             </button>
+          </div>
+
+          {/* Section Donasi */}
+          <div className={`${isDarkMode ? 'bg-[#2a2826]/50' : 'bg-[#f5f0e8]/50'} rounded-lg p-8 mb-12`}>
+            <div className="flex items-center justify-center gap-2 mb-6">
+              <Coffee size={20} className="text-[#8b7355]" />
+              <p className="text-[10px] tracking-[0.3em] uppercase opacity-60">Sawer Kopi</p>
+            </div>
+            
+            <p className="font-serif italic text-sm opacity-70 mb-6">
+              "Dukung aku untuk terus menulis dengan secangkir kopi hangat."
+            </p>
+
+            {/* QRIS DANA */}
+            <div className="mb-8">
+              <p className="text-[10px] tracking-wider uppercase opacity-40 mb-4">Scan QRIS DANA</p>
+              <div className="w-48 h-48 mx-auto bg-white rounded-lg p-4">
+                <img src="/qris-dana.png" alt="QRIS DANA" className="w-full h-full object-contain" />
+              </div>
+            </div>
+
+            {/* Rekening Bank */}
+            <div className="space-y-4 max-w-md mx-auto">
+              <p className="text-[10px] tracking-wider uppercase opacity-40 mb-4">atau Transfer ke</p>
+              
+              {REKENING.map((rek) => (
+                <div key={rek.bank} className={`flex items-center justify-between p-4 rounded ${isDarkMode ? 'bg-[#1a1816]/50' : 'bg-white/50'}`}>
+                  <div className="text-left">
+                    <p className="text-xs font-medium opacity-80">{rek.bank}</p>
+                    <p className="text-[10px] opacity-50">{rek.atasNama}</p>
+                    <p className="text-sm tracking-wider opacity-90">{rek.nomor}</p>
+                  </div>
+                  <button 
+                    onClick={() => copyToClipboard(rek.nomor, rek.bank)}
+                    className="p-2 rounded-full hover:bg-[#8b7355]/10 transition-colors opacity-60 hover:opacity-100"
+                  >
+                    {copiedBank === rek.bank ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Hubungi Penulis */}
