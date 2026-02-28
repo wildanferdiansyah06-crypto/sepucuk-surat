@@ -193,28 +193,33 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Testimonial auto-scroll
+  // Testimonial infinite scroll with seamless loop
   useEffect(() => {
-    if (!testimonialRef.current || isPaused) return;
+    if (!testimonialRef.current) return;
     
     const scrollContainer = testimonialRef.current;
     let animationId;
-    let scrollLeft = 0;
+    let scrollPos = 0;
+    const speed = 0.5;
     
     const animate = () => {
       if (!isPaused && scrollContainer) {
-        scrollLeft += 0.5;
-        if (scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
-          scrollLeft = 0;
+        scrollPos += speed;
+        
+        // Reset position for seamless infinite loop
+        const firstSetWidth = scrollContainer.scrollWidth / 2;
+        if (scrollPos >= firstSetWidth) {
+          scrollPos = 0;
         }
-        scrollContainer.scrollLeft = scrollLeft;
+        
+        scrollContainer.scrollLeft = scrollPos;
       }
       animationId = requestAnimationFrame(animate);
     };
     
     animationId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationId);
-  }, [isPaused]);
+  }, [isPaused, kataPembaca.length]);
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -244,14 +249,22 @@ export default function HomePage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!catatan.trim()) return;
+    
     const newComment = {
       id: Date.now(),
       text: catatan,
       nama: nama.trim() || "Anonim"
     };
-    setKataPembaca([...kataPembaca, newComment]);
+    
+    // Add new comment to the beginning so it appears first
+    setKataPembaca(prev => [newComment, ...prev]);
     setNama("");
     setCatatan("");
+    
+    // Scroll to show the new comment
+    if (testimonialRef.current) {
+      testimonialRef.current.scrollLeft = 0;
+    }
   };
 
   const handleShare = (platform) => {
@@ -280,6 +293,9 @@ export default function HomePage() {
   const bgClass = isDarkMode ? "bg-[#1a1816]" : "bg-[#faf8f5]";
   const textClass = isDarkMode ? "text-[#e8e0d5]" : "text-[#2b2b2b]";
   const borderColor = isDarkMode ? "border-[#e8e0d5]/10" : "border-[#8b7355]/10";
+
+  // Duplicate testimonials for seamless infinite scroll
+  const duplicatedTestimonials = [...kataPembaca, ...kataPembaca];
 
   return (
     <main className={`${bgClass} ${textClass} font-sans min-h-screen transition-colors duration-700`}>
@@ -598,17 +614,16 @@ export default function HomePage() {
             <h3 className="font-serif text-3xl opacity-90">Yang Mereka Katakan</h3>
           </div>
 
-          {/* Horizontal Scroll Container */}
+          {/* Horizontal Scroll Container - Infinite Loop */}
           <div 
             ref={testimonialRef}
-            className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide cursor-grab active:cursor-grabbing"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            className="flex gap-6 overflow-x-hidden pb-6 cursor-grab active:cursor-grabbing select-none"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onTouchStart={() => setIsPaused(true)}
             onTouchEnd={() => setTimeout(() => setIsPaused(false), 3000)}
           >
-            {[...kataPembaca, ...kataPembaca].map((kata, idx) => (
+            {duplicatedTestimonials.map((kata, idx) => (
               <div 
                 key={`${kata.id}-${idx}`} 
                 className={`flex-shrink-0 w-[calc(50%-12px)] min-w-[280px] ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/30'} p-6 rounded-sm`}
