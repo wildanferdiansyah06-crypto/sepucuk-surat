@@ -146,10 +146,6 @@ export default function HomePage() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [copiedBank, setCopiedBank] = useState(null);
   
-  // Testimonial scroll
-  const testimonialRef = useRef(null);
-  const [isPaused, setIsPaused] = useState(false);
-  
   const [nama, setNama] = useState("");
   const [catatan, setCatatan] = useState("");
   const [kataPembaca, setKataPembaca] = useState([
@@ -193,34 +189,6 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Testimonial infinite scroll with seamless loop
-  useEffect(() => {
-    if (!testimonialRef.current) return;
-    
-    const scrollContainer = testimonialRef.current;
-    let animationId;
-    let scrollPos = 0;
-    const speed = 0.5;
-    
-    const animate = () => {
-      if (!isPaused && scrollContainer) {
-        scrollPos += speed;
-        
-        // Reset position for seamless infinite loop
-        const firstSetWidth = scrollContainer.scrollWidth / 2;
-        if (scrollPos >= firstSetWidth) {
-          scrollPos = 0;
-        }
-        
-        scrollContainer.scrollLeft = scrollPos;
-      }
-      animationId = requestAnimationFrame(animate);
-    };
-    
-    animationId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationId);
-  }, [isPaused, kataPembaca.length]);
-
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -256,15 +224,9 @@ export default function HomePage() {
       nama: nama.trim() || "Anonim"
     };
     
-    // Add new comment to the beginning so it appears first
     setKataPembaca(prev => [newComment, ...prev]);
     setNama("");
     setCatatan("");
-    
-    // Scroll to show the new comment
-    if (testimonialRef.current) {
-      testimonialRef.current.scrollLeft = 0;
-    }
   };
 
   const handleShare = (platform) => {
@@ -292,10 +254,8 @@ export default function HomePage() {
   // Dynamic classes
   const bgClass = isDarkMode ? "bg-[#1a1816]" : "bg-[#faf8f5]";
   const textClass = isDarkMode ? "text-[#e8e0d5]" : "text-[#2b2b2b]";
-  const borderColor = isDarkMode ? "border-[#e8e0d5]/10" : "border-[#8b7355]/10";
-
-  // Duplicate testimonials for seamless infinite scroll
-  const duplicatedTestimonials = [...kataPembaca, ...kataPembaca];
+  const borderColor = isDarkMode ? "border-[#e8e0d5]/20" : "border-[#8b7355]/20";
+  const inputBg = isDarkMode ? "bg-[#2a2826]/50" : "bg-[#f5f0e8]/50";
 
   return (
     <main className={`${bgClass} ${textClass} font-sans min-h-screen transition-colors duration-700`}>
@@ -606,7 +566,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Testimonial Horizontal Scroll */}
+      {/* Testimonial Horizontal Scroll - FIXED */}
       <section id="testimonial" className={`py-32 px-6 transition-all duration-1000 ${visibleSections['testimonial'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
@@ -614,29 +574,25 @@ export default function HomePage() {
             <h3 className="font-serif text-3xl opacity-90">Yang Mereka Katakan</h3>
           </div>
 
-          {/* Horizontal Scroll Container - Infinite Loop */}
+          {/* Horizontal Scroll Container - Manual scroll only, no auto-scroll */}
           <div 
-            ref={testimonialRef}
-            className="flex gap-6 overflow-x-hidden pb-6 cursor-grab active:cursor-grabbing select-none"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-            onTouchStart={() => setIsPaused(true)}
-            onTouchEnd={() => setTimeout(() => setIsPaused(false), 3000)}
+            className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-[#8b7355]/20 scrollbar-track-transparent"
+            style={{ scrollbarWidth: 'thin', msOverflowStyle: 'auto' }}
           >
-            {duplicatedTestimonials.map((kata, idx) => (
+            {kataPembaca.map((kata, idx) => (
               <div 
-                key={`${kata.id}-${idx}`} 
-                className={`flex-shrink-0 w-[calc(50%-12px)] min-w-[280px] ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/30'} p-6 rounded-sm`}
+                key={kata.id} 
+                className={`flex-shrink-0 w-[calc(50%-12px)] min-w-[280px] snap-start ${isDarkMode ? 'bg-[#2a2826]/40' : 'bg-[#f5f0e8]/40'} p-6 rounded-sm border ${borderColor} hover:border-[#8b7355]/30 transition-all duration-300`}
               >
-                <p className="font-serif italic text-sm leading-relaxed mb-4 opacity-80">"{kata.text}"</p>
-                <p className="text-[10px] tracking-wider opacity-40">— {kata.nama}</p>
+                <p className="font-serif italic text-sm leading-relaxed mb-4 opacity-90">"{kata.text}"</p>
+                <p className="text-[10px] tracking-wider opacity-50">— {kata.nama}</p>
               </div>
             ))}
           </div>
 
-          {/* Form Input Komentar */}
-          <div className="mt-16 pt-12 border-t border-[#8b7355]/10">
-            <p className="text-center text-[10px] tracking-[0.4em] uppercase opacity-40 mb-8">Tinggalkan Jejak</p>
+          {/* Form Input Komentar - ENHANCED VISIBILITY */}
+          <div className="mt-16 pt-12 border-t border-[#8b7355]/20">
+            <p className="text-center text-[11px] tracking-[0.3em] uppercase opacity-60 mb-8 font-medium">Tinggalkan Jejak</p>
             
             <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
               <input
@@ -644,19 +600,19 @@ export default function HomePage() {
                 placeholder="Namamu (opsional)"
                 value={nama}
                 onChange={(e) => setNama(e.target.value)}
-                className={`w-full px-4 py-3 text-sm bg-transparent border ${borderColor} rounded-sm focus:outline-none focus:border-[#8b7355]/50 transition-colors placeholder:opacity-30`}
+                className={`w-full px-4 py-3.5 text-sm ${inputBg} border ${borderColor} rounded-sm focus:outline-none focus:border-[#8b7355]/60 focus:ring-1 focus:ring-[#8b7355]/20 transition-all placeholder:opacity-50 text-current`}
               />
               <textarea
                 placeholder="Tuliskan sesuatu..."
                 value={catatan}
                 onChange={(e) => setCatatan(e.target.value)}
-                rows={3}
-                className={`w-full px-4 py-3 text-sm bg-transparent border ${borderColor} rounded-sm focus:outline-none focus:border-[#8b7355]/50 transition-colors resize-none placeholder:opacity-30`}
+                rows={4}
+                className={`w-full px-4 py-3.5 text-sm ${inputBg} border ${borderColor} rounded-sm focus:outline-none focus:border-[#8b7355]/60 focus:ring-1 focus:ring-[#8b7355]/20 transition-all resize-none placeholder:opacity-50 text-current`}
               />
               <button
                 type="submit"
                 disabled={!catatan.trim()}
-                className={`w-full py-3 text-xs tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center gap-2 ${catatan.trim() ? (isDarkMode ? 'bg-[#e8e0d5] text-[#1a1816]' : 'bg-[#2b2b2b] text-[#faf8f5]') : 'opacity-30 cursor-not-allowed'}`}
+                className={`w-full py-3.5 text-xs tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center gap-2 rounded-sm font-medium ${catatan.trim() ? (isDarkMode ? 'bg-[#e8e0d5] text-[#1a1816] hover:bg-[#d4ccc0]' : 'bg-[#2b2b2b] text-[#faf8f5] hover:bg-[#1a1a1a]') : 'opacity-40 cursor-not-allowed bg-[#8b7355]/20'}`}
               >
                 <Send size={14} />
                 Kirim
