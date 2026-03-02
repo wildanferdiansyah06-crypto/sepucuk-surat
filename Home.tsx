@@ -161,6 +161,8 @@ export default function HomePage() {
     { id: 5, text: "Setiap halaman kayak pelukan hangat yang nggak bikin sesak.", nama: "Sinta" },
     { id: 6, text: "Baru pertama kali ngerasa gak sendirian dalam kesendirian.", nama: "Reza" }
   ]);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
+const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     const handleEscape = (e) => {
@@ -201,6 +203,28 @@ export default function HomePage() {
     }, 8000);
     return () => clearInterval(interval);
   }, []);
+
+useEffect(() => {
+  const container = carouselRef.current;
+  if (!container) return;
+
+  let animationFrame: number;
+
+  const scroll = () => {
+    if (!isPaused) {
+      container.scrollLeft += 0.5;
+
+      if (container.scrollLeft >= container.scrollWidth / 2) {
+        container.scrollLeft = 0;
+      }
+    }
+    animationFrame = requestAnimationFrame(scroll);
+  };
+
+  animationFrame = requestAnimationFrame(scroll);
+
+  return () => cancelAnimationFrame(animationFrame);
+}, [isPaused]);
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -743,14 +767,38 @@ export default function HomePage() {
             <h3 className="font-serif text-3xl md:text-4xl opacity-90">Yang Mereka Katakan</h3>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-16">
-            {kataPembaca.map((item) => (
-              <div key={item.id} className={`p-6 rounded-lg ${isDarkMode ? 'bg-[#2a2826]/30' : 'bg-[#f5f0e8]/50'}`}>
-                <p className="font-serif italic mb-4 opacity-80">"{item.text}"</p>
-                <p className="text-xs uppercase tracking-wider opacity-40">— {item.nama}</p>
-              </div>
-            ))}
-          </div>
+          <div className="relative">
+
+  <div className={`pointer-events-none absolute left-0 top-0 h-full w-24 ${isDarkMode ? 'bg-gradient-to-r from-[#1a1816]' : 'bg-gradient-to-r from-[#faf8f5]'} to-transparent z-10`} />
+
+  <div className={`pointer-events-none absolute right-0 top-0 h-full w-24 ${isDarkMode ? 'bg-gradient-to-l from-[#1a1816]' : 'bg-gradient-to-l from-[#faf8f5]'} to-transparent z-10`} />
+
+  <div
+    ref={carouselRef}
+    className="flex gap-8 overflow-x-scroll scrollbar-hide px-12 mb-16"
+    onMouseEnter={() => setIsPaused(true)}
+    onMouseLeave={() => setIsPaused(false)}
+    onTouchStart={() => setIsPaused(true)}
+    onTouchEnd={() => setIsPaused(false)}
+  >
+    {[...kataPembaca, ...kataPembaca].map((item, index) => (
+      <div
+        key={index}
+        className={`min-w-[320px] md:min-w-[420px] p-8 rounded-2xl
+          ${isDarkMode ? 'bg-[#2a2826]/40' : 'bg-white/60'}
+          backdrop-blur-lg
+          shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]
+          transition-all duration-500 hover:scale-[1.04]`}
+      >
+        <p className="font-serif italic text-lg md:text-xl leading-relaxed opacity-80">
+          "{item.text}"
+        </p>
+        <p className="mt-6 text-xs uppercase tracking-widest opacity-40">
+          — {item.nama}
+        </p>
+      </div>
+    ))}
+  </div>
 
           <div className={`p-8 rounded-lg ${isDarkMode ? 'bg-[#2a2826]/20' : 'bg-[#f5f0e8]/30'}`}>
             <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-6 text-center">Tinggalkan Jejak</p>
