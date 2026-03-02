@@ -762,3 +762,41 @@ export default function HomePage() {
                         className="p-2 rounded-full hover:bg-[#8b7355]/10 transition-colors">
                   {copiedBank === rek.bank ? <Check size={18} className="text-green-600" /> : <Copy size={18} className="opacity-60" />}
                 </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-center gap-4">
+            <button onClick={() => handleShare('whatsapp')} className="p-3 rounded-full hover:bg-[#8b7355]/10 transition-colors opacity-60 hover:opacity-100">
+              <MessageCircle size={20} />
+            </button>
+            <button onClick={() => handleShare('facebook')} className="p-3 rounded-full hover:bg-[#8b7355]/10 transition-colors opacity-60 hover:opacity-100">
+              <Facebook size={20} />
+            </button>
+            <button onClick={() => handleShare('twitter')} className="p-3 rounded-full hover:bg-[#8b7355]/10 transition-colors opacity-60 hover:opacity-100">
+              <Twitter size={20} />
+            </button>
+            <button onClick={() => handleShare('instagram')} className="p-3 rounded-full hover:bg-[#8b7355]/10 transition-colors opacity-60 hover:opacity-100">
+              <Instagram size={20} />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <footer className={`py-12 px-6 border-t ${borderColor}`}>
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="font-serif text-lg tracking-wider opacity-80 mb-4">Sepucuk Surat</p>
+          <p className="text-xs opacity-40 mb-8">
+            Dari hati ke hati. Dari malam ke malam.
+          </p>
+          
+          <div className="flex justify-center gap-6 text-xs opacity-40">
+            <span>© 2026 Wildan Ferdiansyah</span>
+            <span>•</span>
+            <span>Dibuat dengan lelah dan kopi</span>
+          </div>
+        </div>
+      </footer>
+    </main>
+  );
+}
