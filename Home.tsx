@@ -138,6 +138,8 @@ const REKENING = [
   }
 ];
 
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx3RbaT1I0ItdqJKSTCJdJ5kc105vi6pqmeFRAUkZxCneBY4UcmWE7np47uHPGCE/exec";
+
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -257,22 +259,42 @@ export default function HomePage() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!catatan.trim() || isSubmitting) return;
-    
-    setIsSubmitting(true);
-    
-    const newComment = {
-      id: Date.now(),
-      text: catatan,
-      nama: nama.trim() || "Anonim"
-    };
-    
-    setKataPembaca(prev => [newComment, ...prev]);
-    setNama("");
-    setCatatan("");
-    setIsSubmitting(false);
-  };
+  e.preventDefault();
+  if (!catatan.trim() || isSubmitting) return;
+
+  setIsSubmitting(true);
+
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        nama: nama.trim() || "Anonim",
+        text: catatan,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      const newComment = {
+        id: Date.now(),
+        text: catatan,
+        nama: nama.trim() || "Anonim",
+      };
+
+      setKataPembaca((prev) => [newComment, ...prev]);
+      setNama("");
+      setCatatan("");
+    } else {
+      alert("Gagal mengirim.");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Terjadi kesalahan.");
+  }
+
+  setIsSubmitting(false);
+};
 
   const handleShare = (platform) => {
     const url = encodeURIComponent(window.location.href);
