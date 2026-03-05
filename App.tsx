@@ -6,8 +6,13 @@ export default function App() {
   return (
     <Router>
       <Routes>
+
+        {/* Homepage */}
         <Route path="/" element={<HomePage />} />
+
+        {/* Halaman Rak Buku */}
         <Route path="/rak" element={<Rak />} />
+
       </Routes>
     </Router>
   );
