@@ -1,12 +1,20 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./Home";
+import Rak from "./Rak";
 
 export default function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-      </Routes>
-    </Router>
-  );
+return (
+<Router>
+<Routes>
+
+    {/* Halaman Utama */}
+    <Route path="/" element={<HomePage />} />
+
+    {/* Halaman Rak Buku */}
+    <Route path="/rak" element={<Rak />} />
+
+  </Routes>
+</Router>
+
+);
 }
