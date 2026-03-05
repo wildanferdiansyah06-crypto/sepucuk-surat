@@ -98,7 +98,45 @@ const CATATAN_HARIAN = [
   "Kadang kita hanya butuh seseorang yang mengangguk, bukan yang memberi solusi.",
   "Buku ini tidak akan mengubah hidupmu. Tapi mungkin menemani harimu.",
   "Di antara semua yang berisik, sunyi adalah kemewahan.",
-  "Kopi dingin tetap kopi. Lelah tetap hidup."
+  "Kopi dingin tetap kopi. Lelah tetap hidup.",
+  // Tambahan 30 kata-kata baru
+  "Malam tidak selalu gelap, kadang hanya butuh waktu untuk menemukan bintangnya.",
+  "Jeda bukanlah akhir, tapi ruang untuk menghela napas sebelum lanjut.",
+  "Yang paling berat bukan beban, tapi pura-pura kuat padahal ingin istirahat.",
+  "Setiap orang punya jam yang berbeda, jangan bandingkan langkahmu dengan orang lain.",
+  "Kadang yang kita butuhkan bukan jawaban, tapi keberanian untuk bertanya.",
+  "Hidup ini terlalu singkat untuk dihabiskan dengan orang yang membuatmu lupa tersenyum.",
+  "Rindu itu seperti kopi, semakin dibiarkan semakin kuat rasanya.",
+  "Tidak apa-apa untuk tidak tahu arah, asal tetap berjalan.",
+  "Yang paling indah seringkali datang setelah kita berani melepaskan.",
+  "Kita tidak kehilangan waktu, kita hanya menukarnya dengan pengalaman.",
+  "Setiap luka adalah tanda bahwa kita pernah berani mencintai.",
+  "Kadang diam bukan karena tidak punya kata, tapi karena sudah terlalu banyak yang ingin dikatakan.",
+  "Kebahagiaan tidak selalu tentang tawa yang keras, tapi tenang yang dalam.",
+  "Yang terbaik belum tentu yang paling cepat, tapi yang paling tepat waktunya.",
+  "Kita tidak bisa mengendalikan ombak, tapi bisa belajar berselancar.",
+  "Setiap hari adalah halaman baru, meski terkadang tintanya habis.",
+  "Tidak ada yang salah dengan merasa lelah, yang salah adalah memaksakan diri terus-menerus.",
+  "Cinta sejati adalah ketika seseorang melihat kekacauanmu dan memilih untuk tinggal.",
+  "Kadang yang kita cari sebenarnya sudah ada di dalam diri kita sendiri.",
+  "Waktu tidak menyembuhkan apa-apa, tapi kita belajar hidup dengan lukanya.",
+  "Yang paling berharga bukan apa yang kita miliki, tapi siapa yang ada saat kita tidak punya apa-apa.",
+  "Setiap pertemuan adalah pelajaran, setiap perpisahan adalah pembelajaran.",
+  "Kita tidak perlu sempurna untuk dicintai, kita hanya perlu menjadi diri sendiri.",
+  "Kadang yang paling sulit bukan memaafkan orang lain, tapi memaafkan diri sendiri.",
+  "Hidup adalah pilihan antara nyaman dengan takut, atau berani dengan tidak pasti.",
+  "Yang terpenting bukan seberapa jauh kita melangkah, tapi seberapa setia kita pada diri sendiri.",
+  "Setiap senja mengingatkan kita bahwa yang indah juga bisa berakhir dengan tenang.",
+  "Kita tidak kekurangan waktu, kita hanya kekurangan fokus pada yang benar-benar penting.",
+  "Kadang yang kita butuhkan bukan pergi jauh, tapi duduk diam dan merasa.",
+  "Yang paling kuat bukan yang tidak pernah jatuh, tapi yang bangkit setiap kali jatuh.",
+  "Kehidupan adalah kumpulan momen kecil yang sering kita lewatkan karena terlalu sibuk mencari yang besar.",
+  "Tidak ada yang sia-sia dalam hidup, semua adalah bagian dari cerita yang lebih besar.",
+  "Kadang kita harus kehilangan arah untuk menemukan diri kita yang sebenarnya.",
+  "Yang paling berarti seringkali tidak terlihat, tapi dirasakan dalam diam.",
+  "Kita tidak bisa memulai bab baru jika terus membaca ulang yang lama.",
+  "Setiap orang adalah guru, setiap pengalaman adalah pelajaran.",
+  "Yang terakhir dan paling penting: kamu sudah cukup, persis seperti dirimu sekarang."
 ];
 
 const SEKILAS_ISI = [
@@ -144,12 +182,69 @@ export default function HomePage() {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [isModalClosing, setIsModalClosing] = useState(false);
-  const [catatanIndex, setCatatanIndex] = useState(0);
   const [visibleSections, setVisibleSections] = useState({});
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const [copiedBank, setCopiedBank] = useState(null);
   
-  const carouselRef = useRef(null);
+  // State untuk jam real-time
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [userLocation, setUserLocation] = useState("Memuat lokasi...");
+
+  const catatanRef = useRef(null);
+
+  // Effect untuk update jam setiap detik
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Effect untuk mendapatkan lokasi user
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            // Reverse geocoding untuk mendapatkan nama kota
+            const response = await fetch(
+              `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=id`
+            );
+            const data = await response.json();
+            setUserLocation(data.city || data.locality || "Lokasi Anda");
+          } catch (error) {
+            setUserLocation("Lokasi Terdeteksi");
+          }
+        },
+        (error) => {
+          setUserLocation("Waktu Lokal");
+        }
+      );
+    } else {
+      setUserLocation("Waktu Lokal");
+    }
+  }, []);
+
+  // Format waktu
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('id-ID', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+  };
+
+  // Format tanggal
+  const formatDate = (date) => {
+    const options = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
+    return date.toLocaleDateString('id-ID', options);
+  };
 
   useEffect(() => {
     const handleEscape = (e) => {
@@ -178,17 +273,6 @@ export default function HomePage() {
     });
 
     return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setCatatanIndex((prev) => (prev + 1) % CATATAN_HARIAN.length);
-        setIsTransitioning(false);
-      }, 500);
-    }, 8000);
-    return () => clearInterval(interval);
   }, []);
 
   const scrollToSection = (sectionId) => {
@@ -310,6 +394,14 @@ export default function HomePage() {
         .backdrop-exit {
           animation: backdrop-exit 0.3s ease-out forwards;
         }
+        /* Hide scrollbar untuk catatan kecil */
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}</style>
 
       <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]" 
@@ -326,6 +418,12 @@ export default function HomePage() {
           </button>
           
           <div className="flex items-center gap-4">
+            {/* Widget Jam */}
+            <div className={`hidden md:flex flex-col items-end text-xs ${isDarkMode ? 'text-[#e8e0d5]/60' : 'text-[#2b2b2b]/60'}`}>
+              <span className="font-mono text-sm tracking-wider">{formatTime(currentTime)}</span>
+              <span className="text-[10px] uppercase tracking-wider">{userLocation}</span>
+            </div>
+            
             <button onClick={toggleDarkMode} 
                     className="p-2 rounded-full hover:bg-[#8b7355]/10 transition-colors opacity-60 hover:opacity-100">
               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
@@ -335,6 +433,12 @@ export default function HomePage() {
               <Menu size={20} />
             </button>
           </div>
+        </div>
+
+        {/* Widget Jam Mobile */}
+        <div className={`md:hidden px-6 pb-3 text-center ${isDarkMode ? 'text-[#e8e0d5]/60' : 'text-[#2b2b2b]/60'}`}>
+          <span className="font-mono text-sm tracking-wider">{formatTime(currentTime)}</span>
+          <span className="text-[10px] uppercase tracking-wider ml-2">• {userLocation}</span>
         </div>
 
         {isMenuOpen && (
@@ -358,6 +462,19 @@ export default function HomePage() {
         </div>
         
         <div className="relative z-10 text-center px-6 max-w-3xl mx-auto pt-20">
+          {/* Jam di Hero Section */}
+          <div className={`mb-8 p-4 rounded-lg ${isDarkMode ? 'bg-[#1a1816]/30' : 'bg-white/30'} backdrop-blur-sm inline-block`}>
+            <div className={`text-xs uppercase tracking-[0.3em] mb-1 ${isDarkMode ? 'text-[#e8e0d5]/60' : 'text-[#2b2b2b]/60'}`}>
+              {formatDate(currentTime)}
+            </div>
+            <div className="font-mono text-3xl md:text-4xl tracking-wider opacity-90">
+              {formatTime(currentTime)}
+            </div>
+            <div className={`text-xs mt-1 ${isDarkMode ? 'text-[#e8e0d5]/40' : 'text-[#2b2b2b]/40'}`}>
+              {userLocation}
+            </div>
+          </div>
+
           <p className="text-[10px] tracking-[0.5em] uppercase mb-8 animate-fade-in-slow"
              style={{ color: isDarkMode ? '#e8e0d5' : '#2b2b2b', opacity: 0.6 }}>
             Sebuah Buku Oleh
@@ -562,30 +679,64 @@ export default function HomePage() {
       )}
 
       <section id="catatan-kecil" className={`py-32 px-6 transition-all duration-1000 ${visibleSections['catatan-kecil'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="w-12 h-px bg-[#8b7355]/30 mx-auto mb-12"></div>
-          
-          <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-8">Catatan Kecil</p>
-          
-          <div className="min-h-[120px] flex items-center justify-center">
-            <p className={`font-serif italic text-xl md:text-2xl leading-relaxed opacity-70 transition-all duration-500 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
-              "{CATATAN_HARIAN[catatanIndex]}"
-            </p>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="w-12 h-px bg-[#8b7355]/30 mx-auto mb-12"></div>
+            <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-4">Geser untuk melihat lebih</p>
+            <h3 className="font-serif text-3xl md:text-4xl opacity-90">Catatan Kecil</h3>
           </div>
-
-          <div className="flex justify-center gap-2 mt-8">
-            {CATATAN_HARIAN.map((_, idx) => (
-              <button key={idx}
-                      onClick={() => {
-                        setIsTransitioning(true);
-                        setTimeout(() => {
-                          setCatatanIndex(idx);
-                          setIsTransitioning(false);
-                        }, 300);
-                      }}
-                      className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === catatanIndex ? 'bg-[#8b7355] w-6' : 'bg-[#8b7355]/30'}`} />
+          
+          {/* Horizontal Scroll Container */}
+          <div 
+            ref={catatanRef}
+            className="flex gap-6 overflow-x-auto hide-scrollbar pb-8 snap-x snap-mandatory"
+            style={{ scrollBehavior: 'smooth' }}
+          >
+            {CATATAN_HARIAN.map((catatan, idx) => (
+              <div 
+                key={idx}
+                className={`flex-shrink-0 w-[85vw] md:w-[400px] p-8 rounded-2xl snap-center
+                  ${isDarkMode ? 'bg-[#2a2826]/40' : 'bg-white/60'}
+                  backdrop-blur-lg
+                  shadow-[0_20px_60px_-20px_rgba(0,0,0,0.15)]
+                  hover:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.25)]
+                  transition-all duration-500 hover:scale-[1.02]
+                  cursor-grab active:cursor-grabbing`}
+              >
+                <div className="flex items-center gap-2 mb-6 opacity-40">
+                  <span className="text-[10px] tracking-[0.3em] uppercase">#{String(idx + 1).padStart(2, '0')}</span>
+                  <span className="flex-1 h-px bg-current opacity-20"></span>
+                </div>
+                
+                <p className="font-serif italic text-lg md:text-xl leading-relaxed opacity-80 min-h-[120px] flex items-center">
+                  "{catatan}"
+                </p>
+                
+                <div className="mt-6 pt-4 border-t border-[#8b7355]/10 flex justify-between items-center">
+                  <span className={`text-[10px] uppercase tracking-wider opacity-40`}>
+                    {formatTime(currentTime).split(':').slice(0,2).join(':')}
+                  </span>
+                  <span className="text-[#8b7355] opacity-60">
+                    <Sparkles size={14} />
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
+
+          {/* Indicator dots */}
+          <div className="flex justify-center gap-2 mt-8">
+            {CATATAN_HARIAN.map((_, idx) => (
+              <div 
+                key={idx}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-[#8b7355] w-6' : 'bg-[#8b7355]/30'}`}
+              />
+            ))}
+          </div>
+          
+          <p className="text-center text-xs opacity-40 mt-6 tracking-wider">
+            ← Geser ke kiri atau kanan →
+          </p>
         </div>
       </section>
 
