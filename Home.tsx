@@ -651,6 +651,17 @@ export default function HomePage() {
         </div>
       )}
 
+      <div className="text-center mt-16">
+  <a 
+    href="/rak"
+    className="inline-flex items-center gap-2 text-sm tracking-[0.2em] uppercase opacity-60 hover:opacity-100 transition-all"
+  >
+    <Library size={16} />
+    <span>Buka Rak Lengkap</span>
+    <ArrowUpRight size={14} />
+  </a>
+</div>
+
       <section id="catatan-kecil" className={`py-32 px-6 transition-all duration-1000 ${visibleSections['catatan-kecil'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
