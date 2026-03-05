@@ -1,9 +1,12 @@
-export default function Rak() {
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./Home";
+
+export default function App() {
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Rak Buku</h1>
-      <p>Halaman rak buku akan tampil di sini.</p>
-      <a href="/">Kembali ke Beranda</a>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </Router>
   );
 }
