@@ -441,7 +441,7 @@ export default function HomePage() {
           <h1 className="font-serif text-5xl md:text-7xl leading-[0.9] mb-6 animate-fade-in-slower"
               style={{ color: isDarkMode ? '#e8e0d5' : '#2b2b2b' }}>
             <span className="block opacity-90">Kelas Pekerja</span>
-            <span className="block italic text-[#8b7355] text-4xl md:text-6xl mt-2">dan Surat-Surat untuk Malam</span>
+            <span className="block italic text-[#8b7355] text-4xl md:text-6xl mt-2">Arsip Sunyi Orang-Orang yang Tetap Bekerja</span>
           </h1>
           
           <p className="font-serif italic text-lg md:text-xl max-w-md mx-auto mb-12 leading-relaxed animate-fade-in-slowest"
