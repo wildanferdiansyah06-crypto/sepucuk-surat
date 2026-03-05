@@ -79,16 +79,16 @@ const BUKU_LIST = [
     preview: "Tentang menemukan makna dalam hal-hal yang kita ulang setiap hari. Tentang cangkir yang sama, rasa yang familiar, dan ketenangan yang ditemukan dalam rutinitas."
   },
   {
-    id: 4,
-    judul: "Kami Menulis Pelan",
-    link: "https://drive.google.com/file/d/1Mc6pOQ5z2xSn8Wmhf65kdgTrv5T5EzPm/view?usp=drivesdk",
-    deskripsi: "K "Kumpulan tulisan yang lahir dari kesabaran, untuk mereka yang percaya pada proses dan kekuatan kata-kata yang diucapkan dengan lirih.",
-    halaman: "41",
-    readTime: "22 menit",
-    ilustrasi: BUKU_ILUSTRASI.menulisPelan,
-    tema: "Proses",
-    preview: "Tulisan-tulisan yang tidak buru-buru. Yang mengalir seperti air, yang hadir seperti napas. Untuk mereka yang percaya bahwa yang pelan juga bisa sampai."
-  }
+ id: 4,
+ judul: "Kami Menulis Pelan",
+ link: "https://drive.google.com/file/d/1Mc6pOQ5z2xSn8Wmhf65kdgTrv5T5EzPm/view?usp=drivesdk",
+ deskripsi: "Kumpulan tulisan yang lahir dari kesabaran, untuk mereka yang percaya pada proses dan kekuatan kata-kata yang diucapkan dengan lirih.",
+ halaman: "41",
+ readTime: "22 menit",
+ ilustrasi: BUKU_ILUSTRASI.menulisPelan,
+ tema: "Proses",
+ preview: "Tulisan-tulisan yang tidak buru-buru. Yang mengalir seperti air, yang hadir seperti napas. Untuk mereka yang percaya bahwa yang pelan juga bisa sampai."
+}
 ];
 
 const CATATAN_HARIAN = [
