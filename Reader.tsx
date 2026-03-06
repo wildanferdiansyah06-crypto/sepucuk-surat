@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const BUKU = [
 {
@@ -31,7 +31,6 @@ file: "/buku/kami-menulis-pelan.pdf"
 export default function Reader() {
 
 const { id } = useParams();
-
 const buku = BUKU.find((b) => b.id === id);
 
 if (!buku) {
@@ -42,56 +41,36 @@ Buku tidak ditemukan
 );
 }
 
-const viewerUrl =
-"https://docs.google.com/gview?embedded=1&url=https://kelaspekerja.site" +
-buku.file;
-
 return (
 <div className="min-h-screen bg-[#f6f4ef] dark:bg-[#1c1c1c] text-black dark:text-white">
 
   <div className="max-w-6xl mx-auto px-5 py-8">
 
     {/* HEADER */}
-    <div className="flex items-center justify-between mb-6">
-
-      <Link
-        to="/rak"
-        className="flex items-center gap-2 text-sm opacity-70 hover:opacity-100"
-      >
-        <ArrowLeft size={16} />
-        Kembali ke Rak
-      </Link>
-
-      <a
-        href={buku.file}
-        target="_blank"
-        className="flex items-center gap-2 text-sm opacity-70 hover:opacity-100"
-      >
-        <BookOpen size={16} />
-        Buka di Tab Baru
-      </a>
-
-    </div>
+    <Link
+      to="/rak"
+      className="flex items-center gap-2 text-sm opacity-70 hover:opacity-100 mb-6"
+    >
+      <ArrowLeft size={16}/>
+      Kembali ke Rak
+    </Link>
 
     {/* TITLE */}
-    <div className="mb-6">
+    <h1 className="text-3xl md:text-4xl font-serif">
+      {buku.judul}
+    </h1>
 
-      <h1 className="text-3xl md:text-4xl font-serif">
-        {buku.judul}
-      </h1>
-
-      <p className="opacity-60 mt-2 text-sm">
-        oleh {buku.penulis}
-      </p>
-
-    </div>
+    <p className="opacity-60 mt-2 mb-6">
+      oleh {buku.penulis}
+    </p>
 
     {/* PDF */}
-    <div className="rounded-xl overflow-hidden shadow-lg border border-black/10 dark:border-white/10 bg-white">
+    <div className="w-full h-[90vh] rounded-xl overflow-hidden shadow-lg bg-white">
 
-      <iframe
-        src={viewerUrl}
-        className="w-full h-[90vh]"
+      <embed
+        src={buku.file}
+        type="application/pdf"
+        className="w-full h-full"
       />
 
     </div>
