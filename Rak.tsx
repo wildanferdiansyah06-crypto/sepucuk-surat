@@ -1,45 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, X } from "lucide-react";
-
-const BUKU = [
-{
-id: "1",
-judul: "Seni Menyeduh Kehidupan",
-penulis: "Wildan Ferdiansyah",
-halaman: 45,
-readTime: "25 menit",
-cover: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800",
-preview: "Catatan tentang bagaimana kita menyeduh kehidupan dengan lebih pelan dan penuh makna."
-},
-{
-id: "2",
-judul: "Di Balik Bar",
-penulis: "Wildan Ferdiansyah",
-halaman: 38,
-readTime: "20 menit",
-cover: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=800",
-preview: "Cerita pendek dari sudut pandang seorang barista tentang percakapan dan kopi."
-},
-{
-id: "3",
-judul: "Di Atas Cangkir Yang Sama",
-penulis: "Wildan Ferdiansyah",
-halaman: 52,
-readTime: "30 menit",
-cover: "https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=800",
-preview: "Renungan tentang konsistensi dan menemukan makna dalam rutinitas."
-},
-{
-id: "4",
-judul: "Kami Menulis Pelan",
-penulis: "Wildan Ferdiansyah",
-halaman: 41,
-readTime: "22 menit",
-cover: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=800",
-preview: "Tulisan yang lahir dari kesabaran dan proses yang pelan."
-}
-];
+import { ArrowLeft, BookOpen, Plus, X } from "lucide-react";
+import { BUKU } from "./buku-data";
 
 export default function Rak() {
 
@@ -54,16 +16,24 @@ return (
 
   <div className="max-w-5xl mx-auto px-5 py-8">
 
-    {/* HEADER */}
-    <div className="flex items-center justify-between mb-8">
+    {/* HEADER BUTTONS */}
+    <div className="flex items-center gap-3 mb-8">
 
       <Link
         to="/"
-        className="flex items-center gap-2 text-sm opacity-70 hover:opacity-100"
+        className="flex items-center gap-2 px-4 py-2 text-sm rounded-full bg-black text-white dark:bg-white dark:text-black hover:opacity-90 transition"
       >
-        <ArrowLeft size={16} />
-        Beranda
+        <ArrowLeft size={14}/>
+        Kembali ke Beranda
       </Link>
+
+      <a
+        href="mailto:wildanferdiansyah06@gmail.com?subject=Tambah Buku Kelas Pekerja"
+        className="flex items-center gap-2 px-4 py-2 text-sm rounded-full border border-black/20 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 transition"
+      >
+        <Plus size={14}/>
+        Tambahkan Bukumu
+      </a>
 
     </div>
 
@@ -154,7 +124,7 @@ return (
             </h2>
 
             <button onClick={closeModal}>
-              <X size={18} />
+              <X size={18}/>
             </button>
 
           </div>
@@ -179,7 +149,7 @@ return (
             to={`/buku/${selectedBook.id}`}
             className="flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black py-2 rounded-lg text-sm hover:opacity-90 transition"
           >
-            <BookOpen size={16} />
+            <BookOpen size={16}/>
             Baca Buku
           </Link>
 
