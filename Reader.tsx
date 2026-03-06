@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { ArrowLeft, BookOpen } from "lucide-react";
 
 const BUKU = [
 {
@@ -30,7 +31,6 @@ file: "/buku/kami-menulis-pelan.pdf"
 export default function Reader() {
 
 const { id } = useParams();
-
 const buku = BUKU.find((b) => b.id === id);
 
 if (!buku) {
@@ -44,28 +44,49 @@ Buku tidak ditemukan
 return (
 <div className="min-h-screen bg-[#f6f4ef] dark:bg-[#1c1c1c] text-black dark:text-white">
 
-  <div className="max-w-5xl mx-auto px-6 py-8">
+  <div className="max-w-6xl mx-auto px-5 py-8">
 
-    <Link
-      to="/rak"
-      className="text-sm opacity-70 hover:opacity-100"
-    >
-      ← Kembali ke Rak
-    </Link>
+    {/* HEADER */}
+    <div className="flex items-center justify-between mb-6">
 
-    <h1 className="text-3xl md:text-4xl font-serif mt-4">
-      {buku.judul}
-    </h1>
+      <Link
+        to="/rak"
+        className="flex items-center gap-2 text-sm opacity-70 hover:opacity-100"
+      >
+        <ArrowLeft size={16}/>
+        Kembali ke Rak
+      </Link>
 
-    <p className="opacity-60 mt-1">
-      oleh {buku.penulis}
-    </p>
+      <a
+        href={buku.file}
+        target="_blank"
+        className="flex items-center gap-2 text-sm opacity-70 hover:opacity-100"
+      >
+        <BookOpen size={16}/>
+        Buka di Tab Baru
+      </a>
 
-    <div className="mt-6 rounded-xl overflow-hidden shadow-lg">
+    </div>
+
+    {/* TITLE */}
+    <div className="mb-6">
+
+      <h1 className="text-3xl md:text-4xl font-serif">
+        {buku.judul}
+      </h1>
+
+      <p className="opacity-60 mt-2 text-sm">
+        oleh {buku.penulis}
+      </p>
+
+    </div>
+
+    {/* PDF VIEWER */}
+    <div className="rounded-xl overflow-hidden shadow-lg border border-black/10 dark:border-white/10">
 
       <iframe
-        src={buku.file}
-        className="w-full h-[85vh]"
+        src={`${buku.file}#toolbar=0&navpanes=0&scrollbar=0`}
+        className="w-full h-[85vh] md:h-[90vh]"
       />
 
     </div>
