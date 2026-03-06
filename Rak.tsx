@@ -99,7 +99,7 @@ className="w-full h-full object-cover group-hover:scale-105 transition"
 </p>
 </div></div></button>))}
 
-</div></div>{/* MODAL PREVIEW BUKU */}
+</div></div>{/* MODAL PREVIEW */}
 {selectedBook && (
 
 <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-50"><div className="bg-white dark:bg-[#1f1f1f] max-w-lg w-full rounded-xl overflow-hidden shadow-xl"><div className="h-48 overflow-hidden">
