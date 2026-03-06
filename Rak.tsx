@@ -64,8 +64,6 @@ Beranda
 onClick={() => setShowContact(true)}
 className="flex items-center gap-2 text-sm border border-black/20 dark:border-white/20 px-3 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition"
 
-«»
-
 <Plus size={14}/>
 Tambahkan Buku
 </button></div>{/* TITLE */}
@@ -84,7 +82,6 @@ key={buku.id}
 onClick={() => setSelectedBook(buku)}
 className="text-left group"
 
-«»
 
 <div className="bg-white dark:bg-[#2a2a2a] rounded-xl overflow-hidden shadow-md hover:shadow-lg transition flex flex-col"><div className="aspect-[3/4] overflow-hidden">
 <img
@@ -143,7 +140,6 @@ kirim melalui salah satu kontak berikut.
 href="mailto:wildanferdiansyah06@gmail.com"
 className="border rounded-lg px-4 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/5"
 
-«»
 
 📧 Email
 </a>
@@ -152,7 +148,6 @@ className="border rounded-lg px-4 py-2 text-sm hover:bg-black/5 dark:hover:bg-wh
 href="https://wa.me/6281234567890"
 className="border rounded-lg px-4 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/5"
 
-«»
 
 💬 WhatsApp
 </a>
@@ -161,7 +156,6 @@ className="border rounded-lg px-4 py-2 text-sm hover:bg-black/5 dark:hover:bg-wh
 href="https://instagram.com/wildanferdiansyah06"
 className="border rounded-lg px-4 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/5"
 
-«»
 
 📷 Instagram
 </a>
