@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ArrowLeft, Plus } from "lucide-react";
 
 const BUKU = [
 {
@@ -32,19 +33,44 @@ export default function Rak() {
 return (
 <div className="min-h-screen bg-[#f6f4ef] dark:bg-[#1c1c1c] text-black dark:text-white">
 
-  <div className="max-w-5xl mx-auto px-6 py-12">
+  <div className="max-w-5xl mx-auto px-6 py-10">
 
-    <Link
-      to="/"
-      className="text-sm opacity-60 hover:opacity-100"
-    >
-      ← Kembali
-    </Link>
+    {/* HEADER */}
+    <div className="flex items-center justify-between mb-8">
 
-    <h1 className="text-3xl font-serif mt-6 mb-10">
-      Rak Buku
-    </h1>
+      <Link
+        to="/"
+        className="flex items-center gap-2 px-4 py-2 rounded-full bg-black text-white dark:bg-white dark:text-black text-sm hover:opacity-80 transition"
+      >
+        <ArrowLeft size={16} />
+        Kembali ke Beranda
+      </Link>
 
+      <a
+        href="mailto:kelaspekerja.site@gmail.com"
+        className="flex items-center gap-2 px-4 py-2 rounded-full border border-current text-sm hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition"
+      >
+        <Plus size={16} />
+        Tambahkan Bukumu
+      </a>
+
+    </div>
+
+    {/* TITLE */}
+    <div className="mb-10">
+
+      <h1 className="text-4xl font-serif">
+        Rak Buku
+      </h1>
+
+      <p className="opacity-60 mt-2 max-w-md text-sm">
+        Tempat buku-buku kecil yang lahir dari malam panjang, kopi hangat,
+        dan mereka yang tetap menulis meski lelah bekerja.
+      </p>
+
+    </div>
+
+    {/* GRID */}
     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
 
       {BUKU.map((buku) => (
@@ -55,22 +81,32 @@ return (
           className="group"
         >
 
-          <div className="rounded-xl overflow-hidden shadow-md bg-white dark:bg-[#2a2a2a]">
+          <div className="bg-white dark:bg-[#2a2a2a] rounded-xl overflow-hidden shadow-md hover:shadow-xl transition flex flex-col h-full">
 
-            <img
-              src={buku.cover}
-              className="w-full h-40 object-cover group-hover:scale-105 transition"
-            />
+            {/* COVER */}
+            <div className="aspect-[3/4] overflow-hidden">
 
-            <div className="p-3">
+              <img
+                src={buku.cover}
+                className="w-full h-full object-cover group-hover:scale-105 transition"
+              />
 
-              <h3 className="text-sm font-medium">
-                {buku.judul}
-              </h3>
+            </div>
 
-              <p className="text-xs opacity-60 mt-1">
-                {buku.penulis}
-              </p>
+            {/* INFO */}
+            <div className="p-4 flex flex-col justify-between flex-1">
+
+              <div>
+
+                <h3 className="text-sm font-medium leading-snug line-clamp-2">
+                  {buku.judul}
+                </h3>
+
+                <p className="text-xs opacity-60 mt-1">
+                  {buku.penulis}
+                </p>
+
+              </div>
 
             </div>
 
@@ -80,6 +116,11 @@ return (
 
       ))}
 
+    </div>
+
+    {/* FOOTER */}
+    <div className="text-center mt-16 text-xs opacity-40">
+      Kelas Pekerja — Arsip Sunyi Orang-Orang yang Tetap Bekerja
     </div>
 
   </div>
