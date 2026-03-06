@@ -234,14 +234,14 @@ className="border rounded-lg px-4 py-2 text-sm hover:bg-black/5 dark:hover:bg-wh
 </a>
 
 <a
-href="https://wa.me/6281234567890"
+href="https://wa.me/6289636357091"
 className="border rounded-lg px-4 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/5"
 >
 💬 WhatsApp
 </a>
 
 <a
-href="https://instagram.com/wildanferdiansyah06"
+href="https://instagram.com/_iamwildan_"
 className="border rounded-lg px-4 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/5"
 >
 📷 Instagram
