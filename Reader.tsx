@@ -5,25 +5,25 @@ const BUKU = [
 id: "1",
 judul: "Seni Menyeduh Kehidupan",
 penulis: "Wildan Ferdiansyah",
-drive: "https://drive.google.com/file/d/17Zd1FKFK4X_vmKhITFU5lXihOmMEkezI/preview"
+file: "/buku/seni-menyeduh-kehidupan.pdf"
 },
 {
 id: "2",
 judul: "Di Balik Bar",
 penulis: "Wildan Ferdiansyah",
-drive: "https://drive.google.com/file/d/1N1zwGLqkbVQOzFV_fpRXJxQdawbgZGAl/preview"
+file: "/buku/di-balik-bar.pdf"
 },
 {
 id: "3",
 judul: "Di Atas Cangkir Yang Sama",
 penulis: "Wildan Ferdiansyah",
-drive: "https://drive.google.com/file/d/1cqRI8rfb7_0MIUXLekZJtV0xTFKXr-CD/preview"
+file: "/buku/di-atas-cangkir.pdf"
 },
 {
 id: "4",
 judul: "Kami Menulis Pelan",
 penulis: "Wildan Ferdiansyah",
-drive: "https://drive.google.com/file/d/1Mc6pOQ5z2xSn8Wmhf65kdgTrv5T5EzPm/preview"
+file: "/buku/kami-menulis-pelan.pdf"
 }
 ];
 
@@ -44,29 +44,31 @@ Buku tidak ditemukan
 return (
 <div className="min-h-screen bg-[#f6f4ef] dark:bg-[#1c1c1c] text-black dark:text-white">
 
-  <div className="max-w-4xl mx-auto px-6 py-10">
+  <div className="max-w-5xl mx-auto px-6 py-8">
 
+    {/* BACK BUTTON */}
     <Link
       to="/rak"
-      className="text-sm opacity-60 hover:opacity-100"
+      className="text-sm opacity-70 hover:opacity-100"
     >
       ← Kembali ke Rak
     </Link>
 
+    {/* TITLE */}
     <h1 className="text-3xl md:text-4xl font-serif mt-4">
       {buku.judul}
     </h1>
 
-    <p className="opacity-60 mt-2">
+    <p className="opacity-60 mt-1">
       oleh {buku.penulis}
     </p>
 
-    <div className="mt-8 rounded-xl overflow-hidden shadow-lg">
+    {/* PDF VIEWER */}
+    <div className="mt-6 rounded-xl overflow-hidden shadow-lg">
 
       <iframe
-        src={buku.drive}
-        className="w-full h-[80vh]"
-        allow="autoplay"
+        src={buku.file}
+        className="w-full h-[85vh]"
       />
 
     </div>
